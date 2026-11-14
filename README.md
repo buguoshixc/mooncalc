@@ -15,7 +15,7 @@ MoonCalc 接收一组单元格——每个单元格承载字面值或公式—�
 ```bash
 export PATH="$HOME/.moon/bin:$PATH"
 
-# 全量验证：双目标构建 + 55 项单测 + 零 IO 守卫
+# 全量验证：双目标构建 + 56 项单测 + 零 IO 守卫
 bash scripts/check.sh
 
 # CLI：求值一个含引用链/错误传播/循环引用的网格
@@ -39,7 +39,7 @@ node scripts/smoke.mjs
 
 | 层 | 数字 | 性质 |
 |---|---|---|
-| 单元/快照测试 | 55/55 | 手写期望 |
+| 单元/快照测试 | 56/56 | 手写期望 |
 | 过渡语料 bench | 34/34（100%） | source: manual，**非权威**，仅证明流程 |
 | 用例规格 | 536 条（corpus/spec/） | 已交付 VBA 生成器，待真实 Excel 运行 |
 | **真实 Excel 语料** | **待接入 → N 条 / X%** | M5：Excel 为唯一裁判，差异逐条归因 |
