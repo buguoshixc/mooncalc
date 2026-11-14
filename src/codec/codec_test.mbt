@@ -117,6 +117,34 @@ test "bench clock tolerance and filter" {
   assert_eq(filtered.total, 1)
 }
 
+test "bench value-mismatch, error match, and source split" {
+  let records = corpus(
+    rec("v1", "=1+1", "{\"type\":\"number\",\"value\":3}", "\"math\"") + "," +
+    rec("e1", "=1/0", "{\"type\":\"error\",\"value\":\"#DIV/0!\"}", "\"error\"") + "," +
+    "{\"id\":\"x1\",\"formula\":\"=2*3\",\"grid\":{},\"expected\":{\"type\":\"number\",\"value\":6}," +
+    "\"tags\":[\"math\"],\"source\":\"excel-desktop\"}",
+  )
+  let rep = run_bench(records, 1.0e-9, 1.0e-6, None)
+  assert_eq(rep.total, 3)
+  assert_eq(rep.passed, 2)
+  assert_eq(rep.buckets.get("value-mismatch"), Some(1))
+  assert_eq(rep.buckets.get("match"), Some(2))
+  match rep.by_source.get("manual") {
+    Some((t, p)) => {
+      assert_eq(t, 2)
+      assert_eq(p, 1)
+    }
+    None => panic()
+  }
+  match rep.by_source.get("excel-desktop") {
+    Some((t, p)) => {
+      assert_eq(t, 1)
+      assert_eq(p, 1)
+    }
+    None => panic()
+  }
+}
+
 test "corpus decode validates schema and fields" {
   match corpus_from_json(jparse("{\"schema\":\"other/1\",\"records\":[]}")) {
     Err(_) => ()
