@@ -1,0 +1,10 @@
+import {
+  "buguoshixc/mooncalc/src/value" @value,
+  "buguoshixc/mooncalc/src/syntax" @syntax,
+  "moonbitlang/core/string" @string,
+}
+
+import {
+  "buguoshixc/mooncalc/src/value" @value,
+  "buguoshixc/mooncalc/src/syntax" @syntax,
+} for "test"

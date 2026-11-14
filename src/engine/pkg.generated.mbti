@@ -1,0 +1,75 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "buguoshixc/mooncalc/src/engine"
+
+import {
+  "buguoshixc/mooncalc/src/syntax",
+  "buguoshixc/mooncalc/src/value",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn compare_values(@value.Value, @value.Value) -> Result[Int32, @value.XlError]
+
+pub fn eval_at(@value.CellAddr, Grid, EvalOptions) -> EvalOutput
+
+pub fn eval_formula(String, Grid, EvalOptions) -> Result[EvalOutput, @syntax.ParseError]
+
+pub fn new_grid() -> Grid
+
+pub fn number_to_text(Double) -> String
+
+pub fn recalc(Grid, EvalOptions) -> RecalcOutput
+
+pub fn round_excel(Double, Int32, Int32) -> Double
+
+pub fn scalarize(@value.Value) -> @value.Value
+
+pub fn to_bool(@value.Value) -> Result[Bool, @value.XlError]
+
+pub fn to_number(@value.Value) -> Result[Double, @value.XlError]
+
+pub fn to_text(@value.Value) -> Result[String, @value.XlError]
+
+// Errors
+
+// Types and methods
+#derive(Eq, Show, @debug.Debug)
+pub(all) enum Cell {
+  Literal(@value.Value)
+  Formula(String)
+}
+
+type CritToken
+
+type Criteria
+
+type Ctx
+
+type Dec
+
+#derive(@debug.Debug)
+pub(all) struct EvalOptions {
+  now : Double?
+}
+
+#derive(@debug.Debug)
+pub(all) struct EvalOutput {
+  value : @value.Value
+  circular : Bool
+}
+
+type FnSpec
+
+#derive(@debug.Debug)
+pub(all) struct Grid {
+  cells : Map[String, Cell]
+}
+
+pub(all) struct RecalcOutput {
+  cells : Map[String, EvalOutput]
+  parse_errors : Array[(String, String)]
+}
+
+// Type aliases
+
+// Traits
