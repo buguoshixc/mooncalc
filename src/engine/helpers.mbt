@@ -17,9 +17,12 @@ fn first_error(vals : Array[Value]) -> XlError? {
 }
 
 // Output boundary: unwrap 1x1 refs, >1-cell ranges are #VALUE! (no spill).
+// Excel formulas never return a true blank: a blank result displays as 0
+// (ISBLANK on a formula cell is always FALSE).
 fn scalar_output(v : Value) -> Value {
   match scalarize(v) {
     Range(_) => Value::Err(XlError::Value)
+    Blank => Value::Num(0.0)
     s => s
   }
 }

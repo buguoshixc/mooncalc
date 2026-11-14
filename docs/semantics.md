@@ -6,6 +6,7 @@
 
 - `Value = Num(Double) | Text(String) | Bool | Err(XlError) | Blank | Range`。
 - **Blank 与 Num(0) 严格区分**：空白格是 `Blank`，不是 0；参与运算/比较时按下方规则转换。
+- **公式结果永不为真空白**：输出边界把 Blank 归一为 `Num(0)`（Excel 中 `=A1` 引用空白格得 0，公式格的 ISBLANK 恒为 FALSE）；`""` 是空文本不是空白。Blank 只作为网格输入状态存在。
 - `Range` 行主序保留形状（rows×cols）。**1×1 区域可标量化**；>1 格区域进入标量上下文 → `#VALUE!`（不做动态数组溢出）。
 - 7 种错误值：`#DIV/0! #N/A #NAME? #NULL! #NUM! #REF! #VALUE!`。
 - 地址上限 XFD（16384 列）/ 1048576 行；`$` 绝对标记解析保真（v1 无复制填充场景）。
@@ -149,8 +150,8 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 以下条目已埋入 corpus/spec/generic.tsv 等规格，等 corpus/cases/ 到达后以 Excel 为唯一裁判：
 
 1. COUNT/COUNTA/SUMPRODUCT 对**直接错误参数**的传播（已实现：直接错误参数传播 `COUNT(#N/A)` → `#N/A`；引用内错误 COUNT 忽略、COUNTA 计数；待语料确认）。
-2. MEDIAN 对空白直接参数的处理。
-3. IFERROR 第一参数为空白时的返回。
+2. MEDIAN 对空白引用的处理（已实现：引用通道忽略空白，无数值 → `#NUM!`；待语料确认）。
+3. IFERROR 第一参数为空白引用时的返回（已实现：空白非错误，透传并经输出边界归一为 0；待语料确认）。
 4. 非 ASCII 的 UPPER/LOWER/LEN 行为（当前 ASCII-only，预期记署名偏差）。
 5. 文本日期（`"2026-01-02"`）参与 DATEVALUE 类转换（当前 locale 不变式 → `#VALUE!`）。
 6. to_text 科学计数阈值（当前 15 位有效数字实现的具体切换点）。

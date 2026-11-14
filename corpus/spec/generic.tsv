@@ -231,3 +231,5 @@ gen-sqrt-0006	=SQRT(A1)	A1=t:2		generic,sqrt,coercion
 gen-count-0009	=COUNT(#N/A)			generic,count,error,literal
 gen-count-0010	=COUNT(1/0)			generic,count,error,computed
 gen-counta-0005	=COUNTA(#N/A)			generic,counta,error,literal
+gen-blank-0002	=A1	A1=blank		generic,blank,ref
+gen-blank-0003	=IFERROR(A1,9)	A1=blank		generic,blank,iferror

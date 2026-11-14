@@ -338,3 +338,12 @@ test "COUNT/COUNTA: literal errors propagate, reference errors do not" {
   assert_num(evg("=COUNTA(A1)", e), 1.0)
   assert_num(evg("=COUNT(A1,1)", e), 1.0)
 }
+
+test "formula results are never blank: blank refs display as 0" {
+  let b = grid([("A1", @engine.Cell::Literal(@value.Value::Blank))])
+  assert_num(evg("=A1", b), 0.0)
+  assert_num(evg("=IFERROR(A1,9)", b), 0.0)
+  assert_text(evg("=A1&\"\"", b), "")
+  assert_bool(evg("=A1=\"\"", b), true)
+  assert_num(evg("=IF(TRUE,A1,9)", b), 0.0)
+}
