@@ -118,8 +118,11 @@ fn fn_sum(_ctx : Ctx, args : Array[Thunk]) -> Value {
 
 fn fn_sumif(_ctx : Ctx, args : Array[Thunk]) -> Value {
   let vals = eager(args)
-  if first_error(vals) is Some(e) {
-    return Value::Err(e)
+  // Range errors never match; criteria errors propagate; sum-range errors
+  // propagate per matched cell below.
+  match scalarize(vals[1]) {
+    Err(e) => return Value::Err(e)
+    _ => ()
   }
   let range = as_range(vals[0])
   let crit = parse_criteria(vals[1])

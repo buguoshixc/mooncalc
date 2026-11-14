@@ -93,7 +93,13 @@ fn cell_value(ctx : Ctx, key : String) -> Value {
 fn eval_expr(ctx : Ctx, e : @syntax.Expr) -> Value {
   match e {
     Lit(v) => v
-    Ref(addr) => scalarize(cell_value(ctx, addr.key()))
+    // A reference stays a 1x1 range so aggregates apply the reference
+    // channel (ignore text/bool/blank) while literals coerce.
+    Ref(addr) =>
+      match cell_value(ctx, addr.key()) {
+        Range(r) => Value::Range(r)
+        v => Value::Range({ rows: 1, cols: 1, cells: [v] })
+      }
     Range(lo, hi) => {
       let rows = hi.row - lo.row + 1
       let cols = hi.col - lo.col + 1
@@ -136,8 +142,8 @@ fn eval_binary(
   l : @syntax.Expr,
   r : @syntax.Expr
 ) -> Value {
-  let lv = eval_expr(ctx, l)
-  let rv = eval_expr(ctx, r)
+  let lv = scalarize(eval_expr(ctx, l))
+  let rv = scalarize(eval_expr(ctx, r))
   // Error propagation: leftmost error wins.
   match lv {
     Err(e) => return Value::Err(e)
@@ -221,7 +227,7 @@ pub fn eval_formula(
   let expr = try @syntax.parse(formula) catch { e => return Err(e) }
   let ctx = new_ctx(grid, options)
   let v = eval_expr(ctx, expr)
-  Ok({ value: v, circular: ctx.circular.length() > 0 })
+  Ok({ value: scalar_output(v), circular: ctx.circular.length() > 0 })
 }
 
 pub fn eval_at(
@@ -231,7 +237,7 @@ pub fn eval_at(
 ) -> EvalOutput {
   let ctx = new_ctx(grid, options)
   let key = addr.key()
-  let v = scalarize(cell_value(ctx, key))
+  let v = scalar_output(cell_value(ctx, key))
   { value: v, circular: ctx.circular.contains(key) }
 }
 
@@ -241,7 +247,7 @@ pub fn recalc(grid : Grid, options : EvalOptions) -> RecalcOutput {
   for key, cell in grid.cells {
     match cell {
       Formula(_) => {
-        let v = cell_value(ctx, key)
+        let v = scalar_output(cell_value(ctx, key))
         out[key] = { value: v, circular: ctx.circular.contains(key) }
       }
       Literal(_) => ()

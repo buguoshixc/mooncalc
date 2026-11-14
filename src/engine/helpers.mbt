@@ -8,12 +8,20 @@ fn eager(thunks : Array[Thunk]) -> Array[Value] {
 
 fn first_error(vals : Array[Value]) -> XlError? {
   for v in vals {
-    match v {
+    match scalarize(v) {
       Err(e) => return Some(e)
       _ => ()
     }
   }
   None
+}
+
+// Output boundary: unwrap 1x1 refs, >1-cell ranges are #VALUE! (no spill).
+fn scalar_output(v : Value) -> Value {
+  match scalarize(v) {
+    Range(_) => Value::Err(XlError::Value)
+    s => s
+  }
 }
 
 fn arg_number(vals : Array[Value], i : Int) -> Result[Double, XlError] {

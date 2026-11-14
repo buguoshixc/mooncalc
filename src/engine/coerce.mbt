@@ -172,10 +172,12 @@ pub fn compare_values(a : Value, b : Value) -> Result[Int, XlError] {
   let b = scalarize(b)
   match a {
     Err(e) => return Err(e)
+    Range(_) => return Err(XlError::Value)
     _ => ()
   }
   match b {
     Err(e) => return Err(e)
+    Range(_) => return Err(XlError::Value)
     _ => ()
   }
   let a = blank_as(a, b)

@@ -279,3 +279,50 @@ test "parse errors use the Result channel" {
     Ok(_) => panic()
   }
 }
+test "reference vs literal channels in aggregates" {
+  let t = grid([("A1", txt("abc"))])
+  assert_num(evg("=SUM(A1,4)", t), 4.0)
+  assert_num(ev("=SUM(\"3\",4)"), 7.0)
+  assert_err(evg("=AVERAGE(A1)", t), @value.XlError::Div0)
+  assert_err(evg("=MEDIAN(A1)", t), @value.XlError::Num)
+  assert_num(evg("=MIN(A1)", t), 0.0)
+  assert_num(evg("=COUNT(A1)", t), 0.0)
+  assert_num(ev("=COUNT(\"3\")"), 1.0)
+  let b = grid([("A1", @engine.Cell::Literal(@value.Value::Blank))])
+  assert_num(evg("=SUM(A1)", b), 0.0)
+  assert_err(evg("=AVERAGE(A1)", b), @value.XlError::Div0)
+  assert_num(evg("=COUNTA(A1)", b), 0.0)
+  let bools = grid([("A1", @engine.Cell::Literal(@value.Value::Bool(true)))])
+  assert_num(evg("=SUM(A1)", bools), 0.0)
+  assert_num(ev("=SUM(TRUE)"), 1.0)
+}
+
+test "errors inside single-cell references propagate and are catchable" {
+  let e = grid([
+    ("A1", @engine.Cell::Literal(@value.Value::Err(@value.XlError::NA))),
+    ("B1", f("=1/0")),
+  ])
+  assert_err(evg("=A1+1", e), @value.XlError::NA)
+  assert_err(evg("=A1+B1", e), @value.XlError::NA)
+  assert_err(evg("=B1+A1", e), @value.XlError::Div0)
+  assert_num(evg("=IFERROR(A1,0)", e), 0.0)
+  assert_err(evg("=SUM(A1,4)", e), @value.XlError::NA)
+  assert_err(evg("=LEFT(A1,2)", e), @value.XlError::NA)
+  assert_num(evg("=COUNTIF(A1,1)", e), 0.0)
+  assert_num(evg("=SUMIF(A1,\">0\")", e), 0.0)
+  assert_err(evg("=COUNTIF(A1,A1)", e), @value.XlError::NA)
+}
+
+test "AND/OR reference channel: only logicals count" {
+  let g = grid([("A1", lit(1.0)), ("A2", lit(0.0))])
+  assert_err(evg("=AND(A1,A2)", g), @value.XlError::Value)
+  assert_err(evg("=OR(A1,A2)", g), @value.XlError::Value)
+  let z = grid([("A1", lit(0.0))])
+  assert_bool(evg("=AND(TRUE,A1)", z), true)
+  let t = grid([
+    ("A1", txt("TRUE")),
+    ("A2", @engine.Cell::Literal(@value.Value::Bool(true))),
+  ])
+  assert_bool(evg("=AND(A1,A2)", t), true)
+  assert_err(ev("=AND(\"x\")"), @value.XlError::Value)
+}

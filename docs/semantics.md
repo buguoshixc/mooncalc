@@ -75,11 +75,14 @@ Excel 优先级（高→低）：
 - Blank 与对方同化：对数字视为 0、对文本视为 `""`、对布尔视为 FALSE；Blank=Blank → TRUE。
 - 错误值参与比较 → 传播（左先）。
 
-## 区域 vs 直接参数双通道
+## 引用 vs 字面量双通道
 
-- **直接参数**走强制转换：`SUM("3",4) = 7`、`SUM(TRUE,1) = 2`。
-- **区域内**：SUM/AVERAGE/MIN/MAX/MEDIAN/SUMPRODUCT 等忽略文本与布尔（不转换、不报错）；**COUNT 只数数字**；**COUNTA 数一切非空**（含公式产生的 `""`）。
-- 区域内的错误值传播（见下）。
+通道划分以**引用/字面量**为界，不是以单格/区域为界：单格引用 `A1` 同样走引用通道（实现上引用统一包成 1×1 Range，强制转换函数自动解包）。
+
+- **字面量参数**走强制转换：`SUM("3",4) = 7`、`SUM(TRUE,1) = 2`。
+- **引用参数**（含单格引用）：SUM/AVERAGE/MIN/MAX/MEDIAN/SUMPRODUCT 等忽略文本与布尔（不转换、不报错），故 `SUM(A1,4)`（A1 为文本）= 4、`AVERAGE(A1)`（A1 为文本）= `#DIV/0!`；**COUNT 只数数字**；**COUNTA 数一切非空**（含公式产生的 `""`）。
+- AND/OR 的引用参数**只认布尔格**（数字/文本/空白忽略）；全部参数都没有逻辑值 → `#VALUE!`；字面量参数走 to_bool。
+- 引用内的错误值传播（见下）；**例外**：COUNTIF/SUMIF 的条件区域内错误格只是不匹配、不传播，criteria 参数为错误才传播；SUMIF 求和区域的错误格在被选中求和时传播。
 
 ## 错误传播与求值顺序
 
@@ -98,7 +101,7 @@ Excel 优先级（高→低）：
 ## 函数边界语义（45 函数）
 
 ### 逻辑（5）
-IF / IFERROR 惰性；AND/OR 急切、区域内忽略文本布尔但直接文本参数须为 TRUE/FALSE；NOT 走 to_bool。
+IF / IFERROR 惰性；AND/OR 急切、引用参数只认布尔格（无逻辑值 → `#VALUE!`）、字面量走 to_bool（直接文本参数须为 TRUE/FALSE）；NOT 走 to_bool。
 
 ### 数学（11）
 - **ROUND/ROUNDUP/ROUNDDOWN：half-away-from-zero，十进制字符串修正**——`ROUND(2.675,2) = 2.68`（朴素 double 会得 2.67）；负位数作用于整数位。

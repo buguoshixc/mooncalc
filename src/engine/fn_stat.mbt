@@ -25,8 +25,10 @@ fn fn_counta(_ctx : Ctx, args : Array[Thunk]) -> Value {
 
 fn fn_countif(_ctx : Ctx, args : Array[Thunk]) -> Value {
   let vals = eager(args)
-  if first_error(vals) is Some(e) {
-    return Value::Err(e)
+  // Range errors never match and do not propagate; criteria errors do.
+  match scalarize(vals[1]) {
+    Err(e) => return Value::Err(e)
+    _ => ()
   }
   let range = as_range(vals[0])
   let crit = parse_criteria(vals[1])

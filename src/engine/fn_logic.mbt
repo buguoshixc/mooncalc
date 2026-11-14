@@ -14,28 +14,47 @@ fn fn_if(_ctx : Ctx, args : Array[Thunk]) -> Value {
   }
 }
 
-fn fn_and(_ctx : Ctx, args : Array[Thunk]) -> Value {
+// References contribute only logical cells (numbers/text/blank ignored);
+// with no logical value at all Excel yields #VALUE!. Literals coerce.
+fn and_or(args : Array[Thunk], want_all : Bool) -> Value {
   let vals = eager(args)
-  let mut result = true
+  let mut result = want_all
+  let mut seen = false
   for v in vals {
-    match to_bool(scalarize(v)) {
-      Err(e) => return Value::Err(e)
-      Ok(b) => result = result && b
+    match v {
+      Range(r) =>
+        for c in r.cells {
+          match c {
+            Bool(b) => {
+              seen = true
+              result = if want_all { result && b } else { result || b }
+            }
+            Err(e) => return Value::Err(e)
+            _ => ()
+          }
+        }
+      _ =>
+        match to_bool(scalarize(v)) {
+          Err(e) => return Value::Err(e)
+          Ok(b) => {
+            seen = true
+            result = if want_all { result && b } else { result || b }
+          }
+        }
     }
+  }
+  if !seen {
+    return Value::Err(XlError::Value)
   }
   Value::Bool(result)
 }
 
+fn fn_and(_ctx : Ctx, args : Array[Thunk]) -> Value {
+  and_or(args, true)
+}
+
 fn fn_or(_ctx : Ctx, args : Array[Thunk]) -> Value {
-  let vals = eager(args)
-  let mut result = false
-  for v in vals {
-    match to_bool(scalarize(v)) {
-      Err(e) => return Value::Err(e)
-      Ok(b) => result = result || b
-    }
-  }
-  Value::Bool(result)
+  and_or(args, false)
 }
 
 fn fn_not(_ctx : Ctx, args : Array[Thunk]) -> Value {
@@ -46,7 +65,7 @@ fn fn_not(_ctx : Ctx, args : Array[Thunk]) -> Value {
 }
 
 fn fn_iferror(_ctx : Ctx, args : Array[Thunk]) -> Value {
-  let v = args[0]()
+  let v = scalar_output(args[0]())
   match v {
     Err(_) => args[1]()
     _ => v
