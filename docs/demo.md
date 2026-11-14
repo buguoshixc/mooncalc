@@ -23,7 +23,7 @@ fixture 看点（对应输出）：
 - B1=`=A1*A2` → 6，B2=`=B1+1` → 7（引用链）
 - C1=`=1/0` → `#DIV/0!`，C2=`=C1+1` → `#DIV/0!`（错误传播）
 - D1=`=D1+1` → 0 且 `circular:true`；D2=`=D1+5` → 5 且 `circular:false`（Excel 默认循环语义）
-- E1 是文本 `"3"`，E2=`=SUM(E1,4)` → 7（直接参数强制转换）
+- E1 是文本 `"3"`，E2=`=SUM(E1,4)` → 4（引用通道忽略文本）vs E3=`=SUM("3",4)` → 7（字面量强制转换）
 
 单公式与单格、时钟注入：
 
@@ -54,7 +54,7 @@ bash scripts/build-playground.sh
 现场动作：
 1. 预设「circular reference → 0」：A1 显示 0 + 黄色警示，B1 显示 5。
 2. 预设「error propagation」：B1/B2/C1 全红 `#DIV/0!`；把 A2 改成 5 → B1 变 0.2。
-3. 预设「text-typed numbers」：B1=`SUM(A1,A2)`=7 vs B2=`SUM(A1:A2)`=4（双通道）。
+3. 预设「text-typed numbers」：B1=`SUM(A1,4)`=4（引用通道忽略文本）vs B2=`SUM("3",4)`=7（字面量转换）。
 4. 任意格输入 `=VLOOKUP(...)`、`=TEXT(1234.5,"#,##0.00")` 即时求值。
 
 ## 4. 矩阵与署名偏差

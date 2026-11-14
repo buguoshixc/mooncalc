@@ -141,7 +141,7 @@ function renderDetail() {
 
 const PRESETS = {
   error: { A1: '1', A2: '0', B1: '=A1/A2', B2: '=B1+1', C1: '=SUM(B1:B2)' },
-  textnum: { A1: "'3", A2: '4', B1: '=SUM(A1,A2)', B2: '=SUM(A1:A2)', C1: '=A1=A2' },
+  textnum: { A1: "'3", A2: '4', B1: '=SUM(A1,4)', B2: '=SUM("3",4)', C1: '=A1=A2' },
   blank: { B1: '=A1+1', B2: '=A1=0', A2: '=""', B3: '=COUNTA(A1:A2)' },
   circular: { A1: '=A1+1', B1: '=A1+5' },
 };
