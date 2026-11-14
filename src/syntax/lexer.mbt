@@ -69,7 +69,7 @@ pub fn lex(input : String) -> Array[Token] raise ParseError {
       let d = @string.parse_double(text[:]) catch {
         _ => raise ParseError("bad number: " + text)
       }
-      toks.push(Number(d))
+      toks.push(Number(@value.excel_precision(d)))
       continue
     }
     if c == '"' {

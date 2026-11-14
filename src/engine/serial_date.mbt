@@ -48,21 +48,27 @@ pub fn serial_to_ymd(serial : Double) -> Result[(Int, Int, Int), XlError] {
   Ok(civil_from_days(days))
 }
 
+// Excel DATE(): a year argument in 0..1899 is shifted by +1900 *before*
+// month normalization (so DATE(0,1,1) = DATE(1900,1,1), DATE(1900,0,1) is
+// #NUM! because normalization lands in 1899). The serial is then computed as
+// the serial of day 1 of the month plus (d - 1) on the Excel/Lotus calendar
+// where 1900-02-29 exists as the phantom serial 60 (so DATE(1900,2,29) = 60,
+// DATE(1900,3,0) = 60, DATE(1900,2,30) = 61).
 pub fn date_serial(y0 : Int, m0 : Int, d0 : Int) -> Result[Int, XlError] {
-  let total = y0 * 12 + (m0 - 1)
-  let mut y = fdiv(total, 12)
+  let y_arg = if y0 >= 0 && y0 <= 1899 { y0 + 1900 } else { y0 }
+  let total = y_arg * 12 + (m0 - 1)
+  let y = fdiv(total, 12)
   let m = total - y * 12 + 1
-  if y >= 0 && y <= 1899 {
-    y += 1900
-  }
-  if y < 0 || y > 9999 {
+  if y < 1900 || y > 9999 {
     return Err(XlError::Num)
   }
-  let days = days_from_civil(y, m, 1) + (d0 - 1)
-  let mut serial = days + 25569
-  if serial < 61 {
-    serial -= 1
+  let first_days = days_from_civil(y, m, 1)
+  let first_serial = if y == 1900 && m <= 2 {
+    first_days + 25568
+  } else {
+    first_days + 25569
   }
+  let serial = first_serial + (d0 - 1)
   if serial < 0 || serial > 2958465 {
     return Err(XlError::Num)
   }

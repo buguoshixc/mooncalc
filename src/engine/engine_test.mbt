@@ -53,7 +53,7 @@ test "arithmetic coercion" {
   assert_num(ev("=TRUE+1"), 2.0)
   assert_err(ev("=\"\"+1"), @value.XlError::Value)
   assert_num(ev("=\"12%\"+0"), 0.12)
-  assert_err(ev("=\"1,000\"+0"), @value.XlError::Value)
+  assert_num(ev("=\"1,000\"+0"), 1000.0)
   assert_err(ev("=\"$5\"+0"), @value.XlError::Value)
   assert_num(ev("=\" 2.5 \"+0"), 2.5)
   assert_num(ev("=\"1e3\"+0"), 1000.0)
@@ -67,14 +67,22 @@ test "arithmetic coercion" {
 test "number to text: 15 significant digits, General format" {
   assert_text(ev("=(1/3)&\"\""), "0.333333333333333")
   assert_text(ev("=(0.1+0.2)&\"\""), "0.3")
-  assert_text(ev("=123456789012&\"\""), "1.23457E+11")
-  assert_text(ev("=0.00001&\"\""), "1E-05")
+  assert_text(ev("=123456789012&\"\""), "123456789012")
+  assert_text(ev("=0.00001&\"\""), "0.00001")
   assert_text(ev("=0.0001&\"\""), "0.0001")
   assert_text(ev("=1500&\"\""), "1500")
-  assert_text(ev("=100000000000&\"\""), "1E+11")
+  assert_text(ev("=100000000000&\"\""), "100000000000")
   assert_text(ev("=99999999999&\"\""), "99999999999")
   assert_text(ev("=(-2.5)&\"\""), "-2.5")
   assert_text(ev("=0&\"\""), "0")
+  // Fixed notation up to exponent 19 / down to -18, scientific outside.
+  assert_text(ev("=1E19&\"\""), "10000000000000000000")
+  assert_text(ev("=1E20&\"\""), "1E+20")
+  assert_text(ev("=1.2E20&\"\""), "1.2E+20")
+  assert_text(ev("=1E-18&\"\""), "0.000000000000000001")
+  assert_text(ev("=1E-19&\"\""), "1E-19")
+  assert_text(ev("=SQRT(2)&\"\""), "1.4142135623731")
+  assert_text(ev("=123456789012345678&\"\""), "123456789012345000")
 }
 
 test "comparison: no cross-type coercion, type order, case-insensitive" {
@@ -146,7 +154,9 @@ test "INT MOD ABS POWER SQRT" {
   assert_err(ev("=MOD(5,0)"), @value.XlError::Div0)
   assert_num(ev("=MOD(5.5,2)"), 1.5)
   assert_num(ev("=ABS(-3)"), 3.0)
-  assert_err(ev("=POWER(-8,1/3)"), @value.XlError::Num)
+  assert_num(ev("=POWER(-8,1/3)"), -2.0)
+  assert_err(ev("=POWER(-8,2/3)"), @value.XlError::Num)
+  assert_err(ev("=POWER(0,0)"), @value.XlError::Num)
   assert_num(ev("=POWER(2,10)"), 1024.0)
   assert_err(ev("=SQRT(-1)"), @value.XlError::Num)
   assert_num(ev("=SQRT(9)"), 3.0)
@@ -315,10 +325,10 @@ test "errors inside single-cell references propagate and are catchable" {
 
 test "AND/OR reference channel: only logicals count" {
   let g = grid([("A1", lit(1.0)), ("A2", lit(0.0))])
-  assert_err(evg("=AND(A1,A2)", g), @value.XlError::Value)
-  assert_err(evg("=OR(A1,A2)", g), @value.XlError::Value)
+  assert_bool(evg("=AND(A1,A2)", g), false)
+  assert_bool(evg("=OR(A1,A2)", g), true)
   let z = grid([("A1", lit(0.0))])
-  assert_bool(evg("=AND(TRUE,A1)", z), true)
+  assert_bool(evg("=AND(TRUE,A1)", z), false)
   let t = grid([
     ("A1", txt("TRUE")),
     ("A2", @engine.Cell::Literal(@value.Value::Bool(true))),
@@ -327,10 +337,10 @@ test "AND/OR reference channel: only logicals count" {
   assert_err(ev("=AND(\"x\")"), @value.XlError::Value)
 }
 
-test "COUNT/COUNTA: literal errors propagate, reference errors do not" {
-  assert_err(ev("=COUNT(#N/A)"), @value.XlError::NA)
-  assert_err(ev("=COUNTA(#N/A)"), @value.XlError::NA)
-  assert_err(ev("=COUNT(1/0)"), @value.XlError::Div0)
+test "COUNT/COUNTA ignore literal errors, reference errors counted separately" {
+  assert_num(ev("=COUNT(#N/A)"), 0.0)
+  assert_num(ev("=COUNTA(#N/A)"), 1.0)
+  assert_num(ev("=COUNT(1/0)"), 0.0)
   let e = grid([
     ("A1", @engine.Cell::Literal(@value.Value::Err(@value.XlError::NA))),
   ])
@@ -348,11 +358,82 @@ test "formula results are never blank: blank refs display as 0" {
   assert_num(evg("=IF(TRUE,A1,9)", b), 0.0)
 }
 
-test "unary plus coerces to number like unary minus" {
-  assert_num(ev("=+\"3\""), 3.0)
-  assert_num(ev("=+TRUE"), 1.0)
-  assert_err(ev("=+\"abc\""), @value.XlError::Value)
+test "unary plus is an identity operator" {
+  assert_text(ev("=+\"3\""), "3")
+  assert_bool(ev("=+TRUE"), true)
+  assert_text(ev("=+\"abc\""), "abc")
   assert_num(ev("=+1+2"), 3.0)
   let t = grid([("A1", txt("x"))])
-  assert_err(evg("=+A1", t), @value.XlError::Value)
+  assert_text(evg("=+A1", t), "x")
+}
+
+test "corpus-confirmed date text coercion and grouping" {
+  assert_num(ev("=YEAR(\"2026-11-14\")"), 2026.0)
+  assert_num(ev("=MONTH(\"2026/1/2\")"), 1.0)
+  assert_num(ev("=DAY(\"2026-11-14 10:00\")"), 14.0)
+  assert_num(ev("=\"2026-11-14\"+0"), 46340.0)
+  assert_num(ev("=VALUE(\"2026-11-14 10:00\")"), 46340.0 + 10.0 / 24.0)
+  assert_err(ev("=VALUE(\"11/14/2026\")"), @value.XlError::Value)
+  assert_err(ev("=VALUE(\"2026-13-01\")"), @value.XlError::Value)
+  assert_err(ev("=VALUE(\"2026-02-30\")"), @value.XlError::Value)
+  assert_num(ev("=VALUE(\"1,000\")"), 1000.0)
+  assert_num(ev("=VALUE(\"-1,000.50\")"), -1000.5)
+  assert_err(ev("=VALUE(\"1,00\")"), @value.XlError::Value)
+}
+
+test "corpus-confirmed Excel DATE calendar" {
+  assert_num(ev("=DATE(1900,2,29)"), 60.0)
+  assert_num(ev("=DATE(1900,2,30)"), 61.0)
+  assert_num(ev("=DATE(1900,3,0)"), 60.0)
+  assert_num(ev("=DATE(1900,1,0)"), 0.0)
+  assert_num(ev("=DATE(1900,3,-1)"), 59.0)
+  assert_num(ev("=DATE(1900,12,31)"), 366.0)
+  assert_num(ev("=DATE(0,1,1)"), 1.0)
+  assert_err(ev("=DATE(1900,0,1)"), @value.XlError::Num)
+  assert_err(ev("=DATE(10000,1,1)"), @value.XlError::Num)
+}
+
+test "corpus-confirmed UTF-16 text functions" {
+  assert_num(ev("=LEN(\"😀\")"), 2.0)
+  assert_num(ev("=LEN(\"a😀b\")"), 4.0)
+  assert_num(ev("=FIND(\"b\",\"a😀b\")"), 4.0)
+  assert_num(ev("=FIND(\"😀\",\"a😀b\")"), 2.0)
+  assert_text(ev("=LEFT(\"😀abc\",2)"), "😀a")
+  // MID counts UTF-16 code units (MID("a😀b",2,1) is a lone surrogate).
+  assert_num(ev("=LEN(MID(\"a😀b\",2,1))"), 1.0)
+  assert_num(ev("=LEN(MID(\"a😀b\",2,2))"), 2.0)
+  assert_text(ev("=LOWER(\"CAFÉ\")"), "café")
+  assert_text(ev("=UPPER(\"straße\")"), "STRAßE")
+}
+
+test "corpus-confirmed formats and AND/OR literals" {
+  assert_text(ev("=TEXT(5,\"yyyy\")"), "1900")
+  assert_text(ev("=TEXT(60,\"yyyy-mm-dd\")"), "1900-02-29")
+  assert_text(ev("=TEXT(46340.5,\"yyyy-mm-dd hh:mm:ss\")"), "2026-11-14 12:00:00")
+  assert_text(ev("=TEXT(2,\"ddd\")"), "Mon")
+  assert_text(ev("=TEXT(0.75,\"h:mm AM/PM\")"), "6:00 PM")
+  assert_err(ev("=TEXT(123,\"General\")"), @value.XlError::Value)
+  assert_bool(ev("=AND(\"0\",TRUE)"), true)
+  assert_bool(ev("=OR(\"0\",FALSE)"), false)
+  assert_bool(ev("=AND(TRUE,\"x\")"), true)
+  assert_bool(ev("=OR(FALSE,\"x\")"), false)
+  let t = grid([("A1", txt("TRUE")), ("A2", @engine.Cell::Literal(@value.Value::Blank))])
+  assert_err(evg("=AND(A1,A2)", t), @value.XlError::Value)
+}
+
+test "corpus-confirmed top-level INDEX array output" {
+  let g = grid([
+    ("A1", lit(1.0)), ("B1", lit(2.0)), ("C1", lit(3.0)),
+    ("A2", lit(4.0)), ("B2", lit(5.0)), ("C2", lit(6.0)),
+    ("A3", lit(7.0)), ("B3", lit(8.0)), ("C3", lit(9.0)),
+  ])
+  assert_num(evg("=INDEX(A1:C3,0,1)", g), 1.0)
+  assert_err(evg("=INDEX(A1:C3,0,0)", g), @value.XlError::Value)
+  assert_err(evg("=INDEX(A1:C3,2,0)", g), @value.XlError::Value)
+  assert_num(evg("=SUM(INDEX(A1:C3,0,0))", g), 45.0)
+}
+
+test "corpus-confirmed VALUE error propagation" {
+  let e = grid([("A1", @engine.Cell::Literal(@value.Value::Err(@value.XlError::NA)))])
+  assert_err(evg("=VALUE(A1)", e), @value.XlError::NA)
 }

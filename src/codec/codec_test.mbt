@@ -93,14 +93,16 @@ test "bench buckets classify diffs" {
   )
   let rep = run_bench(records, 1.0e-9, 1.0e-6, None)
   assert_eq(rep.total, 4)
-  assert_eq(rep.passed, 1)
+  assert_eq(rep.passed, 2)
   assert_eq(rep.buckets.get("match"), Some(1))
-  assert_eq(rep.buckets.get("numeric-tolerance"), Some(1))
+  // 0.1+0.2 = 0.30000000000000004 vs 0.3: within Excel's 15-digit
+  // representation, so it passes in the dedicated bucket.
+  assert_eq(rep.buckets.get("excel-precision"), Some(1))
   assert_eq(rep.buckets.get("type-mismatch"), Some(1))
   assert_eq(rep.buckets.get("parse-error"), Some(1))
   let report = report_to_json(rep)
   assert_eq(report.value("total").unwrap().as_number().unwrap(), 4.0)
-  assert_eq(report.value("failures").unwrap().as_array().unwrap().length(), 3)
+  assert_eq(report.value("failures").unwrap().as_array().unwrap().length(), 2)
 }
 
 test "bench clock tolerance and filter" {

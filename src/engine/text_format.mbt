@@ -173,7 +173,12 @@ pub fn text_format(d : Double, fmt : String) -> Result[String, XlError] {
     return Err(XlError::Value)
   }
   if fmt.compare_ignore_ascii_case("general") == 0 {
-    return Ok(number_to_text(d))
+    // zh-CN Excel rejects the English "General" keyword inside TEXT
+    // (TEXT(123,"General") = #VALUE!), unlike plain number-to-text coercion.
+    return Err(XlError::Value)
+  }
+  if is_date_time_format(fmt) {
+    return render_date_time(d, fmt)
   }
   let sections = split_sections(fmt)
   if sections.length() > 3 {
@@ -303,4 +308,283 @@ pub fn text_format(d : Double, fmt : String) -> Result[String, XlError] {
     out = "-" + out
   }
   Ok(out)
+}
+// ---------------------------------------------------------------------------
+// TEXT date/time format subset (Excel codes rendered in English, which matches
+// the zh-CN Excel corpus: yyyy yy m mm mmm mmmm d dd ddd dddd h hh mm(minute)
+// s ss AM/PM, quoted literals and \ escapes; 'aaa' locale weekday names are
+// not implemented). Date formats with sections (;) are rejected loudly.
+
+let month_abbr : Array[String] = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
+  "Dec",
+]
+
+let month_full : Array[String] = [
+  "January", "February", "March", "April", "May", "June", "July", "August",
+  "September", "October", "November", "December",
+]
+
+let day_abbr : Array[String] = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"]
+
+let day_full : Array[String] = [
+  "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+]
+
+fn is_fmt_letter(c : Char) -> Bool {
+  c == 'y' || c == 'Y' || c == 'm' || c == 'M' || c == 'd' || c == 'D' ||
+  c == 'h' || c == 'H' || c == 's' || c == 'S' || c == 'a' || c == 'A'
+}
+
+fn is_date_time_format(fmt : String) -> Bool {
+  let chars = Array::from_iter(fmt.iter())
+  let n = chars.length()
+  let mut i = 0
+  while i < n {
+    let c = chars[i]
+    if c == '"' {
+      i += 1
+      while i < n && chars[i] != '"' {
+        i += 1
+      }
+      i += 1
+    } else if c == '\\' || c == '_' {
+      i += 2
+    } else if c == '[' {
+      // color / condition sections are outside the supported subset
+      return false
+    } else if is_fmt_letter(c) {
+      return true
+    } else {
+      i += 1
+    }
+  }
+  false
+}
+
+fn pad_num(v : Int, width : Int) -> String {
+  let mut s = v.to_string()
+  while s.length() < width {
+    s = "0" + s
+  }
+  s
+}
+
+fn has_ampm(fmt : String) -> Bool {
+  let n = fmt.length()
+  let mut i = 0
+  while i + 5 <= n {
+    let sub = fmt.substring(start=i, end=i + 5)
+    if sub.compare_ignore_ascii_case("AM/PM") == 0 {
+      return true
+    }
+    i += 1
+  }
+  i = 0
+  while i + 3 <= n {
+    let sub = fmt.substring(start=i, end=i + 3)
+    if sub.compare_ignore_ascii_case("A/P") == 0 {
+      return true
+    }
+    i += 1
+  }
+  false
+}
+
+fn ampm_lower(fmt : String) -> Bool {
+  let chars = Array::from_iter(fmt.iter())
+  let n = chars.length()
+  let mut i = 0
+  while i < n {
+    if chars[i] == 'a' {
+      return true
+    }
+    i += 1
+  }
+  false
+}
+
+fn run_length(chars : Array[Char], start : Int, target : Char) -> Int {
+  let n = chars.length()
+  let want = target.to_int()
+  let mut i = start
+  while i < n && (chars[i].to_int() == want || chars[i].to_int() == want - 32) {
+    i += 1
+  }
+  i - start
+}
+
+fn is_ampm_at(chars : Array[Char], i : Int) -> Int {
+  // returns token length at i (0 if none) for AM/PM (5) or A/P (3)
+  let n = chars.length()
+  if i + 5 <= n {
+    let s = String::from_array(chars[i:i + 5])
+    if s.compare_ignore_ascii_case("AM/PM") == 0 {
+      return 5
+    }
+  }
+  if i + 3 <= n {
+    let s = String::from_array(chars[i:i + 3])
+    if s.compare_ignore_ascii_case("A/P") == 0 {
+      return 3
+    }
+  }
+  0
+}
+
+fn render_date_time(d : Double, fmt : String) -> Result[String, XlError] {
+  let chars = Array::from_iter(fmt.iter())
+  let n = chars.length()
+  for c in chars {
+    if c == ';' {
+      return Err(XlError::Value)
+    }
+  }
+  let mut whole = d.trunc()
+  let mut ymd = match serial_to_ymd(whole) {
+    Err(_) => return Err(XlError::Value)
+    Ok(v) => v
+  }
+  let mut total_secs = ((d - whole) * 86400.0).round().to_int()
+  if total_secs >= 86400 {
+    total_secs -= 86400
+    whole += 1.0
+    ymd = match serial_to_ymd(whole) {
+      Err(_) => return Err(XlError::Value)
+      Ok(v) => v
+    }
+  }
+  if total_secs < 0 {
+    return Err(XlError::Value)
+  }
+  let (year, month, day) = ymd
+  let hour24 = total_secs / 3600
+  let minute = (total_secs % 3600) / 60
+  let second = total_secs % 60
+  let hour12 = if hour24 % 12 == 0 { 12 } else { hour24 % 12 }
+  let use_ampm = has_ampm(fmt)
+  let lower_ampm = ampm_lower(fmt)
+  let hour = if use_ampm { hour12 } else { hour24 }
+  let wd = ((whole.to_int() % 7) + 7) % 7
+  let mut out = ""
+  let mut i = 0
+  let mut seen_time = false
+
+  while i < n {
+    let c = chars[i]
+    if c == '"' {
+      i += 1
+      while i < n && chars[i] != '"' {
+        out = out + chars[i].to_string()
+        i += 1
+      }
+      i += 1
+    } else if c == '\\' {
+      if i + 1 < n {
+        out = out + chars[i + 1].to_string()
+      }
+      i += 2
+    } else if c == '_' {
+      out = out + " "
+      i += 2
+    } else if is_ampm_at(chars, i) > 0 {
+      let tok = is_ampm_at(chars, i)
+      let s = if hour24 < 12 { "AM" } else { "PM" }
+      out = out + (if lower_ampm { lower_text(s) } else { s })
+      i += tok
+    } else if c == 'y' || c == 'Y' {
+      let run = run_length(chars, i, 'y')
+      if run >= 3 {
+        out = out + pad_num(year, 4)
+      } else if run == 2 {
+        out = out + pad_num(year % 100, 2)
+      } else {
+        out = out + (year % 100).to_string()
+      }
+      i += run
+    } else if c == 'm' || c == 'M' {
+      let run = run_length(chars, i, 'm')
+      let mut is_minute = seen_time
+      if !is_minute {
+        // m/mm is a minute when the next format code is s/ss (separators such
+        // as ":" "." "/" " " are skipped): "mm:ss", "m:ss".
+        let mut j = i + run
+        while j < n &&
+          (chars[j] == ':' ||
+            chars[j] == '.' ||
+            chars[j] == '/' ||
+            chars[j] == ' ' ||
+            chars[j] == '-') {
+          j += 1
+        }
+        if j < n && (chars[j] == 's' || chars[j] == 'S') {
+          is_minute = true
+        }
+      }
+      if is_minute {
+        if run >= 2 {
+          out = out + pad_num(minute, 2)
+        } else {
+          out = out + minute.to_string()
+        }
+      } else if run >= 4 {
+        out = out + month_full[month - 1]
+      } else if run == 3 {
+        out = out + month_abbr[month - 1]
+      } else if run == 2 {
+        out = out + pad_num(month, 2)
+      } else {
+        out = out + month.to_string()
+      }
+      i += run
+    } else if c == 'd' || c == 'D' {
+      let run = run_length(chars, i, 'd')
+      if run >= 4 {
+        out = out + day_full[wd]
+      } else if run == 3 {
+        out = out + day_abbr[wd]
+      } else if run == 2 {
+        out = out + pad_num(day, 2)
+      } else {
+        out = out + day.to_string()
+      }
+      i += run
+    } else if c == 'h' || c == 'H' {
+      let run = run_length(chars, i, 'h')
+      if run >= 2 {
+        out = out + pad_num(hour, 2)
+      } else {
+        out = out + hour.to_string()
+      }
+      seen_time = true
+      i += run
+    } else if c == 's' || c == 'S' {
+      let run = run_length(chars, i, 's')
+      if run >= 2 {
+        out = out + pad_num(second, 2)
+      } else {
+        out = out + second.to_string()
+      }
+      seen_time = true
+      i += run
+    } else if c == 'a' || c == 'A' {
+      return Err(XlError::Value)
+    } else {
+      out = out + c.to_string()
+      i += 1
+    }
+  }
+  Ok(out)
+}
+
+fn lower_text(s : String) -> String {
+  let mut out = ""
+  for c in s.iter() {
+    if c >= 'A' && c <= 'Z' {
+      out = out + ((c.to_int() + 32).unsafe_to_char()).to_string()
+    } else {
+      out = out + c.to_string()
+    }
+  }
+  out
 }

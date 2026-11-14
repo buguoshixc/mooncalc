@@ -1,1 +1,6 @@
+import {
+  "moonbitlang/core/string" @string,
+  "moonbitlang/x/unicode" @unicode,
+}
+
 // Pure value model: no dependencies, no IO.

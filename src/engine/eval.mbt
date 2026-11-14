@@ -113,14 +113,20 @@ fn eval_expr(ctx : Ctx, e : @syntax.Expr) -> Value {
       Value::Range({ rows, cols, cells })
     }
     Unary(op, sub) => {
-      let v = scalarize(eval_expr(ctx, sub))
-      match to_number(v) {
-        Err(e) => Value::Err(e)
-        Ok(d) =>
-          match op {
-            Neg => Value::Num(-d)
-            Pos => Value::Num(d)
-            Percent => Value::Num(d / 100.0)
+      // Excel unary plus is an identity operator: +"3" stays text "3" and
+      // +TRUE stays boolean TRUE; only unary minus / percent coerce.
+      let raw = scalarize(eval_expr(ctx, sub))
+      match op {
+        Pos => raw
+        Neg =>
+          match to_number(raw) {
+            Err(e) => Value::Err(e)
+            Ok(d) => Value::Num(-d)
+          }
+        Percent =>
+          match to_number(raw) {
+            Err(e) => Value::Err(e)
+            Ok(d) => Value::Num(d / 100.0)
           }
       }
     }
@@ -130,8 +136,28 @@ fn eval_expr(ctx : Ctx, e : @syntax.Expr) -> Value {
 }
 
 fn pow_excel(a : Double, b : Double) -> Value {
-  if a == 0.0 && b < 0.0 {
-    return Value::Err(XlError::Div0)
+  if a == 0.0 {
+    if b == 0.0 {
+      return Value::Err(XlError::Num)
+    }
+    if b < 0.0 {
+      return Value::Err(XlError::Div0)
+    }
+    return Value::Num(0.0)
+  }
+  if a < 0.0 && b != b.trunc() {
+    // Excel allows negative bases only when the exponent is an integer or the
+    // reciprocal of an odd integer: (-8)^(1/3) = -2, (-8)^(2/3) = #NUM!.
+    let inv = 1.0 / b
+    let k = inv.round()
+    if (inv - k).abs() > 1.0e-10 || k.trunc() != k || k % 2.0 == 0.0 {
+      return Value::Err(XlError::Num)
+    }
+    let p = (-a).pow(b)
+    if p.is_finite() {
+      return Value::Num(-p)
+    }
+    return Value::Err(XlError::Num)
   }
   let p = a.pow(b)
   if p.is_finite() { Value::Num(p) } else { Value::Err(XlError::Num) }

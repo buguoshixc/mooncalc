@@ -14,8 +14,12 @@ fn fn_if(_ctx : Ctx, args : Array[Thunk]) -> Value {
   }
 }
 
-// References contribute only logical cells (numbers/text/blank ignored);
-// with no logical value at all Excel yields #VALUE!. Literals coerce.
+// AND/OR argument channels, matching Excel:
+// * references: numbers and booleans are used (numbers as <>0), text and
+//   blanks are ignored, errors propagate;
+// * literals: numbers/booleans used, text "TRUE"/"FALSE" parsed and any
+//   other text ignored, errors propagate.
+// If no logical value is found at all the result is #VALUE!.
 fn and_or(args : Array[Thunk], want_all : Bool) -> Value {
   let vals = eager(args)
   let mut result = want_all
@@ -29,17 +33,36 @@ fn and_or(args : Array[Thunk], want_all : Bool) -> Value {
               seen = true
               result = if want_all { result && b } else { result || b }
             }
+            Num(d) => {
+              seen = true
+              let b = d != 0.0
+              result = if want_all { result && b } else { result || b }
+            }
             Err(e) => return Value::Err(e)
             _ => ()
           }
         }
       _ =>
-        match to_bool(scalarize(v)) {
-          Err(e) => return Value::Err(e)
-          Ok(b) => {
+        match scalarize(v) {
+          Bool(b) => {
             seen = true
             result = if want_all { result && b } else { result || b }
           }
+          Num(d) => {
+            seen = true
+            let b = d != 0.0
+            result = if want_all { result && b } else { result || b }
+          }
+          Text(t) =>
+            if t.compare_ignore_ascii_case("TRUE") == 0 {
+              seen = true
+              result = if want_all { result } else { true }
+            } else if t.compare_ignore_ascii_case("FALSE") == 0 {
+              seen = true
+              result = if want_all { false } else { result }
+            }
+          Err(e) => return Value::Err(e)
+          _ => ()
         }
     }
   }

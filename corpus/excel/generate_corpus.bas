@@ -113,11 +113,18 @@ Private Function EvalCase(ws As Worksheet, id As String, formula As String, _
         Exit Function
     End If
     On Error GoTo 0
+    If nowMode = "capture" Then
+        ' Capture the workbook clock at exactly the same recalc instant as the
+        ' answer cell: a worksheet NOW() helper cell is evaluated in the same
+        ' calculation pass (VBA's Now is truncated to whole seconds and cannot
+        ' reproduce the serial that =NOW() returned).
+        ws.Range("ZY1").Formula = "=NOW()"
+    End If
     Application.Calculate
     Dim nowJson As String
     nowJson = ""
     If nowMode = "capture" Then
-        nowJson = ",""now"":" & NumToJson(CDbl(Now))
+        nowJson = ",""now"":" & NumToJson(CDbl(ws.Range("ZY1").Value))
     End If
     Dim v As Variant, expected As String
     v = ws.Range("ZZ1").Value

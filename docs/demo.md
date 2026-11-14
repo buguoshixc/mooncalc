@@ -37,11 +37,12 @@ fixture 看点（对应输出）：
 ## 2. bench：N/X% 与逐条归因
 
 ```bash
-... bench --corpus corpus/provisional --report /tmp/report.json
+... bench --corpus corpus/cases --report corpus/reports/real.json          # 752/752（100%）
+... bench --corpus corpus/provisional                                    # 过渡语料，34/34
 ... bench --corpus tests/fixtures/badcorpus --fail-under 0.95; echo "exit=$?"   # 1（有差异）
 ```
 
-看点：按 source 分栏（manual 非权威）、buckets（match / numeric-tolerance / value-mismatch / …）、逐条 FAIL 的 expected/actual。真实语料接入后此处展示权威 N/X%。
+看点：按 source 分栏、buckets（match / excel-precision / clock-tolerance / numeric-tolerance / value-mismatch / …）、逐条 FAIL 的 expected/actual。权威语料为 Excel 2024 导出的 752 条，当前 100% 通过（748 match + 3 clock-tolerance + 1 excel-precision，后两个桶为可披露的表征/时钟容差）。
 
 ## 3. playground：现场改格
 

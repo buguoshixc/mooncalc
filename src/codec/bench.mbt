@@ -32,6 +32,11 @@ fn bump(m : Map[String, (Int, Int)], key : String, passed : Bool) -> Unit {
   m[key] = (t + 1, if passed { p + 1 } else { p })
 }
 
+// Corpus numbers are serialized by Excel/VBA with at most 15 significant
+// decimal digits, so a relative difference below ~1e-14 is a representation
+// artefact (15-digit round-trip), not a behavioural difference.
+let excel_precision_tol : Double = 1.0e-14
+
 fn rel_diff(a : Double, b : Double) -> Double {
   let aa = a.abs()
   let ab = b.abs()
@@ -75,6 +80,12 @@ fn compare_case(rec : CaseRecord, tol : Double, clock_tol : Double) -> CaseResul
         (true, "match", "")
       } else if is_clock && (a - b).abs() <= clock_tol {
         (true, "clock-tolerance", "within clock tolerance")
+      } else if rel_diff(a, b) <= excel_precision_tol {
+        (
+          true,
+          "excel-precision",
+          "within 15-significant-digit Excel representation",
+        )
       } else if rel_diff(a, b) < tol {
         (false, "numeric-tolerance", "relative diff " + rel_diff(a, b).to_string())
       } else {

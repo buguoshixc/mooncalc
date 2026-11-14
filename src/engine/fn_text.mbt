@@ -29,6 +29,8 @@ fn fn_left(_ctx : Ctx, args : Array[Thunk]) -> Value {
   if n < 0 {
     return Value::Err(XlError::Value)
   }
+  // Excel LEFT/RIGHT count Unicode code points: LEFT("😀abc",1) returns the
+  // whole emoji (2 UTF-16 units) while LEN counts 2 code units.
   let chars = Array::from_iter(s.iter())
   let take = if n < chars.length() { n } else { chars.length() }
   Value::Text(String::from_array(chars[:take]))
@@ -79,19 +81,20 @@ fn fn_mid(_ctx : Ctx, args : Array[Thunk]) -> Value {
   if start < 1 || count < 0 {
     return Value::Err(XlError::Value)
   }
-  let chars = Array::from_iter(s.iter())
+  let len = s.length()
   let from = start - 1
-  if from >= chars.length() {
+  if from >= len {
     return Value::Text("")
   }
-  let take = if count < chars.length() - from { count } else { chars.length() - from }
-  Value::Text(String::from_array(chars[from:from + take]))
+  let take = if count < len - from { count } else { len - from }
+  Value::Text(s.substring(start=from, end=from + take))
 }
 
 fn fn_len(_ctx : Ctx, args : Array[Thunk]) -> Value {
+  // Excel LEN counts UTF-16 code units: LEN("😀") = 2.
   match text_arg(args[0]()) {
     Err(e) => Value::Err(e)
-    Ok(s) => Value::Num(s.char_length().to_double())
+    Ok(s) => Value::Num(s.length().to_double())
   }
 }
 
@@ -127,14 +130,14 @@ fn fn_trim(_ctx : Ctx, args : Array[Thunk]) -> Value {
 fn fn_upper(_ctx : Ctx, args : Array[Thunk]) -> Value {
   match text_arg(args[0]()) {
     Err(e) => Value::Err(e)
-    Ok(s) => Value::Text(@value.ascii_upper(s))
+    Ok(s) => Value::Text(@value.unicode_upper(s))
   }
 }
 
 fn fn_lower(_ctx : Ctx, args : Array[Thunk]) -> Value {
   match text_arg(args[0]()) {
     Err(e) => Value::Err(e)
-    Ok(s) => Value::Text(@value.ascii_lower(s))
+    Ok(s) => Value::Text(@value.unicode_lower(s))
   }
 }
 
@@ -170,6 +173,7 @@ fn fn_value(_ctx : Ctx, args : Array[Thunk]) -> Value {
       }
     Num(d) => Value::Num(d)
     Blank => Value::Num(0.0)
+    Err(e) => Value::Err(e)
     _ => Value::Err(XlError::Value)
   }
 }
@@ -195,18 +199,20 @@ fn fn_find(_ctx : Ctx, args : Array[Thunk]) -> Value {
   } else {
     1
   }
-  let hc = Array::from_iter(hay.iter())
-  let nc = Array::from_iter(needle.iter())
-  if start < 1 || start > hc.length() + 1 {
+  let hc = hay.code_units()
+  let nc = needle.code_units()
+  let hlen = hc.length()
+  let nlen = nc.length()
+  if start < 1 || start > hlen + 1 {
     return Value::Err(XlError::Value)
   }
-  if nc.length() == 0 {
+  if nlen == 0 {
     return Value::Num(start.to_double())
   }
   let mut i = start - 1
-  while i + nc.length() <= hc.length() {
+  while i + nlen <= hlen {
     let mut ok = true
-    for j in 0..<nc.length() {
+    for j in 0..<nlen {
       if hc[i + j] != nc[j] {
         ok = false
         break

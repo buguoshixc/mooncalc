@@ -21,7 +21,16 @@ fn first_error(vals : Array[Value]) -> XlError? {
 // (ISBLANK on a formula cell is always FALSE).
 fn scalar_output(v : Value) -> Value {
   match scalarize(v) {
-    Range(_) => Value::Err(XlError::Value)
+    // A multi-cell result at the top level behaves like the top-left cell of
+    // a spilled array (the macro reads only ZZ1): single-column ranges (e.g.
+    // INDEX(range,0,n)) yield their first row; row/2-D ranges are #VALUE!
+    // because implicit intersection at the formula's column is out of range.
+    Range(r) =>
+      if r.cols == 1 {
+        r.cells[0]
+      } else {
+        Value::Err(XlError::Value)
+      }
     Blank => Value::Num(0.0)
     s => s
   }

@@ -12,46 +12,87 @@ fn is_digit(c : Char) -> Bool {
   c >= '0' && c <= '9'
 }
 
-fn parse_excel_number(text : String) -> Result[Double, XlError] {
-  let s = text.trim().to_string()
+fn read_int_at(chars : Array[Char], start : Int, stop : Int) -> (Int, Int) {
+  let mut i = start
+  let mut v = 0
+  while i < stop && is_digit(chars[i]) {
+    v = v * 10 + (chars[i].to_int() - 48)
+    i += 1
+  }
+  (v, i)
+}
+
+fn digits_text(chars : Array[Char], start : Int, stop : Int) -> String {
+  let mut out = ""
+  for i in start..<stop {
+    out = out + chars[i].to_string()
+  }
+  out
+}
+
+// Numeric literal: optional sign, integer digits with optional strict
+// thousands grouping (first group 1-3 digits, every following group exactly
+// 3), optional decimal fraction, optional exponent, optional percent sign.
+fn parse_plain_number(s : String) -> Result[Double, XlError] {
   let chars = Array::from_iter(s.iter())
   let n = chars.length()
   let mut i = 0
+  let mut clean = ""
   if i < n && (chars[i] == '+' || chars[i] == '-') {
+    if chars[i] == '-' {
+      clean = "-"
+    }
     i += 1
   }
-  let mut digits = 0
+  let int_start = i
   while i < n && is_digit(chars[i]) {
     i += 1
-    digits += 1
+  }
+  let first_len = i - int_start
+  if first_len == 0 {
+    return Err(XlError::Value)
+  }
+  if i < n && chars[i] == ',' && first_len > 3 {
+    return Err(XlError::Value)
+  }
+  clean = clean + digits_text(chars, int_start, i)
+  while i < n && chars[i] == ',' {
+    i += 1
+    let gs = i
+    while i < n && is_digit(chars[i]) {
+      i += 1
+    }
+    if i - gs != 3 {
+      return Err(XlError::Value)
+    }
+    clean = clean + digits_text(chars, gs, i)
   }
   if i < n && chars[i] == '.' {
     i += 1
+    let fs = i
     while i < n && is_digit(chars[i]) {
       i += 1
-      digits += 1
     }
-  }
-  if digits == 0 {
-    return Err(XlError::Value)
+    if i == fs {
+      return Err(XlError::Value)
+    }
+    clean = clean + "." + digits_text(chars, fs, i)
   }
   if i < n && (chars[i] == 'e' || chars[i] == 'E') {
     i += 1
+    clean = clean + "e"
     if i < n && (chars[i] == '+' || chars[i] == '-') {
+      clean = clean + chars[i].to_string()
       i += 1
     }
-    let mut ed = 0
+    let es = i
     while i < n && is_digit(chars[i]) {
       i += 1
-      ed += 1
     }
-    if ed == 0 {
+    if i == es {
       return Err(XlError::Value)
     }
-  }
-  let num_end = i
-  while i < n && chars[i] == ' ' {
-    i += 1
+    clean = clean + digits_text(chars, es, i)
   }
   let mut percent = false
   if i < n && chars[i] == '%' {
@@ -61,9 +102,128 @@ fn parse_excel_number(text : String) -> Result[Double, XlError] {
   if i != n {
     return Err(XlError::Value)
   }
-  let core = s.substring(start=0, end=num_end)
-  let d = @string.parse_double(core[:]) catch { _ => return Err(XlError::Value) }
+  let d = @string.parse_double(clean[:]) catch { _ => return Err(XlError::Value) }
+  let d = @value.excel_precision(d)
   Ok(if percent { d / 100.0 } else { d })
+}
+
+fn parse_ymd_text(
+  chars : Array[Char],
+  start : Int,
+  stop : Int
+) -> Option[(Int, Int, Int)] {
+  let (y, i1) = read_int_at(chars, start, stop)
+  if i1 - start != 4 || i1 >= stop {
+    return None
+  }
+  let sep = chars[i1]
+  if sep != '-' && sep != '/' {
+    return None
+  }
+  let (m, i2) = read_int_at(chars, i1 + 1, stop)
+  if i2 == i1 + 1 || i2 - (i1 + 1) > 2 || i2 >= stop {
+    return None
+  }
+  if chars[i2] != sep {
+    return None
+  }
+  let (d, i3) = read_int_at(chars, i2 + 1, stop)
+  if i3 == i2 + 1 || i3 - (i2 + 1) > 2 || i3 != stop {
+    return None
+  }
+  if m < 1 || m > 12 || d < 0 || d > 31 {
+    return None
+  }
+  Some((y, m, d))
+}
+
+fn parse_hms_text(chars : Array[Char], start : Int, stop : Int) -> Option[Double] {
+  let (h, i1) = read_int_at(chars, start, stop)
+  if i1 == start || i1 - start > 2 || i1 >= stop {
+    return None
+  }
+  if chars[i1] != ':' {
+    return None
+  }
+  let (m, i2) = read_int_at(chars, i1 + 1, stop)
+  if i2 == i1 + 1 || i2 - (i1 + 1) > 2 {
+    return None
+  }
+  let mut i = i2
+  let mut sec = 0
+  if i < stop {
+    if chars[i] != ':' {
+      return None
+    }
+    let (s, i3) = read_int_at(chars, i + 1, stop)
+    if i3 == i + 1 || i3 - (i + 1) > 2 || i3 != stop {
+      return None
+    }
+    sec = s
+    i = i3
+  }
+  if h >= 24 || m >= 60 || sec >= 60 {
+    return None
+  }
+  Some((h * 3600 + m * 60 + sec).to_double() / 86400.0)
+}
+
+// Locale-invariant text date accepted by Excel/zh-CN: YYYY-MM-DD or
+// YYYY/M/D, optionally followed by " HH:MM[:SS]". The date must round-trip
+// through the Excel serial calendar (so 1900-02-29 is accepted, 2026-02-30
+// is not; US-order dates are rejected). Returns an Excel serial.
+fn parse_date_text(s : String) -> Option[Double] {
+  let chars = Array::from_iter(s.iter())
+  let n = chars.length()
+  let mut sp = -1
+  for k in 0..<n {
+    if chars[k] == ' ' {
+      sp = k
+      break
+    }
+  }
+  let date_stop = if sp >= 0 { sp } else { n }
+  let (y, m, d) = match parse_ymd_text(chars, 0, date_stop) {
+    Some(v) => v
+    None => return None
+  }
+  let mut frac = 0.0
+  if sp >= 0 {
+    match parse_hms_text(chars, sp + 1, n) {
+      Some(f) => frac = f
+      None => return None
+    }
+  }
+  match date_serial(y, m, d) {
+    Err(_) => None
+    Ok(serial) => {
+      let sd = serial.to_double()
+      match serial_to_ymd(sd) {
+        Err(_) => None
+        Ok((yy, mm, dd)) =>
+          if yy != y || mm != m || dd != d {
+            None
+          } else {
+            Some(sd + frac)
+          }
+      }
+    }
+  }
+}
+
+fn parse_excel_number(text : String) -> Result[Double, XlError] {
+  let s = text.trim().to_string()
+  if s.length() == 0 {
+    return Err(XlError::Value)
+  }
+  match parse_plain_number(s) {
+    Ok(d) => Ok(d)
+    Err(_) =>
+      match parse_date_text(s) {
+        Some(d) => Ok(d)
+        None => Err(XlError::Value)
+      }
+  }
 }
 
 pub fn to_number(v : Value) -> Result[Double, XlError] {
@@ -189,7 +349,7 @@ pub fn compare_values(a : Value, b : Value) -> Result[Int, XlError] {
   }
   match (a, b) {
     (Num(x), Num(y)) => Ok(if x < y { -1 } else if x > y { 1 } else { 0 })
-    (Text(x), Text(y)) => Ok(lex_compare(@value.ascii_lower(x), @value.ascii_lower(y)))
+    (Text(x), Text(y)) => Ok(lex_compare(@value.unicode_lower(x), @value.unicode_lower(y)))
     (Bool(x), Bool(y)) => Ok(if x == y { 0 } else if !x { -1 } else { 1 })
     (Blank, Blank) => Ok(0)
     _ => Ok(0)

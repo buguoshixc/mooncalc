@@ -176,28 +176,25 @@ fn dec_to_fixed(d : Dec) -> String {
   d.digits.substring(start=0, end=point) + "." + d.digits.substring(start=point)
 }
 
-// Excel "General" text conversion: 15 significant digits in fixed notation;
-// scientific (6-digit mantissa) when exp >= 11 or exp <= -5.
+// Excel implicit number->text conversion ("General" as used by & and
+// CONCAT): round to 15 significant digits, then fixed notation while the
+// decimal exponent is within [-18, 19], scientific otherwise. Scientific
+// mantissas drop trailing zeros; fixed integers are padded with zeros.
 pub fn number_to_text(d : Double) -> String {
   let dec = round_dec(dec_of_double(d), 15, 0)
   if dec.digits == "0" {
     return "0"
   }
   let sign = if dec.neg { "-" } else { "" }
-  if dec.exp >= 11 || dec.exp <= -5 {
-    let m = round_dec(dec, 6, 0)
-    let mut mant = m.digits.substring(start=0, end=1)
-    if m.digits.length() > 1 {
-      mant = mant + "." + m.digits.substring(start=1)
+  if dec.exp >= 20 || dec.exp <= -19 {
+    let mut mant = dec.digits.substring(start=0, end=1)
+    if dec.digits.length() > 1 {
+      mant = mant + "." + dec.digits.substring(start=1)
     }
-    let e = m.exp
+    let e = dec.exp
     let esign = if e < 0 { "-" } else { "+" }
     let ea = if e < 0 { -e } else { e }
-    let mut es = ea.to_string()
-    if ea < 10 {
-      es = "0" + es
-    }
-    return sign + mant + "E" + esign + es
+    return sign + mant + "E" + esign + ea.to_string()
   }
   sign + dec_to_fixed(dec)
 }

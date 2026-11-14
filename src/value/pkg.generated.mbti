@@ -10,6 +10,8 @@ pub fn ascii_lower(String) -> String
 
 pub fn ascii_upper(String) -> String
 
+pub fn excel_precision(Double) -> Double
+
 pub fn is_ascii_digit(Char) -> Bool
 
 pub fn is_ascii_letter(Char) -> Bool
@@ -19,6 +21,10 @@ pub let max_col : Int32
 pub let max_row : Int32
 
 pub fn parse_addr(String) -> CellAddr?
+
+pub fn unicode_lower(String) -> String
+
+pub fn unicode_upper(String) -> String
 
 // Errors
 

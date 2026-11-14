@@ -2,7 +2,7 @@
 
 **Excel 兼容的电子表格公式引擎，用 MoonBit 编写。**
 
-> 状态（2026-11-14）：45 函数引擎、native CLI、wasm-gc playground 已实现并通过四层验证；**真实 Excel 答案键语料已接入**（Excel 2024 生成，752/752 条导出、0 跳过），基线 **716/752（95.2%）**，M5 差异归因/修复循环进行中。2026 MoonBit 年度黑客松 11 月赛参赛项目。
+> 状态（2026-11-14，M5 完成）：45 函数引擎（**MoonBit**）、native CLI、wasm-gc playground 已实现并通过四层验证；**真实 Excel 答案键语料 752/752（100%）**（Excel 2024 · 16.0.20527.20196 · zh-CN 生成，0 跳过），无未归因失败：748 条精确命中 + 3 条 `clock-tolerance` + 1 条 `excel-precision`（均在报告披露）。2026 MoonBit 年度黑客松 11 月赛参赛项目。
 
 ## 这是什么
 
@@ -15,14 +15,14 @@ MoonCalc 接收一组单元格——每个单元格承载字面值或公式—�
 ```bash
 export PATH="$HOME/.moon/bin:$PATH"
 
-# 全量验证：双目标构建 + 56 项单测 + 零 IO 守卫
+# 全量验证：双目标构建 + 63 项单测 + 零 IO 守卫
 bash scripts/check.sh
 
 # CLI：求值一个含引用链/错误传播/循环引用的网格
 moon build --target native
 _build/native/debug/build/cmd/main/main.exe eval --grid tests/fixtures/grid.json
 
-# 跑分：过渡语料（真实语料到达后改为 corpus/cases）
+# 跑分：真实 Excel 权威语料（默认 corpus/cases）
 bash scripts/run-bench.sh
 
 # 浏览器 playground（wasm-gc）
@@ -39,12 +39,12 @@ node scripts/smoke.mjs
 
 | 层 | 数字 | 性质 |
 |---|---|---|
-| 单元/快照测试 | 56/56 | 手写期望 |
+| 单元/快照测试 | 63/63 | 手写期望（引擎语义回归 + codec + 语法 + bench 桶） |
 | 过渡语料 bench | 34/34（100%） | source: manual，**非权威**，仅证明流程 |
 | 用例规格 | 752 条（corpus/spec/，每函数 ≥15） | 已由真实 Excel 全部生成答案键（0 跳过） |
-| **真实 Excel 语料** | **716/752（95.2%）基线** | Excel 2024 为唯一裁判；36 条差异 M5 归因中，见 `corpus/reports/real.json` |
+| **真实 Excel 语料** | **752/752（100%）** | Excel 2024 为唯一裁判；0 条未归因失败，见 `corpus/reports/real.json` |
 
-比较策略：默认精确相等；相对差 <1e-9 单列 numeric-tolerance 桶（计失败、单独归因）；clock 标签容差披露。基线报告：`corpus/reports/provisional.json`。
+比较策略：默认精确相等；**15 位有效数字表征差**（相对差 ≤1e-14）单列 `excel-precision` 桶并通过（源头是 Excel/VBA 只能以 15 位十进制序列化答案）；`clock` 用例按**绝对天数**容差（`--clock-tol`，默认 1e-6 天）单列 `clock-tolerance` 桶并通过（`now` 由生成器在同一重算里经 `=NOW()` 辅助格捕获）；相对差 <1e-9 仍单列 `numeric-tolerance` 桶计失败并归因。权威报告：`corpus/reports/real.json`。
 
 ## 设计要点
 
@@ -78,9 +78,10 @@ node scripts/smoke.mjs
 - [x] 答案键语料 schema + VBA 生成器 + 752 条用例规格 + 对照 CLI（eval/bench）
 - [x] wasm-gc playground（8×8 网格、语义预设、headless 冒烟 PASS）
 - [x] 文档与支持矩阵（semantics / support-matrix / demo / toolchain）
-- [x] 真实 Excel 语料接入（Excel 2024 生成 752 条、0 跳过；基线 716/752，见 [corpus/cases/PROVENANCE.md](corpus/cases/PROVENANCE.md)）
-- [ ] M5 修复循环：36 条差异逐条归因/修复，重跑 bench 并更新 `corpus/reports/real.json`
-- [ ] README 权威 N/X% 替换基线数字
+- [x] 真实 Excel 语料接入与 M5 对照修复（Excel 2024 生成 752 条、0 跳过；752/752 通过，见 [corpus/cases/PROVENANCE.md](corpus/cases/PROVENANCE.md)）
+- [x] M5 修复循环完成：36 条差异逐条归因/修复（11 条时钟、24 条语义、1 条 15 位表征），
+      重跑 bench 752/752 并更新 `corpus/reports/real.json`
+- [x] README/支持矩阵权威 N/X% 替换基线数字
 
 ## 语料生成（用户侧动作）
 
