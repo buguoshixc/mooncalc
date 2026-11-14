@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>MoonCalc smoke</title></head>
+<body>
+<h1>MoonCalc headless smoke</h1>
+<ul id="results"></ul>
+<div id="done">RUNNING</div>
+<script type="module">
+import { loadEngine } from './loader.js';
+
+const results = document.getElementById('results');
+const done = document.getElementById('done');
+let failures = 0;
+
+function report(name, pass, detail) {
+  const li = document.createElement('li');
+  li.textContent = (pass ? 'PASS ' : 'FAIL ') + name + (detail ? ' — ' + detail : '');
+  results.appendChild(li);
+  if (!pass) failures++;
+}
+
+function check(name, resp, target, expected, circular) {
+  if (!resp.ok) { report(name, false, resp.error); return; }
+  const r = resp.results.find(x => x.target === target);
+  if (!r) { report(name, false, 'no result for ' + target); return; }
+  const v = r.value;
+  let pass = v.type === expected.type && v.value === expected.value;
+  if (circular !== undefined) pass = pass && r.circular === circular;
+  report(name, pass, pass ? '' : JSON.stringify(r));
+}
+
+try {
+  const evaluate = await loadEngine();
+  check('arithmetic', evaluate({ grid: {}, formula: '=1+1' }), 'formula', { type: 'number', value: 2 });
+  check('coercion', evaluate({ grid: {}, formula: '=SUM("3",4)' }), 'formula', { type: 'number', value: 7 });
+  check('lazy IF', evaluate({ grid: {}, formula: '=IF(TRUE,1,1/0)' }), 'formula', { type: 'number', value: 1 });
+  check('decimal ROUND', evaluate({ grid: {}, formula: '=ROUND(2.675,2)' }), 'formula', { type: 'number', value: 2.68 });
+  check('leftmost error', evaluate({ grid: { A1: { error: '#N/A' } }, formula: '=1/0+A1' }), 'formula', { type: 'error', value: '#DIV/0!' });
+  check('TEXT format', evaluate({ grid: {}, formula: '=TEXT(1234.567,"#,##0.00")' }), 'formula', { type: 'text', value: '1,234.57' });
+  check('VLOOKUP', evaluate({ grid: { A1: 1, B1: 10, A2: 2, B2: 20 }, formula: '=VLOOKUP(2,A1:B2,2,FALSE)' }), 'formula', { type: 'number', value: 20 });
+  check('Lotus DATE', evaluate({ grid: {}, formula: '=DATE(1900,2,29)' }), 'formula', { type: 'number', value: 61 });
+  check('clock injection', evaluate({ grid: {}, formula: '=TODAY()', now: 46340 }), 'formula', { type: 'number', value: 46340 });
+  const circ = evaluate({ grid: { D1: { formula: '=D1+1' }, D2: { formula: '=D1+5' } } });
+  check('circular cell = 0', circ, 'D1', { type: 'number', value: 0 }, true);
+  check('dependent of cycle', circ, 'D2', { type: 'number', value: 5 }, false);
+  const bad = evaluate({ grid: {}, formula: '=1+' });
+  report('parse error rejected', bad.ok === false, bad.ok ? 'unexpected ok' : '');
+  done.textContent = failures === 0 ? 'SMOKE PASS' : 'SMOKE FAIL';
+} catch (err) {
+  report('engine load', false, err.message);
+  done.textContent = 'SMOKE FAIL';
+}
+</script>
+</body>
+</html>
