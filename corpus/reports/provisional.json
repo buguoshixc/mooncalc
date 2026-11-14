@@ -1,0 +1,190 @@
+{
+  "total": 34,
+  "passed": 34,
+  "rate": 1,
+  "tol": 1e-9,
+  "clock_tol": 0.000001,
+  "by_source": {
+    "manual": {
+      "total": 34,
+      "passed": 34,
+      "rate": 1
+    }
+  },
+  "by_tag": {
+    "provisional": {
+      "total": 34,
+      "passed": 34,
+      "rate": 1
+    },
+    "arith": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "precedence": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "percent": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "coercion": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "range": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "comparison": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "bool": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "blank": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "counta": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "propagation": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "unknown-function": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "logic": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "lazy": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "eager": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "iferror": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "math": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "round": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "boundary.float": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "mod": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "int": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "stat": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "average": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "median": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "text": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "format": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "lookup": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "vlookup": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "date": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "lotus": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "boundary.zero": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "clock": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "circular": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    }
+  },
+  "buckets": {
+    "match": 34
+  },
+  "failures": []
+}
