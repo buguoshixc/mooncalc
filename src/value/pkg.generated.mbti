@@ -1,0 +1,69 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "buguoshixc/mooncalc/src/value"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn ascii_lower(String) -> String
+
+pub fn ascii_upper(String) -> String
+
+pub fn is_ascii_digit(Char) -> Bool
+
+pub fn is_ascii_letter(Char) -> Bool
+
+pub let max_col : Int32
+
+pub let max_row : Int32
+
+pub fn parse_addr(String) -> CellAddr?
+
+// Errors
+
+// Types and methods
+#derive(Eq, Show, @debug.Debug)
+pub(all) struct CellAddr {
+  row : Int32
+  col : Int32
+  abs_row : Bool
+  abs_col : Bool
+}
+pub fn CellAddr::key(Self) -> String
+pub fn CellAddr::to_string(Self) -> String
+
+#derive(Eq, Show, @debug.Debug)
+pub(all) struct RangeValue {
+  rows : Int32
+  cols : Int32
+  cells : Array[Value]
+}
+
+#derive(Eq, Show, @debug.Debug)
+pub(all) enum Value {
+  Num(Double)
+  Text(String)
+  Bool(Bool)
+  Err(XlError)
+  Blank
+  Range(RangeValue)
+}
+pub fn Value::type_name(Self) -> String
+
+#derive(Eq, Show, @debug.Debug)
+pub(all) enum XlError {
+  Div0
+  NA
+  Name
+  Null
+  Num
+  Ref
+  Value
+}
+pub fn XlError::parse(String) -> Self?
+pub fn XlError::to_string(Self) -> String
+
+// Type aliases
+
+// Traits

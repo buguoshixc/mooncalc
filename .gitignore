@@ -2,6 +2,7 @@
 target/
 _build/
 .mooncakes/
+playground/web.wasm
 
 # Editor / OS
 .DS_Store

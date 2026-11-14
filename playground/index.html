@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MoonCalc Playground</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 24px; background: #fafafa; color: #222; }
+  h1 { font-size: 20px; }
+  .bar { display: flex; gap: 8px; align-items: center; margin: 12px 0; }
+  #formula-bar { flex: 1; font-family: monospace; padding: 6px; }
+  table { border-collapse: collapse; background: #fff; }
+  td { border: 1px solid #ccc; padding: 0; width: 96px; }
+  td.selected { outline: 2px solid #2b6cb0; }
+  td input { width: 90px; border: 0; padding: 4px; font-family: monospace; font-size: 12px; }
+  td .val { font-size: 11px; color: #2b6cb0; padding: 0 4px 3px; min-height: 14px; font-family: monospace; }
+  td .val.err { color: #c53030; }
+  td .val.circ { color: #b7791f; }
+  th { font-size: 11px; color: #666; padding: 2px 4px; }
+  #detail { margin-top: 14px; padding: 10px; background: #fff; border: 1px solid #ddd; font-family: monospace; font-size: 13px; white-space: pre-wrap; }
+  #errors { margin-top: 10px; color: #c53030; font-family: monospace; font-size: 12px; white-space: pre-wrap; }
+  .hint { color: #666; font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>MoonCalc — Excel-compatible formula engine in MoonBit (wasm-gc)</h1>
+<div class="bar">
+  <label>Preset <select id="presets">
+    <option value="">(empty)</option>
+    <option value="error">error propagation</option>
+    <option value="textnum">text-typed numbers</option>
+    <option value="blank">blank vs zero</option>
+    <option value="circular">circular reference → 0</option>
+  </select></label>
+  <span class="hint">=formula · number · TRUE/FALSE · 'text (leading quote forces text) · empty = blank</span>
+</div>
+<div class="bar">
+  <span id="sel-addr">A1</span>
+  <input id="formula-bar" placeholder="cell content / formula">
+</div>
+<table id="grid"></table>
+<div id="detail">loading engine…</div>
+<div id="errors"></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

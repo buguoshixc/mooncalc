@@ -1,0 +1,48 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "buguoshixc/mooncalc"
+
+import {
+  "buguoshixc/mooncalc/src/engine",
+  "buguoshixc/mooncalc/src/syntax",
+  "buguoshixc/mooncalc/src/value",
+}
+
+// Values
+pub fn date_serial(Int32, Int32, Int32) -> Result[Int32, @value.XlError]
+
+pub fn eval_at(@value.CellAddr, @engine.Grid, @engine.EvalOptions) -> @engine.EvalOutput
+
+pub fn eval_formula(String, @engine.Grid, @engine.EvalOptions) -> Result[@engine.EvalOutput, @syntax.ParseError]
+
+pub fn new_grid() -> @engine.Grid
+
+pub fn parse_addr(String) -> @value.CellAddr?
+
+pub fn recalc(@engine.Grid, @engine.EvalOptions) -> @engine.RecalcOutput
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+pub using @engine {type Cell}
+
+pub using @value {type CellAddr}
+
+pub using @engine {type EvalOptions}
+
+pub using @engine {type EvalOutput}
+
+pub using @engine {type Grid}
+
+pub using @syntax {type ParseError}
+
+pub using @value {type RangeValue}
+
+pub using @engine {type RecalcOutput}
+
+pub using @value {type Value}
+
+pub using @value {type XlError}
+
+// Traits

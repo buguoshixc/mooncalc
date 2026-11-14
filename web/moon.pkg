@@ -2,6 +2,10 @@ supported_targets = "wasm-gc"
 
 pkgtype(kind: "foreign_library")
 
+import {
+  "buguoshixc/mooncalc/src/codec" @codec,
+}
+
 options(
   link: {
     "wasm-gc": {

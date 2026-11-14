@@ -24,6 +24,13 @@
 - Node v26 实测：`instantiate` 的 `builtins`/`importedStringConstants` 选项未自动注入上述导入；**宿主需手动提供**（见 scripts/spike.mjs 的 loadMoonWasm：遍历 Module.imports，`_` global 以名字为值注入，`wasm:js-string` 用等价 JS 实现映射）。该加载器模式将复用于 playground。
 - 核心包无 println、无 @fs/@sys → 无额外宿主导入。
 
+## M6 实测：完整引擎的 js-string 依赖与冒烟方式
+
+- 完整引擎（含 @json codec）比 spike 多一个 `wasm:js-string.fromCharCodeArray` 导入（来自 core 的 String/Array[Char] 转换与 StringBuilder，非业务代码可控）。其参数是 wasm GC 数组引用，**JS 无法读取，纯 JS polyfill 不可行**。
+- 解法：`WebAssembly.compile(bytes, { builtins: ['js-string'] })` 让宿主原生提供全部 js-string 内建。Node v26 与 Playwright Chromium 均实测支持；playground/loader.js 先走原生路径，失败再回退 JS polyfill（仅覆盖不含 fromCharCodeArray 的模块，如 spike），并给出明确报错。
+- headless 冒烟不能用 `--dump-dom`（不等 top-level await 模块）也不能用 `--virtual-time-budget`（虚拟时间在 wasm 编译/求值的真实 CPU 工作期间耗尽，DOM 提前倾倒）。scripts/smoke.mjs 改用 **CDP**：`--remote-debugging-port` + Node 内置 WebSocket 轮询 `Runtime.evaluate` 直到 `#done` 出裁决，零 npm 依赖。
+- 交互验证同样走 CDP：预设切换、单元格编辑、错误面板均实测正确（错误传播 #DIV/0!、循环引用 0+警示、编辑后 120ms 防抖重算）。
+
 ## 已核实的 core API
 
 - `@json.parse(StringView) -> Json raise ParseError`；`Json` 公开枚举 `Null | True | False | Number(Double, repr~ : String?) | String(String) | Array(Array[Json]) | Object(Map[String, Json])`；构造器 `Json::number/string/boolean/array/object/null`；`Json::stringify`。
