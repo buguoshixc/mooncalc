@@ -1,0 +1,6 @@
+{
+  "schema": "mooncalc-corpus/1",
+  "records": [
+    { "id": "bad-0001", "formula": "=1+1", "grid": {}, "expected": { "type": "number", "value": 999 }, "tags": ["fixture"], "source": "manual", "notes": "intentional mismatch for exit-code testing" }
+  ]
+}
