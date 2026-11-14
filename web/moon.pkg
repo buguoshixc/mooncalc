@@ -1,0 +1,11 @@
+supported_targets = "wasm-gc"
+
+pkgtype(kind: "foreign_library")
+
+options(
+  link: {
+    "wasm-gc": {
+      "use-js-builtin-string": true,
+    },
+  },
+)
