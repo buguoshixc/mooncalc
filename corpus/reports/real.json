@@ -1,0 +1,1725 @@
+{
+  "total": 752,
+  "passed": 716,
+  "rate": 0.9521276595744681,
+  "tol": 1e-9,
+  "clock_tol": 0.000001,
+  "by_source": {
+    "excel-desktop": {
+      "total": 752,
+      "passed": 716,
+      "rate": 0.9521276595744681
+    }
+  },
+  "by_tag": {
+    "date": {
+      "total": 118,
+      "passed": 104,
+      "rate": 0.8813559322033898
+    },
+    "normalize-month": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "normalize-day": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "epoch": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "lotus": {
+      "total": 11,
+      "passed": 10,
+      "rate": 0.9090909090909091
+    },
+    "year-offset": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "boundary": {
+      "total": 36,
+      "passed": 34,
+      "rate": 0.9444444444444444
+    },
+    "boundary.year": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "non-leap": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "leap": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "truncation": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "error": {
+      "total": 85,
+      "passed": 80,
+      "rate": 0.9411764705882353
+    },
+    "boundary.max": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "year": {
+      "total": 16,
+      "passed": 15,
+      "rate": 0.9375
+    },
+    "boundary.zero": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "boundary.overflow": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "locale": {
+      "total": 2,
+      "passed": 0,
+      "rate": 0
+    },
+    "bool": {
+      "total": 39,
+      "passed": 39,
+      "rate": 1
+    },
+    "blank": {
+      "total": 58,
+      "passed": 57,
+      "rate": 0.9827586206896551
+    },
+    "composed": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "month": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "formula-cell": {
+      "total": 8,
+      "passed": 8,
+      "rate": 1
+    },
+    "day": {
+      "total": 14,
+      "passed": 14,
+      "rate": 1
+    },
+    "boundary.negative": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "fraction": {
+      "total": 3,
+      "passed": 2,
+      "rate": 0.6666666666666666
+    },
+    "today": {
+      "total": 16,
+      "passed": 16,
+      "rate": 1
+    },
+    "clock": {
+      "total": 33,
+      "passed": 22,
+      "rate": 0.6666666666666666
+    },
+    "now": {
+      "total": 16,
+      "passed": 5,
+      "rate": 0.3125
+    },
+    "arithmetic": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "text": {
+      "total": 171,
+      "passed": 162,
+      "rate": 0.9473684210526315
+    },
+    "coercion": {
+      "total": 85,
+      "passed": 80,
+      "rate": 0.9411764705882353
+    },
+    "math": {
+      "total": 110,
+      "passed": 108,
+      "rate": 0.9818181818181818
+    },
+    "round": {
+      "total": 24,
+      "passed": 24,
+      "rate": 1
+    },
+    "boundary.float": {
+      "total": 7,
+      "passed": 7,
+      "rate": 1
+    },
+    "boundary.half": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "negative-digits": {
+      "total": 8,
+      "passed": 8,
+      "rate": 1
+    },
+    "trunc-digits": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "roundup": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "rounddown": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "abs": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "int": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "mod": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "sign": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "power": {
+      "total": 16,
+      "passed": 14,
+      "rate": 0.875
+    },
+    "sqrt": {
+      "total": 15,
+      "passed": 14,
+      "rate": 0.9333333333333333
+    },
+    "sum": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "range": {
+      "total": 21,
+      "passed": 18,
+      "rate": 0.8571428571428571
+    },
+    "ignore": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "refchannel": {
+      "total": 2,
+      "passed": 1,
+      "rate": 0.5
+    },
+    "sumif": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "criteria": {
+      "total": 11,
+      "passed": 11,
+      "rate": 1
+    },
+    "case": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "wildcard": {
+      "total": 10,
+      "passed": 10,
+      "rate": 1
+    },
+    "omitted-range": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "sumproduct": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "shape": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "nonnumeric": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "arith": {
+      "total": 21,
+      "passed": 17,
+      "rate": 0.8095238095238095
+    },
+    "precedence": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "percent": {
+      "total": 11,
+      "passed": 11,
+      "rate": 1
+    },
+    "concat": {
+      "total": 22,
+      "passed": 21,
+      "rate": 0.9545454545454546
+    },
+    "float": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "compare": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "types": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "scientific": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "precision": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "integer": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "nested": {
+      "total": 9,
+      "passed": 9,
+      "rate": 1
+    },
+    "floor": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "single-array": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "negative-exponent": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "negative-base": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "escape": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "stat": {
+      "total": 61,
+      "passed": 61,
+      "rate": 1
+    },
+    "average": {
+      "total": 13,
+      "passed": 13,
+      "rate": 1
+    },
+    "count": {
+      "total": 14,
+      "passed": 12,
+      "rate": 0.8571428571428571
+    },
+    "counta": {
+      "total": 15,
+      "passed": 14,
+      "rate": 0.9333333333333333
+    },
+    "empty-text": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "countif": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "text-number": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "min": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "empty": {
+      "total": 9,
+      "passed": 9,
+      "rate": 1
+    },
+    "max": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "median": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "odd": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "even": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "mix": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "propagation": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "count-ignore": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "zero": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "literal": {
+      "total": 3,
+      "passed": 1,
+      "rate": 0.3333333333333333
+    },
+    "negative": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "tie": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "unsorted": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "left": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "default": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "boundary.clamp": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "right": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "mid": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "boundary.start": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "boundary.past-end": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "len": {
+      "total": 15,
+      "passed": 14,
+      "rate": 0.9333333333333333
+    },
+    "non-ascii": {
+      "total": 5,
+      "passed": 3,
+      "rate": 0.6
+    },
+    "trim": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "upper": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "lower": {
+      "total": 15,
+      "passed": 14,
+      "rate": 0.9333333333333333
+    },
+    "value": {
+      "total": 15,
+      "passed": 13,
+      "rate": 0.8666666666666667
+    },
+    "invalid": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "number": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "find": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "case-sensitive": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "start": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "empty-needle": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "not-found": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "substitute": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "instance": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "delete": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "empty-old": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.instance": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "no-match": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "grouping": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "rounding": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "sections": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "question-pad": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "scale-comma": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "text-passthrough": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "subset-adjudication": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "general": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "zero-empty": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "all-spaces": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "no-spaces": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "mixed": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "multiple": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "longer-new": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "whitespace": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "logic": {
+      "total": 55,
+      "passed": 49,
+      "rate": 0.8909090909090909
+    },
+    "if": {
+      "total": 21,
+      "passed": 21,
+      "rate": 1
+    },
+    "lazy": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "and": {
+      "total": 15,
+      "passed": 11,
+      "rate": 0.7333333333333333
+    },
+    "eager": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "or": {
+      "total": 15,
+      "passed": 13,
+      "rate": 0.8666666666666667
+    },
+    "not": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "iferror": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "error-fallback": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "num": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "lookup": {
+      "total": 59,
+      "passed": 58,
+      "rate": 0.9830508474576272
+    },
+    "vlookup": {
+      "total": 17,
+      "passed": 17,
+      "rate": 1
+    },
+    "exact": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "approx": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "below-min": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "boundary.index-zero": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "boundary.index-wide": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "type-mismatch": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "case-insensitive": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "blank-result": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-result": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-arg": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "at-max": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "duplicate-key": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "hlookup": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "index": {
+      "total": 18,
+      "passed": 17,
+      "rate": 0.9444444444444444
+    },
+    "single-row": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "single-col": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "boundary.row": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.col": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "whole-col": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "whole-row": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "whole-range": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "first-cell": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "scalar": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "match": {
+      "total": 19,
+      "passed": 19,
+      "rate": 1
+    },
+    "ascending": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "descending": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "at-min": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "above-max": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.2d": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "wildcard-escape": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "approximate": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "first-row": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.index": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "no-spill": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "generic": {
+      "total": 237,
+      "passed": 228,
+      "rate": 0.9620253164556962
+    },
+    "error-caught": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-counted": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error2": {
+      "total": 28,
+      "passed": 28,
+      "rate": 1
+    },
+    "sum-range": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.shape": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "formula-empty": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "zero-pad": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "normalize": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "passthrough": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "computed": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "ref": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "unary": {
+      "total": 3,
+      "passed": 0,
+      "rate": 0
+    }
+  },
+  "buckets": {
+    "match": 716,
+    "value-mismatch": 8,
+    "type-mismatch": 19,
+    "numeric-tolerance": 9
+  },
+  "failures": [
+    {
+      "id": "date-date-0008",
+      "formula": "=DATE(1900,2,29)",
+      "source": "excel-desktop",
+      "tags": [
+        "date",
+        "date",
+        "lotus"
+      ],
+      "bucket": "value-mismatch",
+      "expected": {
+        "type": "number",
+        "value": 60
+      },
+      "actual": {
+        "type": "number",
+        "value": 61
+      },
+      "detail": ""
+    },
+    {
+      "id": "date-year-0008",
+      "formula": "=YEAR(A1)",
+      "source": "excel-desktop",
+      "tags": [
+        "date",
+        "year",
+        "locale"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "number",
+        "value": 2026
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "date-now-0001",
+      "formula": "=NOW()",
+      "source": "excel-desktop",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "bucket": "numeric-tolerance",
+      "expected": {
+        "type": "number",
+        "value": 46340.8155615741
+      },
+      "actual": {
+        "type": "number",
+        "value": 46340.8155555556
+      },
+      "detail": "relative diff 1.298746567693198e-10"
+    },
+    {
+      "id": "date-now-0002",
+      "formula": "=NOW()-TODAY()",
+      "source": "excel-desktop",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "bucket": "value-mismatch",
+      "expected": {
+        "type": "number",
+        "value": 0.815561574076128
+      },
+      "actual": {
+        "type": "number",
+        "value": 0.8155555556004401
+      },
+      "detail": ""
+    },
+    {
+      "id": "date-now-0005",
+      "formula": "=NOW()",
+      "source": "excel-desktop",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "bucket": "numeric-tolerance",
+      "expected": {
+        "type": "number",
+        "value": 46340.8155616898
+      },
+      "actual": {
+        "type": "number",
+        "value": 46340.8155555556
+      },
+      "detail": "relative diff 1.323714250407304e-10"
+    },
+    {
+      "id": "date-now-0006",
+      "formula": "=NOW()-TODAY()",
+      "source": "excel-desktop",
+      "tags": [
+        "date",
+        "now",
+        "clock",
+        "fraction"
+      ],
+      "bucket": "value-mismatch",
+      "expected": {
+        "type": "number",
+        "value": 0.815561689814785
+      },
+      "actual": {
+        "type": "number",
+        "value": 0.8155555556004401
+      },
+      "detail": ""
+    },
+    {
+      "id": "date-now-0007",
+      "formula": "=NOW()*1",
+      "source": "excel-desktop",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "bucket": "numeric-tolerance",
+      "expected": {
+        "type": "number",
+        "value": 46340.8155616898
+      },
+      "actual": {
+        "type": "number",
+        "value": 46340.8155555556
+      },
+      "detail": "relative diff 1.323714250407304e-10"
+    },
+    {
+      "id": "date-now-0008",
+      "formula": "=NOW()+0",
+      "source": "excel-desktop",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "bucket": "numeric-tolerance",
+      "expected": {
+        "type": "number",
+        "value": 46340.8155616898
+      },
+      "actual": {
+        "type": "number",
+        "value": 46340.8155555556
+      },
+      "detail": "relative diff 1.323714250407304e-10"
+    },
+    {
+      "id": "date-now-0011",
+      "formula": "=NOW()/1",
+      "source": "excel-desktop",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "bucket": "numeric-tolerance",
+      "expected": {
+        "type": "number",
+        "value": 46340.8155616898
+      },
+      "actual": {
+        "type": "number",
+        "value": 46340.8155555556
+      },
+      "detail": "relative diff 1.323714250407304e-10"
+    },
+    {
+      "id": "date-now-0012",
+      "formula": "=NOW()+1",
+      "source": "excel-desktop",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "bucket": "numeric-tolerance",
+      "expected": {
+        "type": "number",
+        "value": 46341.8155616898
+      },
+      "actual": {
+        "type": "number",
+        "value": 46341.8155555556
+      },
+      "detail": "relative diff 1.3236856862642215e-10"
+    },
+    {
+      "id": "date-now-0014",
+      "formula": "=NOW()-46340",
+      "source": "excel-desktop",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "bucket": "value-mismatch",
+      "expected": {
+        "type": "number",
+        "value": 0.815561805553443
+      },
+      "actual": {
+        "type": "number",
+        "value": 0.8155555556004401
+      },
+      "detail": ""
+    },
+    {
+      "id": "date-now-0015",
+      "formula": "=NOW()*2",
+      "source": "excel-desktop",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "bucket": "numeric-tolerance",
+      "expected": {
+        "type": "number",
+        "value": 92681.6311236111
+      },
+      "actual": {
+        "type": "number",
+        "value": 92681.6311111112
+      },
+      "detail": "relative diff 1.3486929238003823e-10"
+    },
+    {
+      "id": "date-now-0016",
+      "formula": "=NOW()^1",
+      "source": "excel-desktop",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "bucket": "numeric-tolerance",
+      "expected": {
+        "type": "number",
+        "value": 46340.8155618056
+      },
+      "actual": {
+        "type": "number",
+        "value": 46340.8155555556
+      },
+      "detail": "relative diff 1.3487023443824653e-10"
+    },
+    {
+      "id": "math-power-0003",
+      "formula": "=POWER(0,0)",
+      "source": "excel-desktop",
+      "tags": [
+        "math",
+        "power",
+        "boundary"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "error",
+        "value": "#NUM!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "math-arith-0014",
+      "formula": "=123456789012345678&\"\"",
+      "source": "excel-desktop",
+      "tags": [
+        "math",
+        "arith",
+        "concat",
+        "precision"
+      ],
+      "bucket": "value-mismatch",
+      "expected": {
+        "type": "text",
+        "value": "123456789012345000"
+      },
+      "actual": {
+        "type": "text",
+        "value": "1.23457E+17"
+      },
+      "detail": ""
+    },
+    {
+      "id": "text-len-0006",
+      "formula": "=LEN(\"😀\")",
+      "source": "excel-desktop",
+      "tags": [
+        "text",
+        "len",
+        "non-ascii"
+      ],
+      "bucket": "value-mismatch",
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "detail": ""
+    },
+    {
+      "id": "text-lower-0002",
+      "formula": "=LOWER(\"CAFÉ\")",
+      "source": "excel-desktop",
+      "tags": [
+        "text",
+        "lower",
+        "non-ascii"
+      ],
+      "bucket": "value-mismatch",
+      "expected": {
+        "type": "text",
+        "value": "café"
+      },
+      "actual": {
+        "type": "text",
+        "value": "cafÉ"
+      },
+      "detail": ""
+    },
+    {
+      "id": "text-value-0004",
+      "formula": "=VALUE(\"1,000\")",
+      "source": "excel-desktop",
+      "tags": [
+        "text",
+        "value",
+        "locale"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "number",
+        "value": 1000
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "text-text-0011",
+      "formula": "=TEXT(5,\"yyyy\")",
+      "source": "excel-desktop",
+      "tags": [
+        "text",
+        "text",
+        "subset-adjudication"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "text",
+        "value": "1900"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "detail": "expected text, got error"
+    },
+    {
+      "id": "text-text-0012",
+      "formula": "=TEXT(123,\"General\")",
+      "source": "excel-desktop",
+      "tags": [
+        "text",
+        "text",
+        "general"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "text",
+        "value": "123"
+      },
+      "detail": "expected error, got text"
+    },
+    {
+      "id": "logic-and-0005",
+      "formula": "=AND(A1,A2)",
+      "source": "excel-desktop",
+      "tags": [
+        "logic",
+        "and",
+        "coercion"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "bool",
+        "value": false
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "logic-and-0006",
+      "formula": "=AND(A1,A2)",
+      "source": "excel-desktop",
+      "tags": [
+        "logic",
+        "and",
+        "coercion",
+        "text"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "logic-and-0007",
+      "formula": "=AND(A1:A3)",
+      "source": "excel-desktop",
+      "tags": [
+        "logic",
+        "and",
+        "range",
+        "blank"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "logic-and-0008",
+      "formula": "=AND(A1:A3)",
+      "source": "excel-desktop",
+      "tags": [
+        "logic",
+        "and",
+        "range",
+        "text"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "logic-or-0004",
+      "formula": "=OR(A1:A3)",
+      "source": "excel-desktop",
+      "tags": [
+        "logic",
+        "or",
+        "range"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "bool",
+        "value": false
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "logic-or-0009",
+      "formula": "=OR(A1,A2)",
+      "source": "excel-desktop",
+      "tags": [
+        "logic",
+        "or",
+        "refchannel"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "lookup-index-0013",
+      "formula": "=INDEX(A1:C3,0,1)",
+      "source": "excel-desktop",
+      "tags": [
+        "lookup",
+        "index",
+        "no-spill"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-value-0001",
+      "formula": "=VALUE(A1)",
+      "source": "excel-desktop",
+      "tags": [
+        "generic",
+        "value",
+        "error"
+      ],
+      "bucket": "value-mismatch",
+      "expected": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "detail": ""
+    },
+    {
+      "id": "gen-power-0009",
+      "formula": "=POWER(A1,0)",
+      "source": "excel-desktop",
+      "tags": [
+        "generic",
+        "power",
+        "boundary"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "error",
+        "value": "#NUM!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "gen-sqrt-0006",
+      "formula": "=SQRT(A1)",
+      "source": "excel-desktop",
+      "tags": [
+        "generic",
+        "sqrt",
+        "coercion"
+      ],
+      "bucket": "numeric-tolerance",
+      "expected": {
+        "type": "number",
+        "value": 1.4142135623731
+      },
+      "actual": {
+        "type": "number",
+        "value": 1.4142135623730951
+      },
+      "detail": "relative diff 3.4542034091042928e-15"
+    },
+    {
+      "id": "gen-count-0009",
+      "formula": "=COUNT(#N/A)",
+      "source": "excel-desktop",
+      "tags": [
+        "generic",
+        "count",
+        "error",
+        "literal"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-count-0010",
+      "formula": "=COUNT(1/0)",
+      "source": "excel-desktop",
+      "tags": [
+        "generic",
+        "count",
+        "error",
+        "computed"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "error",
+        "value": "#DIV/0!"
+      },
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-counta-0005",
+      "formula": "=COUNTA(#N/A)",
+      "source": "excel-desktop",
+      "tags": [
+        "generic",
+        "counta",
+        "error",
+        "literal"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-unary-0002",
+      "formula": "=+\"3\"",
+      "source": "excel-desktop",
+      "tags": [
+        "generic",
+        "arith",
+        "unary",
+        "coercion"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "text",
+        "value": "3"
+      },
+      "actual": {
+        "type": "number",
+        "value": 3
+      },
+      "detail": "expected text, got number"
+    },
+    {
+      "id": "gen-unary-0003",
+      "formula": "=+TRUE",
+      "source": "excel-desktop",
+      "tags": [
+        "generic",
+        "arith",
+        "unary",
+        "coercion"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "detail": "expected bool, got number"
+    },
+    {
+      "id": "gen-unary-0004",
+      "formula": "=+\"abc\"",
+      "source": "excel-desktop",
+      "tags": [
+        "generic",
+        "arith",
+        "unary",
+        "error"
+      ],
+      "bucket": "type-mismatch",
+      "expected": {
+        "type": "text",
+        "value": "abc"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "detail": "expected text, got error"
+    }
+  ]
+}

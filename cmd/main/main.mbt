@@ -19,7 +19,10 @@ fn[T] die(msg : String) -> T {
 }
 
 fn read_text(path : String) -> String {
-  try @fs.read_file_to_string(path) catch { _ => die("cannot read file: " + path) }
+  let text = try @fs.read_file_to_string(path) catch {
+    _ => die("cannot read file: " + path)
+  }
+  @codec.strip_utf8_bom(text)
 }
 
 fn parse_json_or_die(text : String, path : String) -> Json {

@@ -2,7 +2,7 @@
 
 **Excel 兼容的电子表格公式引擎，用 MoonBit 编写。**
 
-> 状态（2026-11-14）：45 函数引擎、native CLI、wasm-gc playground 已实现并通过四层验证；**真实 Excel 答案键语料待接入**（752 条用例规格与 VBA 生成器已就绪，等待在桌面 Excel 运行回传）。2026 MoonBit 年度黑客松 11 月赛参赛项目。
+> 状态（2026-11-14）：45 函数引擎、native CLI、wasm-gc playground 已实现并通过四层验证；**真实 Excel 答案键语料已接入**（Excel 2024 生成，752/752 条导出、0 跳过），基线 **716/752（95.2%）**，M5 差异归因/修复循环进行中。2026 MoonBit 年度黑客松 11 月赛参赛项目。
 
 ## 这是什么
 
@@ -41,8 +41,8 @@ node scripts/smoke.mjs
 |---|---|---|
 | 单元/快照测试 | 56/56 | 手写期望 |
 | 过渡语料 bench | 34/34（100%） | source: manual，**非权威**，仅证明流程 |
-| 用例规格 | 752 条（corpus/spec/，每函数 ≥15） | 已交付 VBA 生成器，待真实 Excel 运行 |
-| **真实 Excel 语料** | **待接入 → N 条 / X%** | M5：Excel 为唯一裁判，差异逐条归因 |
+| 用例规格 | 752 条（corpus/spec/，每函数 ≥15） | 已由真实 Excel 全部生成答案键（0 跳过） |
+| **真实 Excel 语料** | **716/752（95.2%）基线** | Excel 2024 为唯一裁判；36 条差异 M5 归因中，见 `corpus/reports/real.json` |
 
 比较策略：默认精确相等；相对差 <1e-9 单列 numeric-tolerance 桶（计失败、单独归因）；clock 标签容差披露。基线报告：`corpus/reports/provisional.json`。
 
@@ -78,12 +78,13 @@ node scripts/smoke.mjs
 - [x] 答案键语料 schema + VBA 生成器 + 752 条用例规格 + 对照 CLI（eval/bench）
 - [x] wasm-gc playground（8×8 网格、语义预设、headless 冒烟 PASS）
 - [x] 文档与支持矩阵（semantics / support-matrix / demo / toolchain）
-- [ ] **真实 Excel 语料接入与修复循环（M5，等待用户回传 corpus/cases/）**
-- [ ] README 权威 N/X% 替换过渡数字
+- [x] 真实 Excel 语料接入（Excel 2024 生成 752 条、0 跳过；基线 716/752，见 [corpus/cases/PROVENANCE.md](corpus/cases/PROVENANCE.md)）
+- [ ] M5 修复循环：36 条差异逐条归因/修复，重跑 bench 并更新 `corpus/reports/real.json`
+- [ ] README 权威 N/X% 替换基线数字
 
 ## 语料生成（用户侧动作）
 
-在桌面 Excel 运行 [corpus/excel/generate_corpus.bas](corpus/excel/generate_corpus.bas)（说明见 [corpus/excel/README.md](corpus/excel/README.md)），把导出的 JSON 放入 `corpus/cases/`，然后：
+权威语料已由桌面 Excel 2024 生成并放入 `corpus/cases/`（752 条，0 跳过；来源与环境见 [corpus/cases/PROVENANCE.md](corpus/cases/PROVENANCE.md)）。重新生成时在桌面 Excel 运行 [corpus/excel/generate_corpus.bas](corpus/excel/generate_corpus.bas)（说明见 [corpus/excel/README.md](corpus/excel/README.md)），把导出的 JSON 放入 `corpus/cases/`，然后：
 
 ```bash
 _build/native/debug/build/cmd/main/main.exe bench --corpus corpus/cases --report corpus/reports/real.json

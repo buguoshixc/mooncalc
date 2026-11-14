@@ -5,6 +5,16 @@ pub suberror CodecError {
   CodecError(String)
 }
 
+/// Strip a leading UTF-8 BOM (U+FEFF) if present.
+/// Excel/VBA (ADODB.Stream) writes JSON with a BOM; `@json.parse` expects bare text.
+pub fn strip_utf8_bom(s : String) -> String {
+  if s.length() > 0 && s.substring(start=0, end=1) == "\u{FEFF}" {
+    s.substring(start=1, end=s.length())
+  } else {
+    s
+  }
+}
+
 fn obj(pairs : Array[(String, Json)]) -> Json {
   let m : Map[String, Json] = Map::new()
   for p in pairs {

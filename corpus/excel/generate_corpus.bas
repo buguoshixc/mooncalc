@@ -130,7 +130,7 @@ Private Function EvalCase(ws As Worksheet, id As String, formula As String, _
     ElseIf VarType(v) = vbString Then
         expected = "{""type"":""text"",""value"":""" & JsonEsc(CStr(v)) & """}"
     Else
-        expected = "{""type"":""number"",""value":":" & NumToJson(CDbl(v)) & "}"
+        expected = "{""type"":""number"",""value"":" & NumToJson(CDbl(v)) & "}"
     End If
     EvalCase = "{""id"":""" & JsonEsc(id) & """,""formula"":""" & JsonEsc(formula) & _
                """,""grid"":" & GridJson(grid) & nowJson & _

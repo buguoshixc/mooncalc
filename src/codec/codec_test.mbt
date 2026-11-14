@@ -157,3 +157,9 @@ test "corpus decode validates schema and fields" {
     Ok(_) => panic()
   }
 }
+test "strip_utf8_bom accepts Excel BOM and plain text" {
+  let plain = "{\"schema\":\"mooncalc-corpus/1\",\"records\":[]}"
+  assert_eq(strip_utf8_bom("\u{FEFF}" + plain), plain)
+  assert_eq(strip_utf8_bom(plain), plain)
+  assert_eq(strip_utf8_bom(""), "")
+}

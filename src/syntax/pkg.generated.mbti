@@ -63,6 +63,7 @@ pub enum Token {
 #derive(Eq, Show, @debug.Debug)
 pub(all) enum UnOp {
   Neg
+  Pos
   Percent
 }
 
