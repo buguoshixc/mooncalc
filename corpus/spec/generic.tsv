@@ -1,0 +1,230 @@
+id	formula	grid	now	tags
+gen-if-0001	=IF(A1,1,2)	A1=e:#N/A		generic,if,error
+gen-and-0001	=AND(A1,TRUE)	A1=e:#N/A		generic,and,error
+gen-or-0001	=OR(A1,FALSE)	A1=e:#N/A		generic,or,error
+gen-not-0001	=NOT(A1)	A1=e:#N/A		generic,not,error
+gen-iferror-0001	=IFERROR(A1,0)	A1=e:#N/A		generic,iferror,error-caught
+gen-round-0001	=ROUND(A1,2)	A1=e:#N/A		generic,round,error
+gen-roundup-0001	=ROUNDUP(A1,2)	A1=e:#N/A		generic,roundup,error
+gen-rounddown-0001	=ROUNDDOWN(A1,2)	A1=e:#N/A		generic,rounddown,error
+gen-abs-0001	=ABS(A1)	A1=e:#N/A		generic,abs,error
+gen-int-0001	=INT(A1)	A1=e:#N/A		generic,int,error
+gen-mod-0001	=MOD(A1,2)	A1=e:#N/A		generic,mod,error
+gen-power-0001	=POWER(A1,2)	A1=e:#N/A		generic,power,error
+gen-sqrt-0001	=SQRT(A1)	A1=e:#N/A		generic,sqrt,error
+gen-sum-0001	=SUM(A1,1)	A1=e:#N/A		generic,sum,error
+gen-sumif-0001	=SUMIF(A1:A2,">0")	A1=e:#N/A|A2=1		generic,sumif,error
+gen-sumproduct-0001	=SUMPRODUCT(A1:A2,B1:B2)	A1=e:#N/A|A2=1|B1=2|B2=3		generic,sumproduct,error
+gen-average-0001	=AVERAGE(A1,1)	A1=e:#N/A		generic,average,error
+gen-count-0001	=COUNT(A1,1)	A1=e:#N/A		generic,count,error
+gen-counta-0001	=COUNTA(A1)	A1=e:#N/A		generic,counta,error-counted
+gen-countif-0001	=COUNTIF(A1:A2,">0")	A1=e:#N/A|A2=1		generic,countif,error
+gen-min-0001	=MIN(A1,1)	A1=e:#N/A		generic,min,error
+gen-max-0001	=MAX(A1,1)	A1=e:#N/A		generic,max,error
+gen-median-0001	=MEDIAN(A1,1)	A1=e:#N/A		generic,median,error
+gen-left-0001	=LEFT(A1,2)	A1=e:#N/A		generic,left,error
+gen-right-0001	=RIGHT(A1,2)	A1=e:#N/A		generic,right,error
+gen-mid-0001	=MID(A1,1,2)	A1=e:#N/A		generic,mid,error
+gen-len-0001	=LEN(A1)	A1=e:#N/A		generic,len,error
+gen-trim-0001	=TRIM(A1)	A1=e:#N/A		generic,trim,error
+gen-upper-0001	=UPPER(A1)	A1=e:#N/A		generic,upper,error
+gen-lower-0001	=LOWER(A1)	A1=e:#N/A		generic,lower,error
+gen-concat-0001	=CONCAT(A1,"x")	A1=e:#N/A		generic,concat,error
+gen-value-0001	=VALUE(A1)	A1=e:#N/A		generic,value,error
+gen-find-0001	=FIND(A1,"abc")	A1=e:#N/A		generic,find,error
+gen-substitute-0001	=SUBSTITUTE(A1,"a","b")	A1=e:#N/A		generic,substitute,error
+gen-text-0001	=TEXT(A1,"0")	A1=e:#N/A		generic,text,error
+gen-vlookup-0001	=VLOOKUP(A1,B1:C2,2,FALSE)	A1=e:#N/A|B1=1|C1=10|B2=2|C2=20		generic,vlookup,error
+gen-hlookup-0001	=HLOOKUP(A1,B1:C2,2,FALSE)	A1=e:#N/A|B1=1|C1=10|B2=2|C2=20		generic,hlookup,error
+gen-index-0001	=INDEX(A1:B2,1,1)	A1=e:#N/A|B1=1|A2=2|B2=3		generic,index,error
+gen-match-0001	=MATCH(A1,B1:B2,0)	A1=e:#N/A|B1=1|B2=2		generic,match,error
+gen-date-0001	=DATE(A1,1,1)	A1=e:#N/A		generic,date,error
+gen-year-0001	=YEAR(A1)	A1=e:#N/A		generic,year,error
+gen-month-0001	=MONTH(A1)	A1=e:#N/A		generic,month,error
+gen-day-0001	=DAY(A1)	A1=e:#N/A		generic,day,error
+gen-round-0002	=ROUND(1,A1)	A1=e:#N/A		generic,round,error2
+gen-roundup-0002	=ROUNDUP(1,A1)	A1=e:#N/A		generic,roundup,error2
+gen-rounddown-0002	=ROUNDDOWN(1,A1)	A1=e:#N/A		generic,rounddown,error2
+gen-mod-0002	=MOD(1,A1)	A1=e:#N/A		generic,mod,error2
+gen-power-0002	=POWER(2,A1)	A1=e:#N/A		generic,power,error2
+gen-sum-0002	=SUM(1,A1)	A1=e:#N/A		generic,sum,error2
+gen-average-0002	=AVERAGE(1,A1)	A1=e:#N/A		generic,average,error2
+gen-count-0002	=COUNT(1,A1)	A1=e:#N/A		generic,count,error2
+gen-min-0002	=MIN(1,A1)	A1=e:#N/A		generic,min,error2
+gen-max-0002	=MAX(1,A1)	A1=e:#N/A		generic,max,error2
+gen-median-0002	=MEDIAN(1,A1)	A1=e:#N/A		generic,median,error2
+gen-left-0002	=LEFT("abc",A1)	A1=e:#N/A		generic,left,error2
+gen-right-0002	=RIGHT("abc",A1)	A1=e:#N/A		generic,right,error2
+gen-mid-0002	=MID("abc",A1,1)	A1=e:#N/A		generic,mid,error2
+gen-mid-0003	=MID("abc",1,A1)	A1=e:#N/A		generic,mid,error2
+gen-find-0002	=FIND("a",A1)	A1=e:#N/A		generic,find,error2
+gen-find-0003	=FIND("a","abc",A1)	A1=e:#N/A		generic,find,error2
+gen-substitute-0002	=SUBSTITUTE("abc",A1,"x")	A1=e:#N/A		generic,substitute,error2
+gen-substitute-0003	=SUBSTITUTE("abc","a",A1)	A1=e:#N/A		generic,substitute,error2
+gen-text-0002	=TEXT(1,A1)	A1=e:#N/A		generic,text,error2
+gen-vlookup-0002	=VLOOKUP(1,A1:B2,2,FALSE)	A1=e:#N/A|B1=10|A2=2|B2=20		generic,vlookup,error2
+gen-index-0002	=INDEX(A1:B2,A1,1)	A1=e:#N/A|B1=1|A2=2|B2=3		generic,index,error2
+gen-match-0002	=MATCH(1,A1:A2,0)	A1=e:#N/A|A2=1		generic,match,error2
+gen-date-0002	=DATE(2026,A1,1)	A1=e:#N/A		generic,date,error2
+gen-date-0003	=DATE(2026,1,A1)	A1=e:#N/A		generic,date,error2
+gen-if-0002	=IF(TRUE,A1,2)	A1=e:#N/A		generic,if,error2
+gen-iferror-0002	=IFERROR(1,A1)	A1=e:#N/A		generic,iferror,lazy
+gen-concat-0002	=CONCAT("x",A1)	A1=e:#N/A		generic,concat,error2
+gen-sumif-0002	=SUMIF(A1:A2,A1)	A1=e:#N/A|A2=1		generic,sumif,error2
+gen-if-0003	=IF(A1,1,2)	A1=blank		generic,if,blank
+gen-and-0002	=AND(A1,TRUE)	A1=blank		generic,and,blank
+gen-or-0002	=OR(A1,FALSE)	A1=blank		generic,or,blank
+gen-not-0002	=NOT(A1)	A1=blank		generic,not,blank
+gen-iferror-0003	=IFERROR(A1,"x")	A1=blank		generic,iferror,blank
+gen-round-0003	=ROUND(A1,2)	A1=blank		generic,round,blank
+gen-abs-0002	=ABS(A1)	A1=blank		generic,abs,blank
+gen-int-0002	=INT(A1)	A1=blank		generic,int,blank
+gen-mod-0003	=MOD(A1,2)	A1=blank		generic,mod,blank
+gen-power-0003	=POWER(A1,2)	A1=blank		generic,power,blank
+gen-sqrt-0002	=SQRT(A1)	A1=blank		generic,sqrt,blank
+gen-sum-0003	=SUM(A1)	A1=blank		generic,sum,blank
+gen-average-0003	=AVERAGE(A1)	A1=blank		generic,average,blank
+gen-count-0003	=COUNT(A1)	A1=blank		generic,count,blank
+gen-counta-0002	=COUNTA(A1)	A1=blank		generic,counta,blank
+gen-min-0003	=MIN(A1)	A1=blank		generic,min,blank
+gen-max-0003	=MAX(A1)	A1=blank		generic,max,blank
+gen-median-0003	=MEDIAN(A1)	A1=blank		generic,median,blank
+gen-left-0003	=LEFT(A1,2)	A1=blank		generic,left,blank
+gen-len-0002	=LEN(A1)	A1=blank		generic,len,blank
+gen-concat-0003	=CONCAT(A1)	A1=blank		generic,concat,blank
+gen-value-0002	=VALUE(A1)	A1=blank		generic,value,blank
+gen-text-0003	=TEXT(A1,"0")	A1=blank		generic,text,blank
+gen-year-0002	=YEAR(A1)	A1=blank		generic,year,blank
+gen-find-0004	=FIND("a",A1)	A1=blank		generic,find,blank
+gen-substitute-0004	=SUBSTITUTE(A1,"a","b")	A1=blank		generic,substitute,blank
+gen-upper-0002	=UPPER(A1)	A1=blank		generic,upper,blank
+gen-round-0004	=ROUND(A1,2)	A1=t:2.675		generic,round,coercion
+gen-roundup-0003	=ROUNDUP(A1,1)	A1=t:2.11		generic,roundup,coercion
+gen-rounddown-0003	=ROUNDDOWN(A1,1)	A1=t:2.19		generic,rounddown,coercion
+gen-abs-0003	=ABS(A1)	A1=t:-3		generic,abs,coercion
+gen-int-0003	=INT(A1)	A1=t:3.7		generic,int,coercion
+gen-mod-0004	=MOD(A1,2)	A1=t:5		generic,mod,coercion
+gen-power-0004	=POWER(A1,2)	A1=t:3		generic,power,coercion
+gen-sqrt-0003	=SQRT(A1)	A1=t:9		generic,sqrt,coercion
+gen-sum-0004	=SUM(A1,A2)	A1=t:3|A2=t:4		generic,sum,coercion
+gen-average-0004	=AVERAGE(A1,A2)	A1=t:2|A2=t:4		generic,average,coercion
+gen-min-0004	=MIN(A1,5)	A1=t:3		generic,min,coercion
+gen-max-0004	=MAX(A1,5)	A1=t:3		generic,max,coercion
+gen-median-0004	=MEDIAN(A1,A2,A3)	A1=t:1|A2=t:3|A3=t:5		generic,median,coercion
+gen-count-0004	=COUNT(A1)	A1=t:3		generic,count,coercion
+gen-value-0003	=VALUE(A1)	A1=t:42		generic,value,coercion
+gen-text-0004	=TEXT(A1,"0")	A1=t:5		generic,text,coercion
+gen-year-0003	=YEAR(A1)	A1=t:46340		generic,year,coercion
+gen-date-0004	=DATE(A1,1,1)	A1=t:2026		generic,date,coercion
+gen-if-0004	=IF(A1,1,2)	A1=t:0		generic,if,coercion
+gen-sumif-0003	=SUMIF(A1:A2,">2")	A1=t:3|A2=1		generic,sumif,coercion
+gen-find-0005	=FIND("2",A1)	A1=123		generic,find,coercion
+gen-sum-0005	=SUM(A1,1)	A1=b:1		generic,sum,bool
+gen-sum-0006	=SUM(A1:A2)	A1=b:1|A2=2		generic,sum,bool,range
+gen-average-0005	=AVERAGE(A1,2)	A1=b:1		generic,average,bool
+gen-average-0006	=AVERAGE(A1:A2)	A1=b:1|A2=2		generic,average,bool,range
+gen-count-0005	=COUNT(A1)	A1=b:1		generic,count,bool
+gen-counta-0003	=COUNTA(A1)	A1=b:0		generic,counta,bool
+gen-round-0005	=ROUND(A1,2)	A1=b:1		generic,round,bool
+gen-if-0005	=IF(A1,"y","n")	A1=b:0		generic,if,bool
+gen-and-0003	=AND(A1,A2)	A1=b:1|A2=b:0		generic,and,bool
+gen-not-0003	=NOT(A1)	A1=b:0		generic,not,bool
+gen-text-0005	=TEXT(A1,"0")	A1=b:1		generic,text,bool
+gen-value-0004	=VALUE(A1)	A1=b:1		generic,value,bool
+gen-min-0005	=MIN(A1,2)	A1=b:1		generic,min,bool
+gen-round-0006	=ROUND(123.456,-1)			generic,round,boundary
+gen-round-0007	=ROUND(123.456,-2)			generic,round,boundary
+gen-round-0008	=ROUND(123.456,-3)			generic,round,boundary
+gen-round-0009	=ROUND(2.5,0)			generic,round,boundary
+gen-round-0010	=ROUND(-2.5,0)			generic,round,boundary
+gen-round-0011	=ROUND(0.5,0)			generic,round,boundary
+gen-roundup-0004	=ROUNDUP(2.1,0)			generic,roundup,boundary
+gen-roundup-0005	=ROUNDUP(-2.1,0)			generic,roundup,boundary
+gen-roundup-0006	=ROUNDUP(2,0)			generic,roundup,boundary
+gen-rounddown-0004	=ROUNDDOWN(2.9,0)			generic,rounddown,boundary
+gen-rounddown-0005	=ROUNDDOWN(-2.9,0)			generic,rounddown,boundary
+gen-round-0012	=ROUND(1.005,2)			generic,round,boundary.float
+gen-mod-0005	=MOD(5,0)			generic,mod,boundary
+gen-mod-0006	=MOD(3,-2)			generic,mod,boundary
+gen-mod-0007	=MOD(-3,-2)			generic,mod,boundary
+gen-mod-0008	=MOD(5.5,2)			generic,mod,boundary
+gen-power-0005	=POWER(0,-1)			generic,power,boundary
+gen-power-0006	=POWER(-1,0.5)			generic,power,boundary
+gen-power-0007	=POWER(2,10)			generic,power,boundary
+gen-sqrt-0004	=SQRT(-1)			generic,sqrt,boundary
+gen-sqrt-0005	=SQRT(0)			generic,sqrt,boundary
+gen-int-0004	=INT(-0.5)			generic,int,boundary
+gen-abs-0004	=ABS(0)			generic,abs,boundary
+gen-sum-0007	=SUM(A1:A3)	A1=1|A2=t:x|A3=b:1		generic,sum,range
+gen-sumif-0004	=SUMIF(A1:A3,">1",B1:B3)	A1=1|A2=2|A3=3|B1=10|B2=20|B3=30		generic,sumif,sum-range
+gen-sumif-0005	=SUMIF(A1:A2,"ap*",B1:B2)	A1=t:apple|A2=t:banana|B1=10|B2=20		generic,sumif,wildcard
+gen-sumif-0006	=SUMIF(A1:A3,"<>2")	A1=1|A2=2|A3=3		generic,sumif,criteria
+gen-sumproduct-0002	=SUMPRODUCT(A1:A2,B1:B3)	A1=1|A2=2|B1=3|B2=4|B3=5		generic,sumproduct,boundary.shape
+gen-sumproduct-0003	=SUMPRODUCT(A1:A2,B1:B2)	A1=1|A2=2|B1=3|B2=4		generic,sumproduct
+gen-sumproduct-0004	=SUMPRODUCT(A1:A2)	A1=1|A2=t:x		generic,sumproduct,text
+gen-average-0007	=AVERAGE(A1)	A1=t:x		generic,average,boundary
+gen-average-0008	=AVERAGE(A1:A2)	A1=blank|A2=blank		generic,average,blank
+gen-count-0006	=COUNT(A1:A2)	A1=t:3|A2=2		generic,count,range
+gen-count-0007	=COUNT(A1:A2)	A1=blank|A2=e:#N/A		generic,count,range
+gen-counta-0004	=COUNTA(A1:A3)	A1=blank|A2=f:=""|A3=e:#N/A		generic,counta,range
+gen-countif-0002	=COUNTIF(A1:A3,"<>2")	A1=1|A2=2|A3=3		generic,countif,criteria
+gen-countif-0003	=COUNTIF(A1:A2,"a*")	A1=t:apple|A2=t:banana		generic,countif,wildcard
+gen-countif-0004	=COUNTIF(A1:A2,">=2")	A1=1|A2=2		generic,countif,criteria
+gen-min-0006	=MIN(A1:A2)	A1=t:x|A2=t:y		generic,min,range
+gen-max-0005	=MAX(A1:A2)	A1=t:x|A2=t:y		generic,max,range
+gen-median-0005	=MEDIAN(A1:A3)	A1=1|A2=2|A3=3		generic,median
+gen-median-0006	=MEDIAN(A1:A4)	A1=1|A2=2|A3=3|A4=4		generic,median,even
+gen-min-0007	=MIN(A1:A2)	A1=blank|A2=blank		generic,min,blank
+gen-if-0006	=IF(1,1,2)			generic,if,coercion
+gen-if-0007	=IF(0,1,2)			generic,if,coercion
+gen-if-0008	=IF(A1,1,2)	A1=t:TRUE		generic,if,coercion
+gen-if-0009	=IF(A1,1,2)	A1=t:FALSE		generic,if,coercion
+gen-iferror-0004	=IFERROR(1/0,2/0)			generic,iferror,boundary
+gen-iferror-0005	=IFERROR(1,"x")			generic,iferror
+gen-and-0004	=AND(TRUE,TRUE)			generic,and
+gen-or-0003	=OR(FALSE,FALSE)			generic,or
+gen-or-0004	=OR(FALSE,TRUE)			generic,or
+gen-not-0004	=NOT(TRUE)			generic,not
+gen-mid-0004	=MID("abc",1,0)			generic,mid,boundary
+gen-right-0003	=RIGHT("abc",99)			generic,right,boundary
+gen-len-0003	=LEN(A1)	A1=f:=""		generic,len,formula-empty
+gen-trim-0002	=TRIM("")			generic,trim,empty
+gen-find-0006	=FIND("a","abc",4)			generic,find,boundary
+gen-substitute-0005	=SUBSTITUTE("aaa","a","b",5)			generic,substitute,boundary
+gen-text-0006	=TEXT(0.5,"0%")			generic,text,percent
+gen-text-0007	=TEXT(123,"00000")			generic,text,zero-pad
+gen-text-0008	=TEXT(-0.5,"0.0")			generic,text,negative
+gen-index-0003	=INDEX(A1:A3,3)	A1=1|A2=2|A3=3		generic,index,single-col
+gen-match-0003	=MATCH(1,A1:A3,0)	A1=1|A2=3|A3=5		generic,match
+gen-match-0004	=MATCH("x",A1:A2,0)	A1=t:a|A2=t:b		generic,match,not-found
+gen-date-0005	=DATE(2026,2,30)			generic,date,normalize
+gen-date-0006	=DATE(2024,12,31)			generic,date
+gen-year-0004	=YEAR(36526)			generic,year
+gen-month-0002	=MONTH(59)			generic,month,lotus
+gen-date-0007	=DATE(2026,11,14)+0			generic,date,arithmetic
+gen-year-0005	=YEAR(A1)	A1=f:=TODAY()	capture	generic,year,clock
+gen-month-0003	=MONTH(DATE(2026,12,25))			generic,month,composed
+gen-round-0013	=ROUND(A1,2)	A1=t:12%		generic,round,percent
+gen-sum-0008	=SUM(A1,1)	A1=t:50%		generic,sum,percent
+gen-percent-0001	=A1*2	A1=t:25%		generic,arith,percent
+gen-abs-0005	=ABS(A1)	A1=t:-5%		generic,abs,percent
+gen-int-0005	=INT(A1)	A1=t:3.9		generic,int,coercion
+gen-sum-0009	=SUM(A1:A2)	A1=t:10%|A2=t:20%		generic,sum,percent,range
+gen-count-0008	=COUNT(A1)	A1=t:5		generic,count,coercion
+gen-blank-0001	=A1+0	A1=blank		generic,arith,blank
+gen-concat-0004	=A1&""	A1=123		generic,concat,coercion
+gen-concat-0005	=A1&""	A1=b:1		generic,concat,bool
+gen-concat-0006	=A1&""	A1=blank		generic,concat,blank
+gen-unary-0001	=--A1	A1=t:3		generic,arith,coercion
+gen-power-0008	=A1^2	A1=t:3		generic,power,coercion
+gen-if-0010	=IF(A1>1,"y","n")	A1=t:2		generic,if,coercion
+gen-text-0009	=TEXT(A1,"0%")	A1=t:25%		generic,text,passthrough
+gen-upper-0003	=UPPER(A1)	A1=t:abc		generic,upper,coercion
+gen-concat-0007	=CONCAT(A1:A2)	A1=1|A2=b:1		generic,concat,range
+gen-len-0004	=LEN(A1)	A1=1.5		generic,len,coercion
+gen-round-0014	=ROUND(A1,1)	A1=1.25		generic,round,boundary.float
+gen-round-0015	=ROUND(A1,1)	A1=1.35		generic,round,boundary.float
+gen-round-0016	=ROUND(A1,1)	A1=1.45		generic,round,boundary.float
+gen-mod-0009	=MOD(A1,1)	A1=3.75		generic,mod,fraction
+gen-power-0009	=POWER(A1,0)	A1=0		generic,power,boundary
+gen-sqrt-0006	=SQRT(A1)	A1=t:2		generic,sqrt,coercion
