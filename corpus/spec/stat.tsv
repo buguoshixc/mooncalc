@@ -1,0 +1,31 @@
+id	formula	grid	now	tags
+stat-average-0001	=AVERAGE(A1:A4)	A1=1|A2=2|A3=3|A4=4		stat,average
+stat-average-0002	=AVERAGE(A1:A4)	A1=1|A2=t:x|A3=blank|A4=3		stat,average,ignore
+stat-average-0003	=AVERAGE(A1:A2)	A1=t:x|A2=blank		stat,average,error
+stat-average-0004	=AVERAGE("2",4)			stat,average,coercion
+stat-count-0001	=COUNT(A1:A5)	A1=1|A2=t:x|A3=b:1|A4=blank|A5=3		stat,count,range
+stat-count-0002	=COUNT(A1,2)	A1=t:5		stat,count,coercion
+stat-count-0003	=COUNT(A1:A3)	A1=f:=1|A2=f:="x"|A3=blank		stat,count,formula-cell
+stat-counta-0001	=COUNTA(A1:A5)	A1=1|A2=t:x|A3=b:1|A4=blank|A5=f:=""		stat,counta,empty-text
+stat-counta-0002	=COUNTA(A1:A3)	A1=blank|A2=blank|A3=blank		stat,counta,blank
+stat-countif-0001	=COUNTIF(A1:A5,">2")	A1=1|A2=2|A3=3|A4=4|A5=5		stat,countif,criteria
+stat-countif-0002	=COUNTIF(A1:A4,"apple")	A1=t:apple|A2=t:pear|A3=t:apple|A4=t:Apple		stat,countif,text,case
+stat-countif-0003	=COUNTIF(A1:A4,"a*")	A1=t:apple|A2=t:avocado|A3=t:pear|A4=t:Apricot		stat,countif,wildcard
+stat-countif-0004	=COUNTIF(A1:A3,"<>2")	A1=1|A2=2|A3=3		stat,countif,criteria
+stat-countif-0005	=COUNTIF(A1:A3,2)	A1=t:2|A2=2|A3=3		stat,countif,text-number
+stat-min-0001	=MIN(A1:A4)	A1=3|A2=1|A3=4|A4=2		stat,min
+stat-min-0002	=MIN(A1:A2)	A1=t:x|A2=blank		stat,min,empty
+stat-min-0003	=MIN(A1:A3)	A1=-5|A2=b:1|A3=blank		stat,min,ignore
+stat-min-0004	=MIN("5",TRUE)			stat,min,coercion
+stat-max-0001	=MAX(A1:A4)	A1=3|A2=1|A3=4|A4=2		stat,max
+stat-max-0002	=MAX(A1:A2)	A1=t:x|A2=blank		stat,max,empty
+stat-max-0003	=MAX(A1:A3)	A1=f:=2*3|A2=1|A3=blank		stat,max,formula-cell
+stat-median-0001	=MEDIAN(A1:A5)	A1=1|A2=3|A3=2|A4=5|A5=4		stat,median,odd
+stat-median-0002	=MEDIAN(A1:A4)	A1=1|A2=2|A3=3|A4=4		stat,median,even
+stat-median-0003	=MEDIAN(A1:A3)	A1=1|A2=t:x|A3=3		stat,median,ignore
+stat-median-0004	=MEDIAN(A1:A2)	A1=t:x|A2=blank		stat,median,error
+stat-mix-0001	=AVERAGE(A1:A3)+COUNT(A1:A3)	A1=1|A2=2|A3=3		stat,mix
+stat-error-0001	=AVERAGE(A1:A3)	A1=1|A2=e:#DIV/0!|A3=3		stat,error,propagation
+stat-error-0002	=COUNT(A1:A3)	A1=1|A2=e:#N/A|A3=3		stat,error,count-ignore
+stat-error-0003	=COUNTA(A1:A3)	A1=1|A2=e:#N/A|A3=blank		stat,error,counta
+stat-blank-0001	=SUM(A1:A3)/COUNT(A1:A3)	A1=blank|A2=blank|A3=blank		stat,blank,error

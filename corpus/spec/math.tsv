@@ -1,0 +1,57 @@
+id	formula	grid	now	tags
+math-round-0001	=ROUND(2.675,2)			math,round,boundary.float
+math-round-0002	=ROUND(2.5,0)			math,round,boundary.half
+math-round-0003	=ROUND(-2.5,0)			math,round,boundary.half
+math-round-0004	=ROUND(2.4,0)			math,round
+math-round-0005	=ROUND(123.456,-1)			math,round,negative-digits
+math-round-0006	=ROUND(123.456,-2)			math,round,negative-digits
+math-round-0007	=ROUND(A1,2)	A1=1.005		math,round,boundary.float
+math-round-0008	=ROUND(2.675,2.9)			math,round,trunc-digits
+math-roundup-0001	=ROUNDUP(2.1,0)			math,roundup
+math-roundup-0002	=ROUNDUP(-2.1,0)			math,roundup
+math-roundup-0003	=ROUNDUP(123.4,-2)			math,roundup,negative-digits
+math-rounddown-0001	=ROUNDDOWN(2.9,0)			math,rounddown
+math-rounddown-0002	=ROUNDDOWN(-2.9,0)			math,rounddown
+math-abs-0001	=ABS(-5)			math,abs
+math-abs-0002	=ABS(A1)	A1=t:-3		math,abs,coercion
+math-int-0001	=INT(-2.5)			math,int
+math-int-0002	=INT(2.9)			math,int
+math-mod-0001	=MOD(-3,2)			math,mod,sign
+math-mod-0002	=MOD(3,-2)			math,mod,sign
+math-mod-0003	=MOD(5,0)			math,mod,error
+math-mod-0004	=MOD(5.5,2)			math,mod
+math-power-0001	=POWER(2,10)			math,power
+math-power-0002	=POWER(-1,0.5)			math,power,error
+math-power-0003	=POWER(0,0)			math,power,boundary
+math-power-0004	=POWER(9,0.5)			math,power
+math-sqrt-0001	=SQRT(4)			math,sqrt
+math-sqrt-0002	=SQRT(-1)			math,sqrt,error
+math-sqrt-0003	=SQRT(A1)	A1=t:16		math,sqrt,coercion
+math-sum-0001	=SUM(A1:A5)	A1=1|A2=2|A3=3|A4=4|A5=5		math,sum
+math-sum-0002	=SUM(A1:A4)	A1=1|A2=t:x|A3=b:1|A4=blank		math,sum,range,ignore
+math-sum-0003	=SUM("3",4)			math,sum,coercion
+math-sum-0004	=SUM(A1,4)	A1=t:abc		math,sum,coercion,error
+math-sum-0005	=SUM(A1:A3)	A1=1|A2=e:#N/A|A3=3		math,sum,error
+math-sum-0006	=SUM(A1:A3)	A1=f:=1+1|A2=3|A3=blank		math,sum,formula-cell
+math-sumif-0001	=SUMIF(A1:A5,">2")	A1=1|A2=2|A3=3|A4=4|A5=5		math,sumif,criteria
+math-sumif-0002	=SUMIF(A1:A4,"apple",B1:B4)	A1=t:apple|A2=t:pear|A3=t:apple|A4=t:Apple|B1=1|B2=2|B3=3|B4=4		math,sumif,text,case
+math-sumif-0003	=SUMIF(A1:A4,"a*",B1:B4)	A1=t:apple|A2=t:avocado|A3=t:pear|A4=t:Apricot|B1=1|B2=2|B3=4|B4=8		math,sumif,wildcard
+math-sumif-0004	=SUMIF(A1:A3,">1")	A1=1|A2=2|A3=3		math,sumif,omitted-range
+math-sumproduct-0001	=SUMPRODUCT(A1:A3,B1:B3)	A1=1|A2=2|A3=3|B1=4|B2=5|B3=6		math,sumproduct
+math-sumproduct-0002	=SUMPRODUCT(A1:A3,B1:B2)	A1=1|A2=2|A3=3|B1=4|B2=5		math,sumproduct,shape,error
+math-sumproduct-0003	=SUMPRODUCT(A1:A3)	A1=1|A2=t:x|A3=3		math,sumproduct,nonnumeric
+math-arith-0001	=A1+1	A1=t:2		math,arith,coercion
+math-arith-0002	=A1+1	A1=blank		math,arith,blank
+math-arith-0003	=A1+1	A1=b:1		math,arith,bool
+math-arith-0004	=A1+1	A1=t:abc		math,arith,coercion,error
+math-arith-0005	=-2^2			math,arith,precedence
+math-arith-0006	=2^3^2			math,arith,precedence
+math-arith-0007	=50%*2			math,arith,percent
+math-arith-0008	=1/0			math,arith,error
+math-arith-0009	=1&2			math,arith,concat
+math-arith-0010	=0.1+0.2&""			math,arith,concat,float
+math-arith-0011	="1"=1			math,arith,compare,types
+math-arith-0012	=A1*2	A1=t:1e2		math,arith,coercion,scientific
+math-arith-0013	=A1+1	A1=t:50%		math,arith,coercion,percent
+math-arith-0014	=123456789012345678&""			math,arith,concat,precision
+math-arith-0015	=TRUE+TRUE			math,arith,bool

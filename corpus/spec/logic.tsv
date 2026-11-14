@@ -1,0 +1,36 @@
+id	formula	grid	now	tags
+logic-if-0001	=IF(A1>1,"yes","no")	A1=2		logic,if
+logic-if-0002	=IF(A1>1,"yes","no")	A1=0		logic,if
+logic-if-0003	=IF(TRUE,1,1/0)			logic,if,lazy
+logic-if-0004	=IF(FALSE,1/0,2)			logic,if,lazy
+logic-if-0005	=IF(A1,1,2)	A1=e:#DIV/0!		logic,if,error
+logic-if-0006	=IF(A1,1,2)	A1=blank		logic,if,blank
+logic-if-0007	=IF(A1,1,2)	A1=0		logic,if,coercion
+logic-if-0008	=IF(A1,1,2)	A1=t:TRUE		logic,if,coercion
+logic-if-0009	=IF(A1,1,2)	A1=t:hello		logic,if,coercion
+logic-if-0010	=IF(A1>0,A1*2,-A1)	A1=-3		logic,if
+logic-if-0011	=IF(IF(A1>0,TRUE,FALSE),"pos","neg")	A1=5		logic,if,nested
+logic-and-0001	=AND(TRUE,TRUE)			logic,and
+logic-and-0002	=AND(TRUE,FALSE)			logic,and
+logic-and-0003	=AND(A1>0,B1>0)	A1=1|B1=2		logic,and
+logic-and-0004	=AND(TRUE,1/0)			logic,and,eager,error
+logic-and-0005	=AND(A1,A2)	A1=1|A2=0		logic,and,coercion
+logic-and-0006	=AND(A1,A2)	A1=t:1|A2=1		logic,and,coercion,text
+logic-and-0007	=AND(A1:A3)	A1=1|A2=1|A3=blank		logic,and,range,blank
+logic-and-0008	=AND(A1:A3)	A1=1|A2=t:x|A3=1		logic,and,range,text
+logic-or-0001	=OR(FALSE,TRUE)			logic,or
+logic-or-0002	=OR(FALSE,FALSE)			logic,or
+logic-or-0003	=OR(FALSE,1/0)			logic,or,eager,error
+logic-or-0004	=OR(A1:A3)	A1=0|A2=blank|A3=0		logic,or,range
+logic-not-0001	=NOT(TRUE)			logic,not
+logic-not-0002	=NOT(A1)	A1=0		logic,not,coercion
+logic-not-0003	=NOT(A1)	A1=t:FALSE		logic,not,coercion
+logic-not-0004	=NOT(A1)	A1=t:yes		logic,not,coercion,error
+logic-iferror-0001	=IFERROR(1/0,"fallback")			logic,iferror
+logic-iferror-0002	=IFERROR(A1,0)	A1=e:#N/A		logic,iferror,error
+logic-iferror-0003	=IFERROR(A1,0)	A1=5		logic,iferror
+logic-iferror-0004	=IFERROR(A1,"err")	A1=e:#VALUE!		logic,iferror,error
+logic-iferror-0005	=IFERROR(IFERROR(1/0,2/0),"outer")			logic,iferror,nested
+logic-iferror-0006	=IFERROR(A1&"x","err")	A1=e:#REF!		logic,iferror,concat
+logic-mix-0001	=IF(AND(A1>0,B1>0),A1+B1,0)	A1=2|B1=3		logic,mix
+logic-mix-0002	=IF(OR(A1=0,B1=0),"zero","nonzero")	A1=0|B1=5		logic,mix
