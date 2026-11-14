@@ -1,0 +1,57 @@
+id	formula	grid	now	tags
+date-date-0001	=DATE(2026,11,14)			date,date
+date-date-0002	=DATE(2026,13,1)			date,date,normalize-month
+date-date-0003	=DATE(2026,0,1)			date,date,normalize-month
+date-date-0004	=DATE(2026,1,0)			date,date,normalize-day
+date-date-0005	=DATE(2026,1,32)			date,date,normalize-day
+date-date-0006	=DATE(2026,1,-1)			date,date,normalize-day
+date-date-0007	=DATE(1900,1,1)			date,date,epoch
+date-date-0008	=DATE(1900,2,29)			date,date,lotus
+date-date-0009	=DATE(1900,3,1)			date,date,lotus
+date-date-0010	=DATE(100,1,1)			date,date,year-offset
+date-date-0011	=DATE(1899,12,31)			date,date,year-offset,boundary
+date-date-0012	=DATE(1904,1,1)			date,date
+date-date-0013	=DATE(10000,1,1)			date,date,boundary.year
+date-date-0014	=DATE(-1,1,1)			date,date,boundary.year
+date-date-0015	=DATE(2026,2,29)			date,date,non-leap
+date-date-0016	=DATE(2024,2,29)			date,date,leap
+date-date-0017	=DATE(2026.9,1.9,1.9)			date,date,truncation
+date-date-0018	=DATE(A1,1,1)	A1=t:abc		date,date,error
+date-date-0019	=DATE(9999,12,31)			date,date,boundary.max
+date-date-0020	=DATE(9999,12,32)			date,date,boundary.max
+date-year-0001	=YEAR(46340)			date,year
+date-year-0002	=YEAR(1)			date,year,epoch
+date-year-0003	=YEAR(0)			date,year,boundary.zero
+date-year-0004	=YEAR(60)			date,year,lotus
+date-year-0005	=YEAR(61)			date,year,lotus
+date-year-0006	=YEAR(2958465)			date,year,boundary.max
+date-year-0007	=YEAR(2958466)			date,year,boundary.overflow
+date-year-0008	=YEAR(A1)	A1=t:2026-11-14		date,year,locale
+date-year-0009	=YEAR(TRUE)			date,year,bool
+date-year-0010	=YEAR(A1)	A1=blank		date,year,blank
+date-year-0011	=YEAR(DATE(2026,11,14))			date,year,composed
+date-month-0001	=MONTH(46340)			date,month
+date-month-0002	=MONTH(1)			date,month,epoch
+date-month-0003	=MONTH(0)			date,month,boundary.zero
+date-month-0004	=MONTH(60)			date,month,lotus
+date-month-0005	=MONTH(61)			date,month,lotus
+date-month-0006	=MONTH(A1)	A1=f:=DATE(2026,7,4)		date,month,formula-cell
+date-day-0001	=DAY(46340)			date,day
+date-day-0002	=DAY(1)			date,day,epoch
+date-day-0003	=DAY(0)			date,day,boundary.zero
+date-day-0004	=DAY(59)			date,day,lotus
+date-day-0005	=DAY(60)			date,day,lotus
+date-day-0006	=DAY(61)			date,day,lotus
+date-day-0007	=DAY(2958465)			date,day,boundary.max
+date-day-0008	=DAY(-1)			date,day,boundary.negative
+date-day-0009	=DAY(46340.75)			date,day,fraction
+date-today-0001	=TODAY()		capture	date,today,clock
+date-today-0002	=TODAY()+1		capture	date,today,clock
+date-today-0003	=YEAR(TODAY())		capture	date,today,clock
+date-now-0001	=NOW()		capture	date,now,clock
+date-now-0002	=NOW()-TODAY()		capture	date,now,clock
+date-now-0003	=NOW()>=TODAY()		capture	date,now,clock
+date-now-0004	=DAY(NOW())		capture	date,now,clock
+date-arith-0001	=DATE(2026,11,14)-DATE(2026,11,1)			date,arithmetic
+date-arith-0002	=A1+7	A1=f:=DATE(2026,11,14)		date,arithmetic,formula-cell
+date-arith-0003	=A1+1	A1=46340		date,arithmetic

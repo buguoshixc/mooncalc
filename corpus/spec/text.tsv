@@ -1,0 +1,76 @@
+id	formula	grid	now	tags
+text-left-0001	=LEFT("Excel",2)			text,left
+text-left-0002	=LEFT(A1,3)	A1=t:abcdef		text,left
+text-left-0003	=LEFT(A1)	A1=t:abc		text,left,default
+text-left-0004	=LEFT(12345,2)			text,left,coercion
+text-left-0005	=LEFT("abc",-1)			text,left,boundary.negative
+text-left-0006	=LEFT("abc",10)			text,left,boundary.clamp
+text-left-0007	=LEFT(A1,2)	A1=blank		text,left,blank
+text-left-0008	=LEFT(A1,2)	A1=e:#N/A		text,left,error
+text-right-0001	=RIGHT("Excel",2)			text,right
+text-right-0002	=RIGHT(12345,2)			text,right,coercion
+text-right-0003	=RIGHT("abc")			text,right,default
+text-right-0004	=RIGHT("abc",0)			text,right,boundary.zero
+text-mid-0001	=MID("Excel",2,3)			text,mid
+text-mid-0002	=MID("abc",0,2)			text,mid,boundary.start
+text-mid-0003	=MID("abc",2,-1)			text,mid,boundary.negative
+text-mid-0004	=MID("abc",5,2)			text,mid,boundary.past-end
+text-mid-0005	=MID(A1,2,2)	A1=12345		text,mid,coercion
+text-mid-0006	=MID("abcdef",2.9,2.9)			text,mid,truncation
+text-len-0001	=LEN("Excel")			text,len
+text-len-0002	=LEN("")			text,len,empty
+text-len-0003	=LEN(A1)	A1=blank		text,len,blank
+text-len-0004	=LEN(12345)			text,len,coercion
+text-len-0005	=LEN("中文")			text,len,non-ascii
+text-len-0006	=LEN("😀")			text,len,non-ascii
+text-trim-0001	=TRIM("  a  b  ")			text,trim
+text-trim-0002	=TRIM(A1)	A1=t:  x   y  		text,trim
+text-trim-0003	=TRIM("a b")			text,trim,non-ascii
+text-trim-0004	=TRIM(123)			text,trim,coercion
+text-upper-0001	=UPPER("aBc")			text,upper
+text-upper-0002	=UPPER(A1)	A1=123		text,upper,coercion
+text-upper-0003	=UPPER("straße")			text,upper,non-ascii
+text-lower-0001	=LOWER("ABC")			text,lower
+text-lower-0002	=LOWER("CAFÉ")			text,lower,non-ascii
+text-concat-0001	=CONCAT("a","b","c")			text,concat
+text-concat-0002	=CONCAT(A1:A3)	A1=t:x|A2=t:y|A3=t:z		text,concat,range
+text-concat-0003	=CONCAT(A1:A2)	A1=1|A2=2		text,concat,range,coercion
+text-concat-0004	=CONCAT("a",A1)	A1=blank		text,concat,blank
+text-concat-0005	=CONCAT(A1,"b")	A1=e:#VALUE!		text,concat,error
+text-concat-0006	=CONCAT(TRUE,"x")			text,concat,bool
+text-value-0001	=VALUE("123")			text,value
+text-value-0002	=VALUE("12%")			text,value,percent
+text-value-0003	=VALUE("1.5e2")			text,value,scientific
+text-value-0004	=VALUE("1,000")			text,value,locale
+text-value-0005	=VALUE("abc")			text,value,invalid
+text-value-0006	=VALUE(A1)	A1=blank		text,value,blank
+text-value-0007	=VALUE(TRUE)			text,value,bool
+text-value-0008	=VALUE(3.5)			text,value,number
+text-value-0009	=VALUE("")			text,value,empty
+text-find-0001	=FIND("p","Apple")			text,find
+text-find-0002	=FIND("a","Apple")			text,find,case-sensitive
+text-find-0003	=FIND("p","Apple",3)			text,find,start
+text-find-0004	=FIND("","abc")			text,find,empty-needle
+text-find-0005	=FIND("","abc",2)			text,find,empty-needle,start
+text-find-0006	=FIND("x","abc")			text,find,not-found
+text-find-0007	=FIND("a","abc",5)			text,find,boundary.start
+text-substitute-0001	=SUBSTITUTE("a-b-c","-","+")			text,substitute
+text-substitute-0002	=SUBSTITUTE("a-b-c","-","+",2)			text,substitute,instance
+text-substitute-0003	=SUBSTITUTE("abc","b","")			text,substitute,delete
+text-substitute-0004	=SUBSTITUTE("abc","","x")			text,substitute,empty-old
+text-substitute-0005	=SUBSTITUTE("aaa","a","b",0)			text,substitute,boundary.instance
+text-substitute-0006	=SUBSTITUTE("abc","x","y")			text,substitute,no-match
+text-substitute-0007	=SUBSTITUTE(121,"1","9")			text,substitute,coercion
+text-text-0001	=TEXT(1234.567,"#,##0.00")			text,text,grouping
+text-text-0002	=TEXT(0.25,"0%")			text,text,percent
+text-text-0003	=TEXT(-1234.5,"#,##0")			text,text,negative,rounding
+text-text-0004	=TEXT(0,"0;0;""zero""")			text,text,sections
+text-text-0005	=TEXT(-5,"0;""neg""0")			text,text,sections
+text-text-0006	=TEXT(1.5,"0.??")			text,text,question-pad
+text-text-0007	=TEXT(1234567,"0,,")			text,text,scale-comma
+text-text-0008	=TEXT(0.005,"0.00")			text,text,boundary.float
+text-text-0009	=TEXT("abc","0")			text,text,text-passthrough
+text-text-0010	=TEXT(TRUE,"0")			text,text,bool
+text-text-0011	=TEXT(5,"yyyy")			text,text,subset-adjudication
+text-text-0012	=TEXT(123,"General")			text,text,general
+text-text-0013	=TEXT(0,"#")			text,text,zero-empty
