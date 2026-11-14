@@ -228,3 +228,6 @@ gen-round-0016	=ROUND(A1,1)	A1=1.45		generic,round,boundary.float
 gen-mod-0009	=MOD(A1,1)	A1=3.75		generic,mod,fraction
 gen-power-0009	=POWER(A1,0)	A1=0		generic,power,boundary
 gen-sqrt-0006	=SQRT(A1)	A1=t:2		generic,sqrt,coercion
+gen-count-0009	=COUNT(#N/A)			generic,count,error,literal
+gen-count-0010	=COUNT(1/0)			generic,count,error,computed
+gen-counta-0005	=COUNTA(#N/A)			generic,counta,error,literal

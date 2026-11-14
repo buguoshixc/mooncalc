@@ -326,3 +326,15 @@ test "AND/OR reference channel: only logicals count" {
   assert_bool(evg("=AND(A1,A2)", t), true)
   assert_err(ev("=AND(\"x\")"), @value.XlError::Value)
 }
+
+test "COUNT/COUNTA: literal errors propagate, reference errors do not" {
+  assert_err(ev("=COUNT(#N/A)"), @value.XlError::NA)
+  assert_err(ev("=COUNTA(#N/A)"), @value.XlError::NA)
+  assert_err(ev("=COUNT(1/0)"), @value.XlError::Div0)
+  let e = grid([
+    ("A1", @engine.Cell::Literal(@value.Value::Err(@value.XlError::NA))),
+  ])
+  assert_num(evg("=COUNT(A1)", e), 0.0)
+  assert_num(evg("=COUNTA(A1)", e), 1.0)
+  assert_num(evg("=COUNT(A1,1)", e), 1.0)
+}

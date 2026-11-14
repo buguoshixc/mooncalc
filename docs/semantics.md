@@ -82,7 +82,7 @@ Excel 优先级（高→低）：
 - **字面量参数**走强制转换：`SUM("3",4) = 7`、`SUM(TRUE,1) = 2`。
 - **引用参数**（含单格引用）：SUM/AVERAGE/MIN/MAX/MEDIAN/SUMPRODUCT 等忽略文本与布尔（不转换、不报错），故 `SUM(A1,4)`（A1 为文本）= 4、`AVERAGE(A1)`（A1 为文本）= `#DIV/0!`；**COUNT 只数数字**；**COUNTA 数一切非空**（含公式产生的 `""`）。
 - AND/OR 的引用参数**只认布尔格**（数字/文本/空白忽略）；全部参数都没有逻辑值 → `#VALUE!`；字面量参数走 to_bool。
-- 引用内的错误值传播（见下）；**例外**：COUNTIF/SUMIF 的条件区域内错误格只是不匹配、不传播，criteria 参数为错误才传播；SUMIF 求和区域的错误格在被选中求和时传播。
+- 引用内的错误值传播（见下）；**例外**：COUNT 忽略引用内错误格、COUNTA 将其计为非空；COUNTIF/SUMIF 的条件区域内错误格只是不匹配、不传播，criteria 参数为错误才传播；SUMIF 求和区域的错误格在被选中求和时传播。COUNT/COUNTA/SUMPRODUCT 的**直接**错误参数（字面量或计算结果）传播。
 
 ## 错误传播与求值顺序
 
@@ -148,7 +148,7 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 
 以下条目已埋入 corpus/spec/generic.tsv 等规格，等 corpus/cases/ 到达后以 Excel 为唯一裁判：
 
-1. COUNT/SUMPRODUCT 对**直接错误参数**的传播行为。
+1. COUNT/COUNTA/SUMPRODUCT 对**直接错误参数**的传播（已实现：直接错误参数传播 `COUNT(#N/A)` → `#N/A`；引用内错误 COUNT 忽略、COUNTA 计数；待语料确认）。
 2. MEDIAN 对空白直接参数的处理。
 3. IFERROR 第一参数为空白时的返回。
 4. 非 ASCII 的 UPPER/LOWER/LEN 行为（当前 ASCII-only，预期记署名偏差）。

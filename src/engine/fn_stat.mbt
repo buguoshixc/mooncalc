@@ -16,11 +16,19 @@ fn fn_average(_ctx : Ctx, args : Array[Thunk]) -> Value {
 }
 
 fn fn_count(_ctx : Ctx, args : Array[Thunk]) -> Value {
-  Value::Num(count_channel(eager(args), 0).to_double())
+  let vals = eager(args)
+  if direct_error(vals) is Some(e) {
+    return Value::Err(e)
+  }
+  Value::Num(count_channel(vals, 0).to_double())
 }
 
 fn fn_counta(_ctx : Ctx, args : Array[Thunk]) -> Value {
-  Value::Num(count_channel(eager(args), 1).to_double())
+  let vals = eager(args)
+  if direct_error(vals) is Some(e) {
+    return Value::Err(e)
+  }
+  Value::Num(count_channel(vals, 1).to_double())
 }
 
 fn fn_countif(_ctx : Ctx, args : Array[Thunk]) -> Value {

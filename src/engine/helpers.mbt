@@ -24,6 +24,18 @@ fn scalar_output(v : Value) -> Value {
   }
 }
 
+// Literal/computed error arguments propagate; reference errors stay in the
+// range channel (refs arrive wrapped as 1x1 ranges, never as bare Err).
+fn direct_error(vals : Array[Value]) -> XlError? {
+  for v in vals {
+    match v {
+      Err(e) => return Some(e)
+      _ => ()
+    }
+  }
+  None
+}
+
 fn arg_number(vals : Array[Value], i : Int) -> Result[Double, XlError] {
   to_number(scalarize(vals[i]))
 }
