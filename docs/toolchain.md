@@ -43,3 +43,9 @@
 
 - builtin String 的大小写/裁剪/查找方法覆盖度（UPPER/LOWER/TRIM/FIND）。
 - Double 的格式化能力（to_text 的 15 位有效数字规则）。
+## 网络环境：GitHub 推送路由（2026-11-14 实测）
+
+- 本 WSL2 环境 **github.com:443 被阻断**（TLS 连接被切断，curl 超时 HTTP 000）；`git push`/`git fetch` 走 origin 的 HTTPS URL 均失败。
+- 可达路由：`api.github.com`（HTTPS 200，~0.3s）、`ssh.github.com:443` 与 `github.com:22`（TCP 通）。
+- 解法：经 gh API 注册**仓库级 write deploy key**（`~/.ssh/mooncalc_deploy`，key id 169865712），用 `scripts/push.sh` 走 `ssh://git@ssh.github.com:443` 推送，commit SHA 完整保真；fetch 同样被阻断，脚本推送后手动同步 `refs/remotes/origin/main`。
+- gh CLI 已认证（buguoshixc，repo scope），API 调用不受影响。
