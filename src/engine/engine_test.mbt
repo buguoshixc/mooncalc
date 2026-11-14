@@ -347,3 +347,12 @@ test "formula results are never blank: blank refs display as 0" {
   assert_bool(evg("=A1=\"\"", b), true)
   assert_num(evg("=IF(TRUE,A1,9)", b), 0.0)
 }
+
+test "unary plus coerces to number like unary minus" {
+  assert_num(ev("=+\"3\""), 3.0)
+  assert_num(ev("=+TRUE"), 1.0)
+  assert_err(ev("=+\"abc\""), @value.XlError::Value)
+  assert_num(ev("=+1+2"), 3.0)
+  let t = grid([("A1", txt("x"))])
+  assert_err(evg("=+A1", t), @value.XlError::Value)
+}

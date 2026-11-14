@@ -77,7 +77,7 @@ fn parse_prefix(p : Parser) -> Expr raise ParseError {
       e
     }
     Op("-") => Unary(Neg, parse_expr(p, 60))
-    Op("+") => parse_expr(p, 60)
+    Op("+") => Unary(Pos, parse_expr(p, 60))
     Ident(name) => {
       if peek(p) == Some(LParen) {
         p.pos += 1

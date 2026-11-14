@@ -233,3 +233,6 @@ gen-count-0010	=COUNT(1/0)			generic,count,error,computed
 gen-counta-0005	=COUNTA(#N/A)			generic,counta,error,literal
 gen-blank-0002	=A1	A1=blank		generic,blank,ref
 gen-blank-0003	=IFERROR(A1,9)	A1=blank		generic,blank,iferror
+gen-unary-0002	=+"3"			generic,arith,unary,coercion
+gen-unary-0003	=+TRUE			generic,arith,unary,coercion
+gen-unary-0004	=+"abc"			generic,arith,unary,error

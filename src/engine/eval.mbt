@@ -119,6 +119,7 @@ fn eval_expr(ctx : Ctx, e : @syntax.Expr) -> Value {
         Ok(d) =>
           match op {
             Neg => Value::Num(-d)
+            Pos => Value::Num(d)
             Percent => Value::Num(d / 100.0)
           }
       }

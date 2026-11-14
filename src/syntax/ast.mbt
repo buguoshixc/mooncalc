@@ -1,5 +1,6 @@
 pub(all) enum UnOp {
   Neg
+  Pos
   Percent
 } derive(Show, Debug, Eq)
 
