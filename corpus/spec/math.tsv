@@ -55,3 +55,57 @@ math-arith-0012	=A1*2	A1=t:1e2		math,arith,coercion,scientific
 math-arith-0013	=A1+1	A1=t:50%		math,arith,coercion,percent
 math-arith-0014	=123456789012345678&""			math,arith,concat,precision
 math-arith-0015	=TRUE+TRUE			math,arith,bool
+math-rounddown-0003	=ROUNDDOWN(123.456,-1)			math,rounddown,negative-digits
+math-rounddown-0004	=ROUNDDOWN(123.456,-2)			math,rounddown,negative-digits
+math-rounddown-0005	=ROUNDDOWN(-123.456,-1)			math,rounddown,negative-digits
+math-rounddown-0006	=ROUNDDOWN(2.999,2)			math,rounddown
+math-rounddown-0007	=ROUNDDOWN(-2.999,2)			math,rounddown
+math-rounddown-0008	=ROUNDDOWN(5,0)			math,rounddown,integer
+math-rounddown-0009	=ROUNDDOWN(A1,1)	A1=t:3.19		math,rounddown,coercion
+math-rounddown-0010	=ROUNDDOWN(0.999,0)			math,rounddown,boundary
+math-abs-0003	=ABS(5)			math,abs
+math-abs-0004	=ABS(0)			math,abs,boundary
+math-abs-0005	=ABS(-2.5)			math,abs
+math-abs-0006	=ABS(A1)	A1=blank		math,abs,blank
+math-abs-0007	=ABS(A1)	A1=b:1		math,abs,bool
+math-abs-0008	=ABS(A1)	A1=t:-5%		math,abs,coercion,percent
+math-abs-0009	=ABS(-A1)	A1=3		math,abs,nested
+math-abs-0010	=ABS(A1)	A1=t:abc		math,abs,coercion,error
+math-int-0003	=INT(0)			math,int,boundary
+math-int-0004	=INT(-0.1)			math,int,floor
+math-int-0005	=INT(5.999)			math,int
+math-int-0006	=INT(A1)	A1=t:3.7		math,int,coercion
+math-int-0007	=INT(A1)	A1=blank		math,int,blank
+math-int-0008	=INT(A1)	A1=b:1		math,int,bool
+math-int-0009	=INT(-2.5)+INT(2.5)			math,int,floor
+math-int-0010	=INT(A1)	A1=t:abc		math,int,coercion,error
+math-sumproduct-0004	=SUMPRODUCT(A1:A2,B1:B2)	A1=1|A2=2|B1=3|B2=4		math,sumproduct
+math-sumproduct-0005	=SUMPRODUCT(A1:B2)	A1=1|B1=2|A2=3|B2=4		math,sumproduct,single-array
+math-sumproduct-0006	=SUMPRODUCT(A1:A2,B1:B2)	A1=1|A2=t:x|B1=3|B2=4		math,sumproduct,nonnumeric
+math-sumproduct-0007	=SUMPRODUCT(A1:A2,B1:B2)	A1=1|A2=2|B1=b:1|B2=3		math,sumproduct,bool
+math-sumproduct-0008	=SUMPRODUCT(A1:A2,B1:B2)	A1=1|A2=2|B1=blank|B2=4		math,sumproduct,blank
+math-sumproduct-0009	=SUMPRODUCT(A1:A3,B1:B3)	A1=2|A2=3|A3=4|B1=5|B2=6|B3=7		math,sumproduct
+math-sumproduct-0010	=SUMPRODUCT(A1:A2,B1:B2)	A1=1|A2=e:#N/A|B1=3|B2=4		math,sumproduct,error
+math-sumproduct-0011	=SUMPRODUCT(A1:A2)	A1=blank|A2=blank		math,sumproduct,blank
+math-roundup-0004	=ROUNDUP(123.456,-1)			math,roundup,negative-digits
+math-roundup-0005	=ROUNDUP(-123.456,-1)			math,roundup,negative-digits
+math-roundup-0006	=ROUNDUP(2.001,2)			math,roundup
+math-roundup-0007	=ROUNDUP(-2.001,2)			math,roundup
+math-roundup-0008	=ROUNDUP(5,0)			math,roundup,integer
+math-roundup-0009	=ROUNDUP(A1,1)	A1=t:2.11		math,roundup,coercion
+math-sqrt-0004	=SQRT(0)			math,sqrt,boundary
+math-sqrt-0005	=SQRT(2.25)			math,sqrt
+math-sqrt-0006	=SQRT(A1)	A1=blank		math,sqrt,blank
+math-sqrt-0007	=SQRT(A1)	A1=b:1		math,sqrt,bool
+math-sqrt-0008	=SQRT(POWER(3,2))			math,sqrt,nested
+math-sqrt-0009	=SQRT(A1)	A1=t:abc		math,sqrt,coercion,error
+math-power-0005	=POWER(2,-1)			math,power,negative-exponent
+math-power-0006	=POWER(-2,3)			math,power,negative-base
+math-power-0007	=POWER(A1,2)	A1=t:4		math,power,coercion
+math-mod-0005	=MOD(-3,-2)			math,mod,sign
+math-mod-0006	=MOD(A1,3)	A1=t:10		math,mod,coercion
+math-sumif-0005	=SUMIF(A1:A4,"<>apple",B1:B4)	A1=t:apple|A2=t:pear|A3=t:Apple|A4=t:banana|B1=1|B2=2|B3=4|B4=8		math,sumif,criteria,case
+math-sumif-0006	=SUMIF(A1:A3,"?ear",B1:B3)	A1=t:pear|A2=t:bear|A3=t:dear|B1=1|B2=2|B3=4		math,sumif,wildcard
+math-sumif-0007	=SUMIF(A1:A3,">=2")	A1=1|A2=2|A3=3		math,sumif,omitted-range
+math-sumif-0008	=SUMIF(A1:A3,"2")	A1=1|A2=2|A3=3		math,sumif,criteria
+math-sumif-0009	=SUMIF(A1:A3,"~*",B1:B3)	A1=t:*|A2=t:x|A3=t:**|B1=1|B2=2|B3=4		math,sumif,wildcard,escape

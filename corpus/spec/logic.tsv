@@ -34,3 +34,23 @@ logic-iferror-0005	=IFERROR(IFERROR(1/0,2/0),"outer")			logic,iferror,nested
 logic-iferror-0006	=IFERROR(A1&"x","err")	A1=e:#REF!		logic,iferror,concat
 logic-mix-0001	=IF(AND(A1>0,B1>0),A1+B1,0)	A1=2|B1=3		logic,mix
 logic-mix-0002	=IF(OR(A1=0,B1=0),"zero","nonzero")	A1=0|B1=5		logic,mix
+logic-or-0005	=OR(TRUE,TRUE,TRUE)			logic,or
+logic-or-0006	=OR(1,0)			logic,or,coercion
+logic-or-0007	=OR("TRUE","FALSE")			logic,or,coercion,text
+logic-or-0008	=OR("yes")			logic,or,coercion,error
+logic-or-0009	=OR(A1,A2)	A1=1|A2=2		logic,or,refchannel
+logic-or-0010	=OR(A1,FALSE)	A1=b:1		logic,or,bool
+logic-or-0011	=OR(A1:A2)	A1=b:0|A2=b:0		logic,or,range,bool
+logic-not-0005	=NOT(FALSE)			logic,not
+logic-not-0006	=NOT(1)			logic,not,coercion
+logic-not-0007	=NOT(0)			logic,not,coercion
+logic-not-0008	=NOT("TRUE")			logic,not,coercion,text
+logic-not-0009	=NOT(A1)	A1=blank		logic,not,blank
+logic-not-0010	=NOT(A1)	A1=b:1		logic,not,bool
+logic-not-0011	=NOT(NOT(TRUE))			logic,not,nested
+logic-and-0009	=AND(1,1)			logic,and,coercion
+logic-and-0010	=AND("TRUE",1)			logic,and,coercion,text
+logic-and-0011	=AND(A1:A2)	A1=b:1|A2=b:1		logic,and,range,bool
+logic-iferror-0007	=IFERROR(1/0,#N/A)			logic,iferror,error-fallback
+logic-iferror-0008	=IFERROR("ok",1/0)			logic,iferror,lazy
+logic-iferror-0009	=IFERROR(SQRT(-1),"neg")			logic,iferror,num

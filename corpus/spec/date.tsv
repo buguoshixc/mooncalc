@@ -55,3 +55,38 @@ date-now-0004	=DAY(NOW())		capture	date,now,clock
 date-arith-0001	=DATE(2026,11,14)-DATE(2026,11,1)			date,arithmetic
 date-arith-0002	=A1+7	A1=f:=DATE(2026,11,14)		date,arithmetic,formula-cell
 date-arith-0003	=A1+1	A1=46340		date,arithmetic
+date-today-0004	=TODAY()		capture	date,today,clock
+date-today-0005	=TODAY()-1		capture	date,today,clock
+date-today-0006	=TODAY()+7		capture	date,today,clock
+date-today-0007	=TODAY()*1		capture	date,today,clock
+date-today-0008	=TODAY()=INT(NOW())		capture	date,today,clock
+date-today-0009	=TODAY()<=NOW()		capture	date,today,clock
+date-today-0010	=TODAY()-TODAY()		capture	date,today,clock
+date-today-0011	=TODAY()/1		capture	date,today,clock
+date-today-0012	=TODAY()&""		capture	date,today,clock,text
+date-today-0013	=TODAY()+0.5		capture	date,today,clock
+date-today-0014	=TODAY()-46340		capture	date,today,clock
+date-today-0015	=TODAY()^1		capture	date,today,clock
+date-today-0016	=TODAY()*2		capture	date,today,clock
+date-now-0005	=NOW()		capture	date,now,clock
+date-now-0006	=NOW()-TODAY()		capture	date,now,clock,fraction
+date-now-0007	=NOW()*1		capture	date,now,clock
+date-now-0008	=NOW()+0		capture	date,now,clock
+date-now-0009	=NOW()>0		capture	date,now,clock
+date-now-0010	=NOW()-NOW()		capture	date,now,clock
+date-now-0011	=NOW()/1		capture	date,now,clock
+date-now-0012	=NOW()+1		capture	date,now,clock
+date-now-0013	=NOW()=NOW()		capture	date,now,clock
+date-now-0014	=NOW()-46340		capture	date,now,clock
+date-now-0015	=NOW()*2		capture	date,now,clock
+date-now-0016	=NOW()^1		capture	date,now,clock
+date-month-0007	=MONTH(DATE(2026,6,15))			date,month,composed
+date-month-0008	=MONTH(2958465)			date,month,boundary
+date-month-0009	=MONTH(36526)			date,month
+date-month-0010	=MONTH(A1)	A1=t:abc		date,month,coercion,error
+date-month-0011	=MONTH(A1)	A1=blank		date,month,blank
+date-month-0012	=MONTH(60)+MONTH(61)			date,month,lotus
+date-day-0010	=DAY(DATE(2026,11,14))			date,day,composed
+date-day-0011	=DAY(A1)	A1=t:abc		date,day,coercion,error
+date-day-0012	=DAY(A1)	A1=blank		date,day,blank
+date-day-0013	=DAY(36526)			date,day

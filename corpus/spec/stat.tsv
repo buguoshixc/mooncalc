@@ -29,3 +29,34 @@ stat-error-0001	=AVERAGE(A1:A3)	A1=1|A2=e:#DIV/0!|A3=3		stat,error,propagation
 stat-error-0002	=COUNT(A1:A3)	A1=1|A2=e:#N/A|A3=3		stat,error,count-ignore
 stat-error-0003	=COUNTA(A1:A3)	A1=1|A2=e:#N/A|A3=blank		stat,error,counta
 stat-blank-0001	=SUM(A1:A3)/COUNT(A1:A3)	A1=blank|A2=blank|A3=blank		stat,blank,error
+stat-counta-0003	=COUNTA(A1:A3)	A1=t:x|A2=b:0|A3=1		stat,counta,range
+stat-counta-0004	=COUNTA(A1)	A1=t:		stat,counta,empty-text
+stat-counta-0005	=COUNTA(A1,A2)	A1=blank|A2=0		stat,counta,zero
+stat-counta-0006	=COUNTA("x","",1)			stat,counta,literal
+stat-counta-0007	=COUNTA(A1:A2)	A1=f:=""|A2=blank		stat,counta,formula-cell
+stat-counta-0008	=COUNTA(A1)	A1=e:#N/A		stat,counta,error
+stat-counta-0009	=COUNTA(A1:A3)	A1=1|A2=2|A3=3		stat,counta
+stat-max-0004	=MAX(A1:A3)	A1=-5|A2=-1|A3=-9		stat,max,negative
+stat-max-0005	=MAX(A1,5)	A1=b:1		stat,max,bool
+stat-max-0006	=MAX("3",7)			stat,max,coercion
+stat-max-0007	=MAX(A1:A2)	A1=blank|A2=blank		stat,max,blank
+stat-max-0008	=MAX(A1:A3)	A1=1|A2=e:#N/A|A3=3		stat,max,error
+stat-max-0009	=MAX(2,2)			stat,max,tie
+stat-max-0010	=MAX(A1:A3)	A1=t:x|A2=t:y|A3=t:z		stat,max,text
+stat-countif-0006	=COUNTIF(A1:A3,"?ear")	A1=t:pear|A2=t:bear|A3=t:dear		stat,countif,wildcard
+stat-countif-0007	=COUNTIF(A1:A4,"<>apple")	A1=t:apple|A2=t:pear|A3=t:Apple|A4=t:banana		stat,countif,criteria,case
+stat-countif-0008	=COUNTIF(A1:A3,">=2")	A1=1|A2=2|A3=3		stat,countif,criteria
+stat-countif-0009	=COUNTIF(A1:A3,"~*")	A1=t:*|A2=t:x|A3=t:**		stat,countif,wildcard,escape
+stat-countif-0010	=COUNTIF(A1:A3,"<2")	A1=1|A2=2|A3=3		stat,countif,criteria
+stat-countif-0011	=COUNTIF(A1:A3,"2")	A1=t:2|A2=2|A3=3		stat,countif,text-number
+stat-median-0005	=MEDIAN(1,2,3,4,5)			stat,median,odd
+stat-median-0006	=MEDIAN(1,2,3,4)			stat,median,even
+stat-median-0007	=MEDIAN(A1:A3)	A1=5|A2=1|A3=3		stat,median,unsorted
+stat-median-0008	=MEDIAN(A1:A3)	A1=-5|A2=0|A3=5		stat,median,negative
+stat-median-0009	=MEDIAN(A1,2)	A1=b:1		stat,median,bool
+stat-min-0005	=MIN(A1:A3)	A1=-5|A2=-1|A3=-9		stat,min,negative
+stat-min-0006	=MIN(A1,5)	A1=b:1		stat,min,bool
+stat-min-0007	=MIN(A1:A3)	A1=1|A2=e:#N/A|A3=3		stat,min,error
+stat-min-0008	=MIN(2,2)			stat,min,tie
+stat-average-0005	=AVERAGE(A1:A3)	A1=2|A2=4|A3=6		stat,average
+stat-count-0004	=COUNT(A1:A3)	A1=1.5|A2=t:2|A3=b:1		stat,count,range

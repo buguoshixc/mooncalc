@@ -46,3 +46,15 @@ lookup-match-0012	=MATCH("3",A1:A3,0)	A1=1|A2=3|A3=5		lookup,match,type-mismatch
 lookup-match-0013	=MATCH(5,A1:B3,0)	A1=1|B1=2|A2=3|B2=4|A3=5|B3=6		lookup,match,boundary.2d
 lookup-match-0014	=MATCH(3,A1:A3)	A1=1|A2=3|A3=5		lookup,match,default
 lookup-match-0015	=MATCH("a~*b",C1:C1,0)	C1=t:a*b		lookup,match,wildcard-escape
+lookup-hlookup-0007	=HLOOKUP(3,A1:C2,2,FALSE)	A1=1|B1=2|C1=3|A2=10|B2=20|C2=30		lookup,hlookup
+lookup-hlookup-0008	=HLOOKUP(1,A1:C2,2,TRUE)	A1=1|B1=2|C1=3|A2=10|B2=20|C2=30		lookup,hlookup,approximate
+lookup-hlookup-0009	=HLOOKUP(1.5,A1:C2,2,TRUE)	A1=1|B1=2|C1=3|A2=10|B2=20|C2=30		lookup,hlookup,approximate
+lookup-hlookup-0010	=HLOOKUP("2",A1:C2,2,FALSE)	A1=1|B1=2|C1=3|A2=10|B2=20|C2=30		lookup,hlookup,types
+lookup-hlookup-0011	=HLOOKUP(2,A1:C2,1,FALSE)	A1=1|B1=2|C1=3|A2=10|B2=20|C2=30		lookup,hlookup,first-row
+lookup-hlookup-0012	=HLOOKUP(2,A1:C2,-1,FALSE)	A1=1|B1=2|C1=3|A2=10|B2=20|C2=30		lookup,hlookup,boundary.index
+lookup-hlookup-0013	=HLOOKUP(A1,B1:C2,2,FALSE)	A1=e:#N/A|B1=1|C1=2|B2=10|C2=20		lookup,hlookup,error
+lookup-hlookup-0014	=HLOOKUP(2,A1:C2,2)	A1=1|B1=2|C1=3|A2=10|B2=20|C2=30		lookup,hlookup,default
+lookup-index-0012	=INDEX(A1:C3,3,3)	A1=1|B1=2|C1=3|A2=4|B2=5|C2=6|A3=7|B3=8|C3=9		lookup,index
+lookup-index-0013	=INDEX(A1:C3,0,1)	A1=1|B1=2|C1=3|A2=4|B2=5|C2=6|A3=7|B3=8|C3=9		lookup,index,no-spill
+lookup-index-0014	=INDEX(A1:A3,1,1)	A1=5|A2=6|A3=7		lookup,index,single-col
+lookup-index-0015	=INDEX(A1:C3,2,2)	A1=1|B1=2|C1=3|A2=4|B2=f:=A1+1|C2=6|A3=7|B3=8|C3=9		lookup,index,formula-cell

@@ -74,3 +74,67 @@ text-text-0010	=TEXT(TRUE,"0")			text,text,bool
 text-text-0011	=TEXT(5,"yyyy")			text,text,subset-adjudication
 text-text-0012	=TEXT(123,"General")			text,text,general
 text-text-0013	=TEXT(0,"#")			text,text,zero-empty
+text-lower-0003	=LOWER("ABC123")			text,lower
+text-lower-0004	=LOWER("aBc")			text,lower
+text-lower-0005	=LOWER("")			text,lower,empty
+text-lower-0006	=LOWER(A1)	A1=t:HELLO WORLD		text,lower
+text-lower-0007	=LOWER(A1)	A1=123		text,lower,coercion
+text-lower-0008	=LOWER(A1)	A1=blank		text,lower,blank
+text-lower-0009	=LOWER(TRUE)			text,lower,bool
+text-lower-0010	=LOWER("ABC"&"DEF")			text,lower,nested
+text-lower-0011	=LOWER(A1)	A1=b:1		text,lower,bool
+text-lower-0012	=LOWER("MiXeD-Case_99")			text,lower
+text-lower-0013	=LOWER(A1)	A1=e:#N/A		text,lower,error
+text-lower-0014	=LOWER(UPPER("aBc"))			text,lower,nested
+text-trim-0005	=TRIM("")			text,trim,empty
+text-trim-0006	=TRIM("   ")			text,trim,all-spaces
+text-trim-0007	=TRIM("a")			text,trim,no-spaces
+text-trim-0008	=TRIM(" a ")			text,trim
+text-trim-0009	=TRIM("a  b  c")			text,trim
+text-trim-0010	=TRIM(A1)	A1=blank		text,trim,blank
+text-trim-0011	=TRIM(A1)	A1=123		text,trim,coercion
+text-trim-0012	=TRIM("  hello   world  ")			text,trim
+text-trim-0013	=TRIM(A1)	A1=e:#N/A		text,trim,error
+text-upper-0004	=UPPER("abc123")			text,upper
+text-upper-0005	=UPPER("")			text,upper,empty
+text-upper-0006	=UPPER(A1)	A1=t:hello world		text,upper
+text-upper-0007	=UPPER(A1)	A1=blank		text,upper,blank
+text-upper-0008	=UPPER(TRUE)			text,upper,bool
+text-upper-0009	=UPPER("a"&"b")			text,upper,nested
+text-upper-0010	=UPPER(A1)	A1=b:0		text,upper,bool
+text-upper-0011	=UPPER("MiXeD-Case_99")			text,upper
+text-upper-0012	=UPPER(A1)	A1=e:#N/A		text,upper,error
+text-right-0005	=RIGHT("abcdef",3)			text,right
+text-right-0006	=RIGHT("abc",-1)			text,right,boundary.negative
+text-right-0007	=RIGHT("abc",10)			text,right,boundary.clamp
+text-right-0008	=RIGHT(A1,2)	A1=blank		text,right,blank
+text-right-0009	=RIGHT(A1,2)	A1=b:1		text,right,bool
+text-right-0010	=RIGHT("abc",1.9)			text,right,truncation
+text-right-0011	=RIGHT(A1,2)	A1=e:#N/A		text,right,error
+text-right-0012	=RIGHT("Excel",1)			text,right
+text-mid-0007	=MID("abcdef",3,2)			text,mid
+text-mid-0008	=MID("abc",1,10)			text,mid,boundary.clamp
+text-mid-0009	=MID(A1,2,2)	A1=blank		text,mid,blank
+text-mid-0010	=MID("abc",1.9,1.9)			text,mid,truncation
+text-mid-0011	=MID(A1,1,2)	A1=e:#N/A		text,mid,error
+text-len-0007	=LEN("abc123")			text,len
+text-len-0008	=LEN(A1)	A1=t:hello world		text,len
+text-len-0009	=LEN(A1)	A1=b:1		text,len,bool
+text-len-0010	=LEN("a"&"b"&"c")			text,len,nested
+text-len-0011	=LEN(A1)	A1=e:#N/A		text,len,error
+text-concat-0007	=CONCAT("a",1,TRUE)			text,concat,mixed
+text-concat-0008	=CONCAT(A1:A2)	A1=blank|A2=t:x		text,concat,blank
+text-concat-0009	=CONCAT("")			text,concat,empty
+text-concat-0010	=CONCAT(A1:A2)	A1=b:1|A2=b:0		text,concat,bool
+text-concat-0011	=CONCAT("x",A1)	A1=e:#N/A		text,concat,error
+text-substitute-0008	=SUBSTITUTE("aaa","a","b",3)			text,substitute,instance
+text-substitute-0009	=SUBSTITUTE("abcabc","abc","x")			text,substitute,multiple
+text-substitute-0010	=SUBSTITUTE("abc","b","XY")			text,substitute,longer-new
+text-value-0010	=VALUE("  42  ")			text,value,whitespace
+text-value-0011	=VALUE("-1.5e-2")			text,value,scientific
+text-find-0008	=FIND("a","abcabc",2)			text,find,start
+text-find-0009	=FIND("A","abc")			text,find,case-sensitive
+text-left-0009	=LEFT("abcdef",3)			text,left
+text-left-0010	=LEFT("abc",0)			text,left,boundary.zero
+text-left-0011	=LEFT(A1,2)	A1=b:1		text,left,bool
+text-left-0012	=LEFT("abc",1.9)			text,left,truncation
