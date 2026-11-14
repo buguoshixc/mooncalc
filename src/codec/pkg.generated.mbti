@@ -1,0 +1,72 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "buguoshixc/mooncalc/src/codec"
+
+import {
+  "buguoshixc/mooncalc/src/engine",
+  "buguoshixc/mooncalc/src/value",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn corpus_from_json(@json.Json) -> Result[Array[CaseRecord], String]
+
+pub fn evaluate_json(String) -> String
+
+pub fn grid_from_json(@json.Json) -> Result[@engine.Grid, String]
+
+pub fn record_from_json(@json.Json) -> Result[CaseRecord, String]
+
+pub fn report_to_json(BenchReport) -> @json.Json
+
+pub fn run_bench(Array[CaseRecord], Double, Double, String?) -> BenchReport
+
+pub fn value_from_json(@json.Json) -> Result[@value.Value, String]
+
+pub fn value_to_json(@value.Value) -> @json.Json
+
+// Errors
+pub suberror CodecError {
+  CodecError(String)
+}
+
+// Types and methods
+pub(all) struct BenchReport {
+  total : Int32
+  passed : Int32
+  tol : Double
+  clock_tol : Double
+  results : Array[CaseResult]
+  by_source : Map[String, (Int32, Int32)]
+  by_tag : Map[String, (Int32, Int32)]
+  buckets : Map[String, Int32]
+}
+
+#derive(Show, @debug.Debug)
+pub(all) struct CaseRecord {
+  id : String
+  formula : String
+  grid : @engine.Grid
+  now : Double?
+  expected : @value.Value
+  tags : Array[String]
+  source : String
+  notes : String
+}
+
+#derive(Show, @debug.Debug)
+pub(all) struct CaseResult {
+  id : String
+  formula : String
+  source : String
+  tags : Array[String]
+  passed : Bool
+  bucket : String
+  expected : @json.Json
+  actual : @json.Json
+  detail : String
+}
+
+// Type aliases
+
+// Traits

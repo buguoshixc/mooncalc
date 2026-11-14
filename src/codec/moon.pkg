@@ -1,0 +1,10 @@
+import {
+  "moonbitlang/core/json" @json,
+  "buguoshixc/mooncalc" @facade,
+  "buguoshixc/mooncalc/src/value" @value,
+  "buguoshixc/mooncalc/src/syntax" @syntax,
+}
+
+import {
+  "moonbitlang/core/json" @json,
+} for "test"
