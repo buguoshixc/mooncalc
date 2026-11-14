@@ -2,8 +2,9 @@ Attribute VB_Name = "MoonCalcCorpus"
 Option Explicit
 
 ' MoonCalc answer-key corpus generator (desktop Excel).
-' Reads corpus/spec/*.tsv, computes each case in real Excel,
+' Reads corpus/spec/*.tsv (UTF-8), computes each case in real Excel,
 ' writes corpus/cases/<name>.json (schema mooncalc-corpus/1).
+' Cases Excel rejects are skipped and logged to <name>.skipped.txt.
 
 Sub GenerateCorpus()
     Dim fso As Object, base As String, specDir As String, outDir As String
@@ -25,6 +26,7 @@ Sub GenerateCorpus()
     oldCalc = Application.Calculation
     Application.Calculation = xlCalculationManual
     Application.ScreenUpdating = False
+    On Error GoTo Cleanup
 
     Dim f As Object, count As Long
     count = 0
@@ -35,42 +37,59 @@ Sub GenerateCorpus()
         End If
     Next f
 
+Cleanup:
     Application.Calculation = oldCalc
     Application.ScreenUpdating = True
     Application.DisplayAlerts = False
     ws.Delete
     Application.DisplayAlerts = True
-    MsgBox "Corpus generation complete: " & count & " spec file(s)."
+    If Err.Number <> 0 Then
+        MsgBox "Stopped by error " & Err.Number & ": " & Err.Description & vbCrLf & _
+               "Partial output (if any) is in corpus/cases. Report this to the AI."
+    Else
+        MsgBox "Corpus generation complete: " & count & " spec file(s)." & vbCrLf & _
+               "Skipped cases (if any) are listed in corpus/cases/*.skipped.txt"
+    End If
 End Sub
 
 Private Sub ProcessSpec(fso As Object, f As Object, ws As Worksheet, outDir As String)
-    Dim ts As Object, line As String, parts() As String
+    Dim line As String, parts() As String
     Dim records As String, first As Boolean
-    Set ts = fso.OpenTextFile(f.Path, 1)
+    Dim skipped As String
+    Dim lines() As String, li As Long
+    lines = Split(Replace(ReadUtf8(f.Path), vbCr, ""), vbLf)
     records = ""
+    skipped = ""
     first = True
-    Do While Not ts.AtEndOfStream
-        line = ts.ReadLine
+    For li = 0 To UBound(lines)
+        line = lines(li)
         If Len(line) > 0 And Left(line, 1) <> "#" Then
             parts = Split(line, vbTab)
             If UBound(parts) >= 4 And parts(0) <> "id" Then
                 Dim rec As String
                 rec = EvalCase(ws, parts(0), parts(1), parts(2), parts(3), parts(4))
-                If Not first Then records = records & ","
-                records = records & rec
-                first = False
+                If Len(rec) = 0 Then
+                    skipped = skipped & parts(0) & vbLf
+                Else
+                    If Not first Then records = records & ","
+                    records = records & rec
+                    first = False
+                End If
             End If
         End If
-    Loop
-    ts.Close
+    Next li
     Dim out As String
     out = "{""schema"":""mooncalc-corpus/1"",""records"":[" & records & "]}"
     WriteUtf8 outDir & "\" & fso.GetBaseName(f.Name) & ".json", out
+    If Len(skipped) > 0 Then
+        WriteUtf8 outDir & "\" & fso.GetBaseName(f.Name) & ".skipped.txt", skipped
+    End If
 End Sub
 
 Private Function EvalCase(ws As Worksheet, id As String, formula As String, _
                           grid As String, nowMode As String, tags As String) As String
     ws.Cells.Clear
+    On Error Resume Next
     If Len(grid) > 0 Then
         Dim cells() As String, i As Long
         cells = Split(grid, "|")
@@ -86,6 +105,14 @@ Private Function EvalCase(ws As Worksheet, id As String, formula As String, _
         Next i
     End If
     ws.Range("ZZ1").Formula = formula
+    If Err.Number <> 0 Then
+        ' Excel rejected the formula or a grid cell: skip, do not abort the run.
+        Err.Clear
+        On Error GoTo 0
+        EvalCase = ""
+        Exit Function
+    End If
+    On Error GoTo 0
     Application.Calculate
     Dim nowJson As String
     nowJson = ""
@@ -103,7 +130,7 @@ Private Function EvalCase(ws As Worksheet, id As String, formula As String, _
     ElseIf VarType(v) = vbString Then
         expected = "{""type"":""text"",""value"":""" & JsonEsc(CStr(v)) & """}"
     Else
-        expected = "{""type"":""number"",""value"":" & NumToJson(CDbl(v)) & "}"
+        expected = "{""type"":""number"",""value":":" & NumToJson(CDbl(v)) & "}"
     End If
     EvalCase = "{""id"":""" & JsonEsc(id) & """,""formula"":""" & JsonEsc(formula) & _
                """,""grid"":" & GridJson(grid) & nowJson & _
@@ -217,6 +244,17 @@ Private Function JsonEsc(s As String) As String
     out = Replace(out, vbLf, "\n")
     out = Replace(out, vbTab, "\t")
     JsonEsc = out
+End Function
+
+Private Function ReadUtf8(path As String) As String
+    Dim st As Object
+    Set st = CreateObject("ADODB.Stream")
+    st.Type = 2
+    st.Charset = "utf-8"
+    st.Open
+    st.LoadFromFile path
+    ReadUtf8 = st.ReadText
+    st.Close
 End Function
 
 Private Sub WriteUtf8(path As String, content As String)
