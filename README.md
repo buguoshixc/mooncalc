@@ -20,14 +20,14 @@ bash scripts/check.sh
 
 # CLI：求值一个含引用链/错误传播/循环引用的网格
 moon build --target native
-_build/native/debug/build/cmd/main/main.exe eval --grid tests/fixtures/grid.json
+_build/native/debug/build/buguoshixc/mooncalc/cmd/main/main.exe eval --grid tests/fixtures/grid.json
 
 # 跑分：真实 Excel 权威语料（默认 corpus/cases）
 bash scripts/run-bench.sh
 
 # 性能基准：进程内大网格重算（默认 1 万格，见 docs/performance.md）
 moon build --target native --release
-_build/native/release/build/cmd/main/main.exe perf --cells 100000
+_build/native/release/build/buguoshixc/mooncalc/cmd/main/main.exe perf --cells 100000
 
 # 浏览器 playground（wasm-gc）：支持 CSV 拖拽/按钮导入（行主序，=公式格可直接算）
 bash scripts/build-playground.sh
@@ -161,7 +161,7 @@ fn main {
 权威语料已由桌面 Excel 2024 生成并放入 `corpus/cases/`（1,001 条；2 条奇数参数 IFS 被 Excel 拒绝录入，见 `corpus/cases/logic.skipped.txt`；来源与环境见 [corpus/cases/PROVENANCE.md](corpus/cases/PROVENANCE.md)）。重新生成时在桌面 Excel 运行 [corpus/excel/generate_corpus.bas](corpus/excel/generate_corpus.bas)（说明见 [corpus/excel/README.md](corpus/excel/README.md)），把导出的 JSON 放入 `corpus/cases/`，然后：
 
 ```bash
-_build/native/debug/build/cmd/main/main.exe bench --corpus corpus/cases --report corpus/reports/real.json
+_build/native/debug/build/buguoshixc/mooncalc/cmd/main/main.exe bench --corpus corpus/cases --report corpus/reports/real.json
 ```
 
 ## 设计文档

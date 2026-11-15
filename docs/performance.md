@@ -8,8 +8,8 @@
 ```bash
 export PATH="$HOME/.moon/bin:$PATH"
 moon build --target native --release
-_build/native/release/build/cmd/main/main.exe perf                 # 默认 10000 格 × 3 次
-_build/native/release/build/cmd/main/main.exe perf --cells 100000 --repeat 5
+_build/native/release/build/buguoshixc/mooncalc/cmd/main/main.exe perf                 # 默认 10000 格 × 3 次
+_build/native/release/build/buguoshixc/mooncalc/cmd/main/main.exe perf --cells 100000 --repeat 5
 ```
 
 ## 场景

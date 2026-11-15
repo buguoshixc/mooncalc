@@ -16,7 +16,7 @@ node scripts/smoke.mjs       # headless Chromium 冒烟（20 断言）
 
 ```bash
 moon build --target native
-_build/native/debug/build/cmd/main/main.exe eval --grid tests/fixtures/grid.json
+_build/native/debug/build/buguoshixc/mooncalc/cmd/main/main.exe eval --grid tests/fixtures/grid.json
 ```
 
 fixture 看点（对应输出）：

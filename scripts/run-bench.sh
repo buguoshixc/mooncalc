@@ -4,4 +4,10 @@ set -euo pipefail
 export PATH="$HOME/.moon/bin:$PATH"
 cd "$(dirname "$0")/.."
 moon build --target native
-exec _build/native/debug/build/cmd/main/main.exe bench --corpus "${1:-corpus/cases}" "${@:2}"
+# Artifact path differs between single-module and workspace layouts.
+exe=$(find _build/native/debug/build -path "*/cmd/main/main.exe" | head -1)
+if [ -z "$exe" ]; then
+  echo "main.exe not found under _build/native/debug/build" >&2
+  exit 1
+fi
+exec "$exe" bench --corpus "${1:-corpus/cases}" "${@:2}"
