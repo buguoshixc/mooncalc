@@ -7,7 +7,7 @@
 ```bash
 bash scripts/check.sh        # wasm-gc check/build + native build + moon test + 零 IO 守卫
 bash scripts/run-bench.sh    # 权威语料跑分（默认 corpus/cases）
-node scripts/smoke.mjs       # headless Chromium 冒烟（29 断言）
+node scripts/smoke.mjs       # headless Chromium 冒烟（39 断言）
 ```
 
 预期：`ALL CHECKS PASS`；`1169/1169 passed (100%)`（真实 Excel 语料）；`SMOKE PASS`。
@@ -60,6 +60,8 @@ bash scripts/build-playground.sh
 5. 新函数预设：XLOOKUP（精确/通配符/未命中回退）、IFS（惰性条件）、SWITCH（值匹配）、TEXTJOIN（跳空拼接）、EOMONTH（月末/闰年/负月）。
 6. 新 TEXT 预设：科学计数 `0.00E+00`、累计时长 `[h]:mm`、条件分段 `[>100]"big";"small"`。
 7. 任意格输入 `=VLOOKUP(...)`、`=TEXT(1234.5,"#,##0.00")` 即时求值。
+8. 迭代计算：预设「circular → converge (iterative)」+ 勾选「Iterative calculation」→ A1/B1 从 0 收敛到 ≈20/≈10（Excel 默认 ≤100 次、最大变化 0.001），计数器显示 `3/3 · iterative`；取消勾选回到环上 = 0。
+9. 增量重算：预设「error propagation」后在 E1 加 `=7*7`，再改 A1 → 计数器 `3/4 · incremental`（只重算 B1/B2/C1，E1 不重算）；引入环或解析错误时自动回退 `full rebuild`，计数器如实报告。
 
 ## 4. XLSX 读→算→写（mbtexcel 组合示例）
 
@@ -77,7 +79,7 @@ moon run examples/xlsx-demo --target native -- run   # 读→算→写并读回�
 
 ## 5. 矩阵与署名偏差
 
-打开 [support-matrix.md](support-matrix.md) 与 [semantics.md](semantics.md)：50 函数状态、Excel 2024 语料裁定项（TEXT 条件分段/累计时长、EOMONTH 边界、criteria 空/错误条件、XLOOKUP 二分、TEXTJOIN `#CALC!`）、显式契约（未注入时钟→#NUM!、子集外 TEXT→#VALUE!、IFS 奇数参数被 Excel 拒录）。
+打开 [support-matrix.md](support-matrix.md) 与 [semantics.md](semantics.md)：60 函数状态、Excel 2024 语料裁定项（TEXT 条件分段/累计时长、EOMONTH 边界、criteria 空/错误条件、XLOOKUP 二分、TEXTJOIN `#CALC!`）、显式契约（未注入时钟→#NUM!、子集外 TEXT→#VALUE!、IFS 奇数参数被 Excel 拒录）。
 
 ## 退出码约定（评审可脚本化）
 

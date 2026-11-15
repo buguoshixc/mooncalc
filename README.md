@@ -2,7 +2,7 @@
 
 **Excel 兼容的电子表格公式引擎，用 MoonBit 编写。**
 
-> 状态（2026-11-15，M7 完成）：60 函数引擎（**MoonBit**，ADR 0007 扩列 +10）、native CLI、wasm-gc playground、mbtexcel 读→算→写示例已实现；新增 AST 缓存（热态约 2.6×）、增量重算（改一格 5×）、可选迭代计算、错误解释 API（explain + 依赖图）。**真实 Excel 答案键语料 1,169/1,169（100%）**（Excel 2024 · 16.0.20527.20196 · zh-CN 生成；2 条奇数参数 IFS 被 Excel 拒绝录入，显式标为子集外），无未归因失败：1,149 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation（均在报告披露）。规格语料共 1,171 条。2026 MoonBit 年度黑客松 11 月赛参赛项目。
+> 状态（2026-11-15，M7 完成）：60 函数引擎（**MoonBit**，ADR 0007 扩列 +10）、native CLI、wasm-gc playground（迭代计算与增量重算已可视化）、mbtexcel 读→算→写示例已实现；新增 AST 缓存（热态约 2.6×）、增量重算（改一格 5×）、可选迭代计算、错误解释 API（explain + 依赖图）。**真实 Excel 答案键语料 1,169/1,169（100%）**（Excel 2024 · 16.0.20527.20196 · zh-CN 生成；2 条奇数参数 IFS 被 Excel 拒绝录入，显式标为子集外），无未归因失败：1,149 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation（均在报告披露）。规格语料共 1,171 条。2026 MoonBit 年度黑客松 11 月赛参赛项目。
 
 ## 这是什么
 
@@ -10,12 +10,24 @@ MoonCalc 接收一组单元格——每个单元格承载字面值或公式—�
 
 项目走“窄而深”的路线：实现 60 个核心函数，覆盖逻辑、文本、数学、统计、查找、日期六族；每个函数的弱类型强制转换、错误值传播和边界情形都要严格对照真实 Excel。正确性用真实 Excel 生成的答案键语料逐条验证，对外公开用例数和通过率，未通过的用例逐条归因。
 
+## 浏览器演示
+
+在线 playground（push main 自动部署）：<https://buguoshixc.github.io/mooncalc/>
+
+![错误传播与增量重算](docs/images/playground-error.png)
+
+错误传播 + explain 上溯：选中错误格 B1，详情面板给出传播链与错误源；改 A1 后只重算下游 3 个公式格（计数器 `3/4 · incremental`，无关的 E1 不重算）。
+
+![迭代计算收敛](docs/images/playground-iterative.png)
+
+勾选「Iterative calculation」（Excel 默认 ≤100 次、最大变化 0.001），循环引用从 0 收敛到 ≈20/≈10；取消勾选回到 Excel 默认（环上 = 0）。
+
 ## 快速开始
 
 ```bash
 export PATH="$HOME/.moon/bin:$PATH"
 
-# 全量验证：双目标构建 + 135 项单测 + 零 IO 守卫
+# 全量验证：双目标构建 + 138 项单测 + 零 IO 守卫
 bash scripts/check.sh
 
 # CLI：求值一个含引用链/错误传播/循环引用的网格
@@ -33,7 +45,7 @@ _build/native/release/build/buguoshixc/mooncalc/cmd/main/main.exe perf --cells 1
 bash scripts/build-playground.sh
 (cd playground && python3 -m http.server 8080)   # 打开 http://localhost:8080/
 
-# headless Chromium 冒烟（29 断言，零 npm 依赖）
+# headless Chromium 冒烟（39 断言，零 npm 依赖）
 node scripts/smoke.mjs
 ```
 
@@ -89,7 +101,7 @@ fn main {
 - `eval_at(addr, grid, options)`：求值单个单元格。
 - `recalc(grid, options)`：整网格按依赖关系重算，循环引用复刻 Excel 默认（环上为 0，`circular: true`）。
 - `recalc_cached(grid, options, cache)`：同 `recalc`，复用调用方持有的 `ParseCache`（按公式全文缓存 AST），交互式编辑场景热态约 2.6×（记录值 2.65×，见 [docs/performance.md](docs/performance.md)）。
-- `recalc_init` / `recalc_update`：增量重算——改一格只重算下游闭包，输出与全量逐字段一致（环/解析错误自动回退全量），10 万格改一格约 5×。
+- `recalc_init` / `recalc_update`：增量重算——改一格只重算下游闭包，输出与全量逐字段一致（环/解析错误自动回退全量），10 万格改一格约 5×。`recalc_update_report` 另返回重算元数据（重算公式格清单 + 是否回退全量），playground 的「本次重算 N/M 格」计数器即由此驱动。
 - `recalc_iterative` / `eval_formula_iterative`：可选迭代计算（对齐 Excel「启用迭代计算」，默认 100 次/0.001），默认路径不变。
 - `explain(addr, grid, options)`：错误解释——贡献性错误传播路径（最左错误规则感知）与错误源头；`dependency_graph(grid)` 提供 AST 级依赖图。
 - 完整 API 见 [pkg.generated.mbti](pkg.generated.mbti)；发布后 mooncakes 会依据 `///` 文档注释自动生成 API 文档。
@@ -98,7 +110,7 @@ fn main {
 
 | 层 | 数字 | 性质 |
 |---|---|---|
-| 单元/快照测试 | 135/135 | 手写期望（引擎语义回归 + codec + 语法 + bench 桶 + 限制边界 + 确定性 fuzz + 增量等价 + 迭代 + explain） |
+| 单元/快照测试 | 138/138 | 手写期望（引擎语义回归 + codec + 语法 + bench 桶 + 限制边界 + 确定性 fuzz + 增量等价 + 迭代 + explain） |
 | 过渡语料 bench | 34/34（100%） | source: manual，**非权威**，仅证明流程 |
 | 用例规格 | 1,171 条（corpus/spec/，每函数 ≥15） | 1,169 条已生成权威答案键；2 条奇数参数 IFS 被 Excel 拒绝录入（子集外，不进入分母） |
 | **真实 Excel 语料** | **1,169/1,169（100%）** | Excel 2024 为唯一裁判；1,149 match + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，0 条未归因失败，见 `corpus/reports/real.json` |
@@ -136,7 +148,7 @@ fn main {
 - [x] 公式解析与求值核心（Pratt 解析器、Excel 优先级、记忆化重算、环检测）
 - [x] 首批 45 函数实现（含十进制舍入修正、双通道强制转换、时钟注入）
 - [x] 答案键语料 schema + VBA 生成器 + 1,003 条用例规格 + 对照 CLI（eval/bench）
-- [x] wasm-gc playground（8×8 网格、语义预设、引擎级依赖图/错误上溯（explain API）、CSV 拖拽导入、headless 冒烟 29 断言 PASS）
+- [x] wasm-gc playground（8×8 网格、语义预设、引擎级依赖图/错误上溯（explain API）、CSV 拖拽导入、迭代计算开关 + 增量重算 N/M 计数器、headless 冒烟 39 断言 PASS）
 - [x] 文档与支持矩阵（semantics / support-matrix / demo / toolchain）
 - [x] 真实 Excel 语料接入与 M5 对照修复（Excel 2024 生成 752 条、0 跳过；M5 基线 752/752 通过，见 [corpus/cases/PROVENANCE.md](corpus/cases/PROVENANCE.md)）
 - [x] M5 修复循环完成：36 条差异逐条归因/修复（11 条时钟、24 条语义、1 条 15 位表征），
@@ -155,8 +167,9 @@ fn main {
 - [x] M7：增量重算（`recalc_init`/`recalc_update`，输出与全量逐字段一致，环/解析错误自动回退；10 万格改一格 5.2×）+ 500 轮确定性等价 fuzz
 - [x] M7：可选迭代计算（`recalc_iterative`/`eval_formula_iterative`，Excel 默认 100 次/0.001；spec 第 6 列 + VBA 生成器迭代支持 + 18 条规格）
 - [x] M7：错误解释 API（`explain` 贡献性探针 + `dependency_graph`；CLI explain、wasm explain_json、playground 迁移引擎图，smoke 24 断言）
-- [x] M7：函数 50→60（ADR 0007：STDEV/VAR/PERCENTILE/REPLACE/SEARCH/PROPER/CEILING/FLOOR/CHOOSE/XOR）+ 150 条规格（答案键待生成）
+- [x] M7：函数 50→60（ADR 0007：STDEV/VAR/PERCENTILE/REPLACE/SEARCH/PROPER/CEILING/FLOOR/CHOOSE/XOR）+ 150 条规格（答案键已生成，计入 1,169/1,169 对照）
 - [x] M7 展示准备：版本 0.3.0、mbtexcel 剥离至 examples 子模块（moon.work workspace，发布包仅依赖 x）、`moon publish --dry-run` 通过、GitHub Pages workflow（CI 构建 wasm）、playground CSV 拖拽/按钮导入
+- [x] M7 可视化：wasm `recalc_incremental_json`（增量状态持于壳层，核心保持无状态）+ `recalc_update_report` 元数据 API；playground 迭代计算开关、循环收敛预设、增量 N/M 计数器；README 演示截图
 
 ## 语料生成（用户侧动作）
 

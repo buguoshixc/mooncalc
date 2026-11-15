@@ -99,7 +99,7 @@
 
 ## 汇总
 
-- 60/60 已注册；`moon test` 135 项全绿（引擎语义回归 + codec + 语法 + bench 桶 + 限制边界 + 确定性 fuzz + 增量等价 + 迭代 + explain + batch4）。
+- 60/60 已注册；`moon test` 138 项全绿（引擎语义回归 + codec + 语法 + bench 桶 + 限制边界 + 确定性 fuzz + 增量等价 + 迭代 + explain + batch4）。
 - 运算符/语法另有 28 条规格用例（优先级、`-2^2`、`2^3^2`、`%`、`&`、一元 `+`、比较排序、错误字面量、空白引用），不调用任何函数。
 - 权威语料 1,169/1,169（100%）：1,149 精确命中；3 clock-tolerance；16 excel-precision（STDEV/VAR/PERCENTILE/SQRT 等 15 位表征差）；1 surrogate-representation（REPLACE 半代理对，VBA 序列化为 U+FFFD）。无未归因失败。
 - M6 规格用例新增 251 条（总 1,003）：5 个新函数 112 条、criteria 边界 53 条、MATCH 边界 12 条、TEXT 新格式 61 条、XLOOKUP 二分/空查找 13 条；除 2 条 Excel 拒绝录入的 IFS 奇数参数外全部生成答案键并通过。
