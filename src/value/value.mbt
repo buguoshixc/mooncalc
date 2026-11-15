@@ -1,17 +1,25 @@
+/// Excel 错误值。求值阶段的错误作为 `Value::Err` 传播，与解析错误（`ParseError`）是两条独立通道。
 pub(all) enum XlError {
+  /// `#DIV/0!`：除数为零。
   Div0
+  /// `#N/A`：查找无匹配等「值不可用」。
   NA
+  /// `#NAME?`：未知函数名或无法识别的文本。
   Name
+  /// `#NULL!`：空交集（本子集不产生，保留以完整覆盖错误字面量）。
   Null
+  /// `#NUM!`：数值越界/非法（如负数开方、日期超界、未注入时钟的 TODAY/NOW）。
   Num
+  /// `#REF!`：无效引用。
   Ref
+  /// `#VALUE!`：类型/强制转换错误，也用于解析失败格的占位结果。
   Value
-  // Excel 365 dynamic-array calculation error, e.g. TEXTJOIN producing a
-  // string longer than 32767 characters. Adjudicated by the real-Excel corpus
-  // (text-textjoin-0021).
+  /// `#CALC!`：Excel 365 动态数组计算错误（如 TEXTJOIN 结果超过 32767 字符）。
+  /// 由真实 Excel 语料裁定（text-textjoin-0021）。
   Calc
 } derive(Show, Debug, Eq)
 
+/// 错误值的 Excel 文本表示，如 `Div0` → `"#DIV/0!"`。
 pub fn XlError::to_string(self : XlError) -> String {
   match self {
     Div0 => "#DIV/0!"
@@ -25,6 +33,7 @@ pub fn XlError::to_string(self : XlError) -> String {
   }
 }
 
+/// 从 Excel 文本（如 `"#DIV/0!"`）解析错误值；无法识别返回 `None`。
 pub fn XlError::parse(s : String) -> XlError? {
   match s {
     "#DIV/0!" => Some(Div0)
@@ -39,21 +48,34 @@ pub fn XlError::parse(s : String) -> XlError? {
   }
 }
 
+/// 行主序的区域值：`rows` × `cols`，`cells` 按行优先展开（长度 = rows × cols）。
 pub(all) struct RangeValue {
+  /// 行数（≥1）。
   rows : Int
+  /// 列数（≥1）。
   cols : Int
+  /// 行主序的单元格值。
   cells : Array[Value]
 } derive(Show, Debug, Eq)
 
+/// 单元格的值。公式结果不会是真空白：输出边界把 `Blank` 归一为 `Num(0)`；
+/// `Blank` 只作为网格输入状态存在。
 pub(all) enum Value {
+  /// 数字（Double；Excel 以 15 位有效数字存储，见 `excel_precision`）。
   Num(Double)
+  /// 文本。
   Text(String)
+  /// 布尔（TRUE/FALSE）。
   Bool(Bool)
+  /// 错误值。
   Err(XlError)
+  /// 空白单元格（仅网格输入；求值输出中归一为 0）。
   Blank
+  /// 区域值（多格引用或数组运算结果）。
   Range(RangeValue)
 } derive(Show, Debug, Eq)
 
+/// 值的类型名（`"number"`/`"text"`/`"bool"`/`"error"`/`"blank"`/`"range"`），用于错误消息与调试。
 pub fn Value::type_name(self : Value) -> String {
   match self {
     Num(_) => "number"
@@ -65,15 +87,22 @@ pub fn Value::type_name(self : Value) -> String {
   }
 }
 
+/// 单元格地址：1 基行列 + `$` 绝对标记。用 `parse_addr` 从 `"A1"`/`"$B$2"` 解析。
 pub(all) struct CellAddr {
+  /// 行号（1..1048576）。
   row : Int
+  /// 列号（1..16384，A=1）。
   col : Int
+  /// 行绝对（`$A$1` 的行部分）。
   abs_row : Bool
+  /// 列绝对（`$A$1` 的列部分）。
   abs_col : Bool
 } derive(Show, Debug, Eq)
 
+/// Excel 最大行号（1048576）。
 pub let max_row : Int = 1048576
 
+/// Excel 最大列号（16384，XFD）。
 pub let max_col : Int = 16384
 
 fn col_letters(col : Int) -> String {
@@ -91,16 +120,19 @@ fn col_letters(col : Int) -> String {
   out
 }
 
+/// 带 `$` 绝对标记的 A1 形式文本，如 `{row:1,col:2,abs_row:true,abs_col:true}` → `"$B$1"`。
 pub fn CellAddr::to_string(self : CellAddr) -> String {
   let dc = if self.abs_col { "$" } else { "" }
   let dr = if self.abs_row { "$" } else { "" }
   dc + col_letters(self.col) + dr + self.row.to_string()
 }
 
+/// 网格键：不带 `$` 的大写 A1 形式（如 `"B1"`），是 `Grid.cells` 的键格式。
 pub fn CellAddr::key(self : CellAddr) -> String {
   col_letters(self.col) + self.row.to_string()
 }
 
+/// 解析 A1 形式地址（大小写不敏感，支持 `$` 绝对标记）；非法或越界（行 >1048576、列 >16384）返回 `None`。
 pub fn parse_addr(s : String) -> CellAddr? {
   let chars : Array[Char] = Array::from_iter(s.iter())
   let n = chars.length()
@@ -153,16 +185,19 @@ pub fn parse_addr(s : String) -> CellAddr? {
   Some(addr)
 }
 
+/// ASCII 字母（A-Z / a-z）。
 pub fn is_ascii_letter(c : Char) -> Bool {
   let v = c.to_int()
   (v >= 65 && v <= 90) || (v >= 97 && v <= 122)
 }
 
+/// ASCII 数字（0-9）。
 pub fn is_ascii_digit(c : Char) -> Bool {
   let v = c.to_int()
   v >= 48 && v <= 57
 }
 
+/// 仅 ASCII 范围的大写化（函数名归一化用；非 ASCII 字符不变）。
 pub fn ascii_upper(s : String) -> String {
   let lower = "abcdefghijklmnopqrstuvwxyz"
   let upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -176,6 +211,7 @@ pub fn ascii_upper(s : String) -> String {
   out
 }
 
+/// 仅 ASCII 范围的小写化（非 ASCII 字符不变）。
 pub fn ascii_lower(s : String) -> String {
   let lower = "abcdefghijklmnopqrstuvwxyz"
   let upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -188,8 +224,7 @@ pub fn ascii_lower(s : String) -> String {
   }
   out
 }
-// Excel UPPER/LOWER apply per-character Unicode simple case mappings
-// (no expansions: UPPER("straße") = "STRAßE", LOWER("İ") = "i").
+/// Excel LOWER：逐字符 Unicode 简单小写映射（不做展开，如 `LOWER("İ")` = `"i"`）。
 pub fn unicode_lower(s : String) -> String {
   let mut out = ""
   for c in s.iter() {
@@ -876,6 +911,7 @@ let upper_ranges : Array[(Char, Char, Int)] = [
   ('\u{FF41}', '\u{FF5A}', -32),
 ]
 
+/// Excel UPPER：逐字符 Unicode 简单大写映射（不做展开，如 `UPPER("straße")` = `"STRAßE"`）。
 pub fn unicode_upper(s : String) -> String {
   let mut out = ""
   for c in s.iter() {
@@ -902,9 +938,8 @@ fn unicode_upper_char(c : Char) -> Char {
   c
 }
 
-// Excel stores numeric literals with at most 15 significant decimal digits:
-// digits beyond the 15th are replaced by zeros *without rounding*
-// (123456789012345678 is stored as 123456789012345000).
+/// Excel 录入精度：数字最多 15 位有效十进制数字，超出部分直接置零（不四舍五入），
+/// 如 `123456789012345678` → `123456789012345000`。非有限值与 0 原样返回。
 pub fn excel_precision(d : Double) -> Double {
   if d == 0.0 || !d.is_finite() {
     return d

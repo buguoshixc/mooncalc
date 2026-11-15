@@ -1,12 +1,14 @@
 // Grid/value <-> JSON codec shared by the CLI and the wasm playground.
 // Cell encoding follows corpus/schema.md (mooncalc-corpus/1).
 
+/// JSON 编解码失败（字段缺失、类型不符、非法地址等）。
 pub suberror CodecError {
+  /// 携带人类可读的错误原因。
   CodecError(String)
 }
 
-/// Strip a leading UTF-8 BOM (U+FEFF) if present.
-/// Excel/VBA (ADODB.Stream) writes JSON with a BOM; `@json.parse` expects bare text.
+/// 去掉开头的 UTF-8 BOM（U+FEFF）。Excel/VBA（ADODB.Stream）导出的 JSON 带 BOM，
+/// 而 `@json.parse` 只接受裸文本。
 pub fn strip_utf8_bom(s : String) -> String {
   if s.length() > 0 && s.substring(start=0, end=1) == "\u{FEFF}" {
     s.substring(start=1, end=s.length())
@@ -44,6 +46,7 @@ fn jnum(j : Json) -> Double raise CodecError {
   }
 }
 
+/// 值 → JSON（`{type, value}`，区域另带 `rows`/`cols`/`values`），见 corpus/schema.md。
 pub fn value_to_json(v : Value) -> Json {
   match v {
     Num(d) => obj([("type", Json::string("number")), ("value", Json::number(d))])
@@ -86,6 +89,7 @@ fn decode_value(j : Json) -> Value raise CodecError {
   }
 }
 
+/// JSON → 值（`value_to_json` 的逆操作）；不支持区域编码（语料期望值均为标量）。
 pub fn value_from_json(j : Json) -> Result[Value, String] {
   try Ok(decode_value(j)) catch {
     CodecError(m) => Err(m)
@@ -130,6 +134,8 @@ fn decode_grid(j : Json) -> Grid raise CodecError {
   g
 }
 
+/// JSON 对象 → 网格。键为 A1 地址；值为字面量（数字/字符串/布尔/null=空白）
+/// 或 `{formula:"=..."}` / `{error:"#DIV/0!"}`。地址会归一化为大写键。
 pub fn grid_from_json(j : Json) -> Result[Grid, String] {
   try Ok(decode_grid(j)) catch {
     CodecError(m) => Err(m)

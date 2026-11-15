@@ -1,13 +1,22 @@
 // Corpus record decoding (mooncalc-corpus/1).
 
+/// 语料用例（mooncalc-corpus/1 schema，见 corpus/schema.md）。
 pub(all) struct CaseRecord {
+  /// 用例唯一标识（如 `math-round-0001`）。
   id : String
+  /// 被求值的公式。
   formula : String
+  /// 输入单元格网格。
   grid : Grid
+  /// 注入时钟（Excel 序列日）；`clock` 标签用例由生成器经 `=NOW()` 辅助格捕获。
   now : Double?
+  /// 权威期望值（真实 Excel 计算结果）。
   expected : Value
+  /// 分类标签（族、边界、clock 等）。
   tags : Array[String]
+  /// 来源（`excel-2024` 权威 / `manual` 过渡）。
   source : String
+  /// 裁定备注（可空）。
   notes : String
 } derive(Show, Debug)
 
@@ -42,6 +51,7 @@ fn decode_record(j : Json) -> CaseRecord raise CodecError {
   { id, formula, grid, now, expected, tags, source, notes }
 }
 
+/// JSON → 单条语料用例；字段缺失/类型不符返回 `Err(消息)`。
 pub fn record_from_json(j : Json) -> Result[CaseRecord, String] {
   try Ok(decode_record(j)) catch {
     CodecError(m) => Err(m)
@@ -64,6 +74,7 @@ fn decode_corpus(j : Json) -> Array[CaseRecord] raise CodecError {
   out
 }
 
+/// JSON → 语料文件（校验 `schema == "mooncalc-corpus/1"`，逐条解码 `records`）。
 pub fn corpus_from_json(j : Json) -> Result[Array[CaseRecord], String] {
   try Ok(decode_corpus(j)) catch {
     CodecError(m) => Err(m)

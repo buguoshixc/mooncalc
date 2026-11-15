@@ -1,33 +1,49 @@
+/// 单元格内容：字面值或公式源码。
 pub(all) enum Cell {
+  /// 字面值（数字/文本/布尔/错误/空白）。
   Literal(Value)
+  /// 公式源码（前导 `=` 可有可无）。
   Formula(String)
 } derive(Show, Debug, Eq)
 
+/// 单元格网格：引擎的唯一输入数据契约。键为 `A1` 形式的大写地址（`CellAddr::key`）。
 pub(all) struct Grid {
+  /// 地址 → 单元格内容。未出现的地址按空白处理。
   cells : Map[String, Cell]
 } derive(Show, Debug)
 
+/// 创建一个空的单元格网格。
 pub fn new_grid() -> Grid {
   { cells: Map::new() }
 }
 
+/// 求值选项。
 pub(all) struct EvalOptions {
+  /// 调用方注入的时钟（Excel 序列日，含小数）。`TODAY`/`NOW` 依赖它；
+  /// `None` 时按显式契约返回 `#NUM!`（核心从不读取系统时钟）。
   now : Double?
 } derive(Show, Debug)
 
+/// 单格/单公式求值结果。
 pub(all) struct EvalOutput {
+  /// 标量化后的值（`Blank`→0；多格区域按值模型规则处理）。
   value : Value
+  /// 该格是否落在循环引用环上（环上结果固定为 0）。
   circular : Bool
 } derive(Show, Debug)
 
+/// 全网格重算结果。
 pub(all) struct RecalcOutput {
+  /// 公式格的结果（字面值格不出现）。
   cells : Map[String, EvalOutput]
+  /// 解析失败的格与原因（地址, 消息）；这些格的结果为 `#VALUE!`。
   parse_errors : Array[(String, String)]
 }
 
 struct Ctx {
   grid : Grid
   cache : Map[String, Value]
+  range_cache : Map[String, Value]
   stack : Array[String]
   on_stack : Map[String, Bool]
   circular : Map[String, Bool]
@@ -39,6 +55,7 @@ fn new_ctx(grid : Grid, options : EvalOptions) -> Ctx {
   {
     grid,
     cache: Map::new(),
+    range_cache: Map::new(),
     stack: [],
     on_stack: Map::new(),
     circular: Map::new(),
@@ -101,34 +118,63 @@ fn eval_expr(ctx : Ctx, e : @syntax.Expr) -> Value {
         v => Value::Range({ rows: 1, cols: 1, cells: [v] })
       }
     Range(lo, hi) => {
-      let rows = hi.row - lo.row + 1
-      let cols = hi.col - lo.col + 1
-      let cells : Array[Value] = []
-      for r in lo.row..=hi.row {
-        for c in lo.col..=hi.col {
-          let a : CellAddr = { row: r, col: c, abs_row: false, abs_col: false }
-          cells.push(cell_value(ctx, a.key()))
+      // Cell values are immutable within one evaluation context, so a
+      // materialized range can be shared by every formula referencing it.
+      let rkey = lo.key() + ":" + hi.key()
+      match ctx.range_cache.get(rkey) {
+        Some(v) => v
+        None => {
+          let rows = hi.row - lo.row + 1
+          let cols = hi.col - lo.col + 1
+          let cells : Array[Value] = []
+          for r in lo.row..=hi.row {
+            for c in lo.col..=hi.col {
+              let a : CellAddr = { row: r, col: c, abs_row: false, abs_col: false }
+              cells.push(cell_value(ctx, a.key()))
+            }
+          }
+          let v = Value::Range({ rows, cols, cells })
+          ctx.range_cache[rkey] = v
+          v
         }
       }
-      Value::Range({ rows, cols, cells })
     }
     Unary(op, sub) => {
-      // Excel unary plus is an identity operator: +"3" stays text "3" and
-      // +TRUE stays boolean TRUE; only unary minus / percent coerce.
-      let raw = scalarize(eval_expr(ctx, sub))
-      match op {
-        Pos => raw
-        Neg =>
-          match to_number(raw) {
-            Err(e) => Value::Err(e)
-            Ok(d) => Value::Num(-d)
+      // Postfix % is not nesting-counted by the parser, so chains like
+      // 1%%%... up to the length limit must fold iteratively, like binary
+      // spines. Inside-out application order matches the recursive version.
+      let ops : Array[@syntax.UnOp] = [op]
+      let mut cur = sub
+      while true {
+        match cur {
+          Unary(o2, sub2) => {
+            ops.push(o2)
+            cur = sub2
           }
-        Percent =>
-          match to_number(raw) {
-            Err(e) => Value::Err(e)
-            Ok(d) => Value::Num(d / 100.0)
-          }
+          _ => break
+        }
       }
+      let mut v = scalarize(eval_expr(ctx, cur))
+      let mut i = ops.length() - 1
+      while i >= 0 {
+        // Excel unary plus is an identity operator: +"3" stays text "3" and
+        // +TRUE stays boolean TRUE; only unary minus / percent coerce.
+        v = match ops[i] {
+          Pos => v
+          Neg =>
+            match to_number(v) {
+              Err(e) => Value::Err(e)
+              Ok(d) => Value::Num(-d)
+            }
+          Percent =>
+            match to_number(v) {
+              Err(e) => Value::Err(e)
+              Ok(d) => Value::Num(d / 100.0)
+            }
+        }
+        i -= 1
+      }
+      v
     }
     Binary(op, l, r) => eval_binary(ctx, op, l, r)
     Call(name, args) => eval_call(ctx, name, args)
@@ -169,8 +215,37 @@ fn eval_binary(
   l : @syntax.Expr,
   r : @syntax.Expr
 ) -> Value {
-  let lv = scalarize(eval_expr(ctx, l))
-  let rv = scalarize(eval_expr(ctx, r))
+  // All binary operators are left-associative, so chains form a left-deep
+  // tree. Fold the left spine iteratively: an 8192-char formula must not
+  // overflow the wasm-gc stack. Evaluation order (left subtree fully before
+  // each right operand) and leftmost-error-wins are preserved.
+  let spine : Array[(@syntax.BinOp, @syntax.Expr)] = []
+  let mut cur = l
+  let mut o = op
+  let mut rhs = r
+  while true {
+    spine.push((o, rhs))
+    match cur {
+      Binary(o2, l2, r2) => {
+        o = o2
+        rhs = r2
+        cur = l2
+      }
+      _ => break
+    }
+  }
+  let mut acc = scalarize(eval_expr(ctx, cur))
+  let mut i = spine.length() - 1
+  while i >= 0 {
+    let (o2, re) = spine[i]
+    let rv = scalarize(eval_expr(ctx, re))
+    acc = apply_binary(o2, acc, rv)
+    i -= 1
+  }
+  acc
+}
+
+fn apply_binary(op : @syntax.BinOp, lv : Value, rv : Value) -> Value {
   // Error propagation: leftmost error wins.
   match lv {
     Err(e) => return Value::Err(e)
@@ -246,6 +321,10 @@ fn eval_call(ctx : Ctx, name : String, args : Array[@syntax.Expr]) -> Value {
   }
 }
 
+/// 解析并求值单条公式（不写入网格）。引用会递归求值。
+///
+/// 解析失败返回 `Err(ParseError)`；求值阶段的错误值（如 `#DIV/0!`）作为 `Ok` 中的
+/// `Value::Err` 返回。超过 Excel 公式限制（8192 字符 / 64 层嵌套）按解析失败处理。
 pub fn eval_formula(
   formula : String,
   grid : Grid,
@@ -257,6 +336,7 @@ pub fn eval_formula(
   Ok({ value: scalar_output(v), circular: ctx.circular.length() > 0 })
 }
 
+/// 求值网格中某个单元格；空白格返回 `Blank`。循环引用语义与 `recalc` 一致。
 pub fn eval_at(
   addr : CellAddr,
   grid : Grid,
@@ -268,6 +348,9 @@ pub fn eval_at(
   { value: v, circular: ctx.circular.contains(key) }
 }
 
+/// 按依赖关系重算整个网格（DFS + 记忆化 + 环检测）。
+///
+/// 循环引用复刻 Excel 默认（迭代计算关闭）：环上单元格结果为 0，元数据 `circular: true`。
 pub fn recalc(grid : Grid, options : EvalOptions) -> RecalcOutput {
   let ctx = new_ctx(grid, options)
   let out : Map[String, EvalOutput] = Map::new()

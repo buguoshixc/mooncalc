@@ -30,6 +30,8 @@ fn civil_from_days(z0 : Int) -> (Int, Int, Int) {
   (if m <= 2 { y + 1 } else { y }, m, d)
 }
 
+/// Excel 序列日 → (年, 月, 日)。含 Lotus 幻影日：序列 60 = 1900-02-29，序列 0 = (1900,1,0)。
+/// 非有限值或越界（<0 或 >2958465）返回 `#NUM!`；小数部分被截断。
 pub fn serial_to_ymd(serial : Double) -> Result[(Int, Int, Int), XlError] {
   if !serial.is_finite() {
     return Err(XlError::Num)
@@ -48,12 +50,9 @@ pub fn serial_to_ymd(serial : Double) -> Result[(Int, Int, Int), XlError] {
   Ok(civil_from_days(days))
 }
 
-// Excel DATE(): a year argument in 0..1899 is shifted by +1900 *before*
-// month normalization (so DATE(0,1,1) = DATE(1900,1,1), DATE(1900,0,1) is
-// #NUM! because normalization lands in 1899). The serial is then computed as
-// the serial of day 1 of the month plus (d - 1) on the Excel/Lotus calendar
-// where 1900-02-29 exists as the phantom serial 60 (so DATE(1900,2,29) = 60,
-// DATE(1900,3,0) = 60, DATE(1900,2,30) = 61).
+/// Excel DATE()：年参数 0..1899 先 +1900，再按月溢出归一化（故 DATE(1900,0,1) 落在
+/// 1899 → `#NUM!`）。序列日按 Excel/Lotus 日历计算（幻影日 1900-02-29 = 60，
+/// DATE(1900,3,0) = 60、DATE(1900,2,30) = 61）。越界（序列 <0 或 >2958465）返回 `#NUM!`。
 pub fn date_serial(y0 : Int, m0 : Int, d0 : Int) -> Result[Int, XlError] {
   let y_arg = if y0 >= 0 && y0 <= 1899 { y0 + 1900 } else { y0 }
   let total = y_arg * 12 + (m0 - 1)
@@ -75,9 +74,9 @@ pub fn date_serial(y0 : Int, m0 : Int, d0 : Int) -> Result[Int, XlError] {
   Ok(serial)
 }
 
-// Last day of a proleptic-Gregorian month. Note 1900 is NOT a leap year here:
-// real Excel's EOMONTH(60,0) returns 59, i.e. it computes February 1900 as
-// 28 days even though the display layer keeps the Lotus phantom serial 60.
+/// proleptic Gregorian 月份天数。注意 1900 在此**不是**闰年：真实 Excel 的
+/// EOMONTH(60,0) 返回 59，即 1900 年 2 月按 28 天计算（显示层仍保留幻影序列 60）。
+/// 非法月份返回 0。
 pub fn days_in_month(y : Int, m : Int) -> Int {
   if m == 2 {
     if (y % 4 == 0 && y % 100 != 0) || y % 400 == 0 {

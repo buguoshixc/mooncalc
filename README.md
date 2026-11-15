@@ -15,7 +15,7 @@ MoonCalc 接收一组单元格——每个单元格承载字面值或公式—�
 ```bash
 export PATH="$HOME/.moon/bin:$PATH"
 
-# 全量验证：双目标构建 + 74 项单测 + 零 IO 守卫
+# 全量验证：双目标构建 + 88 项单测 + 零 IO 守卫
 bash scripts/check.sh
 
 # CLI：求值一个含引用链/错误传播/循环引用的网格
@@ -24,6 +24,10 @@ _build/native/debug/build/cmd/main/main.exe eval --grid tests/fixtures/grid.json
 
 # 跑分：真实 Excel 权威语料（默认 corpus/cases）
 bash scripts/run-bench.sh
+
+# 性能基准：进程内大网格重算（默认 1 万格，见 docs/performance.md）
+moon build --target native --release
+_build/native/release/build/cmd/main/main.exe perf --cells 100000
 
 # 浏览器 playground（wasm-gc）
 bash scripts/build-playground.sh
@@ -86,7 +90,7 @@ fn main {
 
 | 层 | 数字 | 性质 |
 |---|---|---|
-| 单元/快照测试 | 74/74 | 手写期望（引擎语义回归 + codec + 语法 + bench 桶） |
+| 单元/快照测试 | 88/88 | 手写期望（引擎语义回归 + codec + 语法 + bench 桶 + 限制边界 + 确定性 fuzz） |
 | 过渡语料 bench | 34/34（100%） | source: manual，**非权威**，仅证明流程 |
 | 用例规格 | 1,003 条（corpus/spec/，每函数 ≥15） | 1,001 条已生成权威答案键；2 条奇数参数 IFS 被 Excel 拒绝录入（子集外，不进入分母） |
 | **真实 Excel 语料** | **1,001/1,001（100%）** | Excel 2024 为唯一裁判；996 match + 4 clock-tolerance + 1 excel-precision，0 条未归因失败，见 `corpus/reports/real.json` |
@@ -101,6 +105,7 @@ fn main {
 - **核心不读系统时钟**：`TODAY`/`NOW` 由调用方注入 `now`（未注入 → `#NUM!`），同一份语料任何时候跑出同样结果。
 - **循环引用复刻 Excel 默认**（迭代关闭）：环上单元格 = 0，元数据标 `circular:true`。
 - **离线、确定性**：不调用模型 API 或网络服务，适合放进 CI 做回归对照。
+- **不崩溃保证**：复刻 Excel 公式限制（≤8192 字符、≤64 层嵌套），超限返回 `ParseError`；长二元链迭代求值，任何输入在 native 与 wasm-gc 上都不会栈溢出（边界回归 + 确定性 fuzz 守卫）。
 
 ## 函数子集（50，已全部实现）
 
@@ -135,6 +140,9 @@ fn main {
 - [x] M6：TEXT 加深（E+/E- 科学计数、[h]/[m]/[s] 累计时长、[>100] 条件分段）+ criteria 边界语料
 - [x] M6：桌面 Excel 2024 生成新增答案键 → bench 修复循环（1,001/1,001，2 条 Excel 拒录 IFS 显式子集外）
 - [x] M6：playground 依赖图/错误上溯/新预设（smoke 20 断言）
+- [x] 健壮性加固：Excel 公式限制（8192 字符/64 层嵌套）+ 长链迭代求值，修复超长/超深公式段错误；边界回归 + 确定性 fuzz（88 项单测）
+- [x] 公开 API 文档补全（全部 pub 类型/构造器/字段/方法 /// 注释）
+- [x] 性能基准：`perf` 子命令（4 场景 × 10 万格线性扩展）+ 区域缓存优化（shared 2.2×），见 [docs/performance.md](docs/performance.md)
 
 ## 语料生成（用户侧动作）
 
@@ -153,6 +161,7 @@ _build/native/debug/build/cmd/main/main.exe bench --corpus corpus/cases --report
 - [ADR 0005：新建 mooncalc 仓库，moonpack 归档](docs/adr/0005-new-mooncalc-repo.md)
 - [ADR 0006：函数子集取通用表格自动化口径，约 50 个](docs/adr/0006-general-purpose-function-subset.md)
 - [工具链实测记录](docs/toolchain.md)
+- [重算性能基准](docs/performance.md)
 
 ## 许可证
 

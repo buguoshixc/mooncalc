@@ -1,6 +1,7 @@
 // Single entry point for Excel coercion rules. Locale invariant: decimal
 // point is '.', thousands separators / currency / date text are #VALUE!.
 
+/// 标量化：1×1 区域取其唯一单元格，其余值原样返回。
 pub fn scalarize(v : Value) -> Value {
   match v {
     Range(r) => if r.rows == 1 && r.cols == 1 { r.cells[0] } else { v }
@@ -226,6 +227,9 @@ fn parse_excel_number(text : String) -> Result[Double, XlError] {
   }
 }
 
+/// Excel 数值强制转换（算术运算、数值参数）：数字原样；空白→0；布尔→1/0；
+/// 文本按 Excel 数字文法解析（含千分位/百分号/科学计数，locale 不变）；错误传播；
+/// 多格区域→`#VALUE!`。
 pub fn to_number(v : Value) -> Result[Double, XlError] {
   match v {
     Num(d) => Ok(d)
@@ -242,6 +246,8 @@ pub fn to_number(v : Value) -> Result[Double, XlError] {
   }
 }
 
+/// Excel 文本强制转换（`&`、文本参数）：数字按 General 格式（15 位有效数字）；
+/// 布尔→`"TRUE"`/`"FALSE"`；空白→`""`；错误传播；多格区域→`#VALUE!`。
 pub fn to_text(v : Value) -> Result[String, XlError] {
   match v {
     Num(d) => if d.is_finite() { Ok(number_to_text(d)) } else { Err(XlError::Num) }
@@ -258,6 +264,8 @@ pub fn to_text(v : Value) -> Result[String, XlError] {
   }
 }
 
+/// Excel 布尔强制转换（逻辑参数）：布尔原样；数字≠0→TRUE；空白→FALSE；
+/// 文本仅接受大小写不敏感的 `"TRUE"`/`"FALSE"`，其余→`#VALUE!`；错误传播。
 pub fn to_bool(v : Value) -> Result[Bool, XlError] {
   match v {
     Bool(b) => Ok(b)
@@ -325,8 +333,8 @@ fn lex_compare(a : String, b : String) -> Int {
   }
 }
 
-// Comparison does NOT coerce across types: number < text < boolean,
-// text case-insensitive, so "1" = 1 is FALSE.
+/// Excel 比较排序（`=` `<` 等）：**不跨类型强制转换**，类型序 number < text < boolean，
+/// 文本大小写不敏感，故 `"1" = 1` 为 FALSE。返回 -1/0/1；错误值传播。
 pub fn compare_values(a : Value, b : Value) -> Result[Int, XlError] {
   let a = scalarize(a)
   let b = scalarize(b)

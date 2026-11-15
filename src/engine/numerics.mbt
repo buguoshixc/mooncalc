@@ -176,10 +176,8 @@ fn dec_to_fixed(d : Dec) -> String {
   d.digits.substring(start=0, end=point) + "." + d.digits.substring(start=point)
 }
 
-// Excel implicit number->text conversion ("General" as used by & and
-// CONCAT): round to 15 significant digits, then fixed notation while the
-// decimal exponent is within [-18, 19], scientific otherwise. Scientific
-// mantissas drop trailing zeros; fixed integers are padded with zeros.
+/// Excel 隐式数字→文本（`&`/CONCAT 用的 General 格式）：先舍入到 15 位有效数字，
+/// 十进制指数在 [-18, 19] 内用定点表示，否则科学计数；科学计数尾数去尾零，定点整数补零。
 pub fn number_to_text(d : Double) -> String {
   let dec = round_dec(dec_of_double(d), 15, 0)
   if dec.digits == "0" {
@@ -199,6 +197,9 @@ pub fn number_to_text(d : Double) -> String {
   sign + dec_to_fixed(dec)
 }
 
+/// Excel 十进制舍入（先归一到 15 位有效数字再舍入，避免二进制浮点尾差）。
+/// `digits` 为保留小数位（负数舍入到十/百…位）；`mode`：0=ROUND（四舍五入）、
+/// 1=ROUNDUP（远离零）、2=ROUNDDOWN（趋向零）。
 pub fn round_excel(d : Double, digits : Int, mode : Int) -> Double {
   if d == 0.0 {
     return 0.0

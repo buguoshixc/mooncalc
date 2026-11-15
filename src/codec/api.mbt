@@ -15,6 +15,12 @@ fn result_json(target : String, out : EvalOutput) -> Json {
   ])
 }
 
+/// JSON-in/JSON-out 求值入口，CLI eval 与 wasm playground 共用同一契约。
+///
+/// 请求：`{grid:{...}, formula?:"=...", addr?:"B1", now?:<序列日>}`；
+/// 给 `formula` 求值单公式，给 `addr` 求值单格，都不给则整网格重算。
+/// 响应：`{ok:true, results:[{target,value,circular}], parse_errors:[...]}`
+/// 或 `{ok:false, error:"..."}`。
 pub fn evaluate_json(input : String) -> String {
   let j = try @json.parse(input) catch {
     e => return error_response("invalid JSON: " + e.to_string())

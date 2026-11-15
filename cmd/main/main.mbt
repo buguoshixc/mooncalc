@@ -8,6 +8,7 @@ fn main {
   match args.cmd {
     "eval" => run_eval(args)
     "bench" => run_bench_cmd(args)
+    "perf" => run_perf(args)
     _ => ()
   }
 }

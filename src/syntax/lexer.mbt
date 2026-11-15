@@ -1,14 +1,26 @@
+/// 公式记号。
 pub enum Token {
+  /// 数字字面量（含科学计数）。
   Number(Double)
+  /// 字符串字面量（`""` 转义已解出）。
   Str(String)
+  /// TRUE/FALSE（大小写不敏感）。
   BoolLit(Bool)
+  /// 错误字面量（如 `#DIV/0!`）。
   ErrLit(@value.XlError)
+  /// 标识符（函数名或单元格引用，由解析器消歧）。
   Ident(String)
+  /// 运算符（`+ - * / ^ & = <> < <= > >=`）。
   Op(String)
+  /// `(`
   LParen
+  /// `)`
   RParen
+  /// `,`
   Comma
+  /// `:`（区域）
   Colon
+  /// `%`（后缀）
   Percent
 } derive(Show, Debug, Eq)
 
@@ -24,6 +36,7 @@ fn is_space(c : Char) -> Bool {
   c == ' ' || c == '\t' || c == '\n' || c == '\r'
 }
 
+/// 把公式源码切成记号序列（前导 `=` 会被跳过）；词法错误（如未闭合字符串）抛 ParseError。
 pub fn lex(input : String) -> Array[Token] raise ParseError {
   let chars : Array[Char] = Array::from_iter(input.iter())
   let n = chars.length()

@@ -11,12 +11,15 @@ struct Args {
   mut clock_tol : Double
   mut filter : String?
   mut fail_under : Double
+  mut cells : Int
+  mut repeat : Int
 }
 
 fn usage() -> String {
   "usage:\n" +
   "  mooncalc eval --grid <grid.json> [--formula \"=...\" | --addr B1] [--now <serial|ISO>] [--out result.json]\n" +
   "  mooncalc bench --corpus <dir> [--report report.json] [--tol 1e-9] [--clock-tol 1e-6] [--filter <tag>] [--fail-under 1.0]\n" +
+  "  mooncalc perf [--cells 10000] [--repeat 3]\n" +
   "exit codes: 0 = gate met, 1 = diffs below gate, 2 = usage/IO/parse error"
 }
 
@@ -29,7 +32,7 @@ fn parse_args(argv : Array[String]) -> Result[Args, String] {
     return Err(usage())
   }
   let cmd = argv[1]
-  if cmd != "eval" && cmd != "bench" {
+  if cmd != "eval" && cmd != "bench" && cmd != "perf" {
     return Err("unknown command: " + cmd + "\n" + usage())
   }
   let a : Args = {
@@ -45,6 +48,8 @@ fn parse_args(argv : Array[String]) -> Result[Args, String] {
     clock_tol: 1.0e-6,
     filter: None,
     fail_under: 1.0,
+    cells: 10000,
+    repeat: 3,
   }
   let mut i = 2
   while i < argv.length() {
@@ -76,6 +81,16 @@ fn parse_args(argv : Array[String]) -> Result[Args, String] {
         match parse_double_arg(val) {
           Ok(d) => a.fail_under = d
           Err(m) => return Err(m)
+        }
+      "--cells" =>
+        match parse_int_arg(val) {
+          Some(v) => a.cells = v
+          None => return Err("not a positive integer: " + val)
+        }
+      "--repeat" =>
+        match parse_int_arg(val) {
+          Some(v) => a.repeat = v
+          None => return Err("not a positive integer: " + val)
         }
       _ => return Err("unknown flag: " + flag + "\n" + usage())
     }

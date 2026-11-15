@@ -8,6 +8,8 @@ package "buguoshixc/mooncalc/cmd/main"
 // Types and methods
 type Args
 
+type PerfRow
+
 // Type aliases
 
 // Traits

@@ -474,6 +474,10 @@ fn render_scientific(
   out
 }
 
+/// Excel TEXT()：按格式码把数字格式化为文本。支持数字段（0/#/?/千分位/百分号/
+/// 科学计数）、日期时间段（含 [h]/[m]/[s] 累计时长）、条件分段（如 `[>100]`）与
+/// 正;负;零;文本四节。子集外格式返回 `#VALUE!`（含 `"General"` 关键字，zh-CN Excel
+/// 拒绝）。完整子集见 docs/semantics.md「TEXT 子集」。
 pub fn text_format(d : Double, fmt : String) -> Result[String, XlError] {
   if !d.is_finite() {
     return Err(XlError::Value)
