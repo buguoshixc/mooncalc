@@ -10,15 +10,33 @@ import {
 // Values
 pub fn date_serial(Int32, Int32, Int32) -> Result[Int32, @value.XlError]
 
+pub fn dependency_graph(@engine.Grid) -> @engine.DepGraph?
+
 pub fn eval_at(@value.CellAddr, @engine.Grid, @engine.EvalOptions) -> @engine.EvalOutput
 
 pub fn eval_formula(String, @engine.Grid, @engine.EvalOptions) -> Result[@engine.EvalOutput, @syntax.ParseError]
 
+pub fn eval_formula_iterative(String, @engine.Grid, @engine.EvalOptions, @engine.IterOptions) -> Result[@engine.EvalOutput, @syntax.ParseError]
+
+pub fn explain(@value.CellAddr, @engine.Grid, @engine.EvalOptions) -> @engine.ExplainOutput
+
 pub fn new_grid() -> @engine.Grid
+
+pub fn new_iter_options(max_iterations? : Int32, max_change? : Double) -> @engine.IterOptions
+
+pub fn new_parse_cache() -> @engine.ParseCache
 
 pub fn parse_addr(String) -> @value.CellAddr?
 
 pub fn recalc(@engine.Grid, @engine.EvalOptions) -> @engine.RecalcOutput
+
+pub fn recalc_cached(@engine.Grid, @engine.EvalOptions, @engine.ParseCache) -> @engine.RecalcOutput
+
+pub fn recalc_init(@engine.Grid, @engine.EvalOptions) -> (@engine.RecalcState, @engine.RecalcOutput)
+
+pub fn recalc_iterative(@engine.Grid, @engine.EvalOptions, @engine.IterOptions) -> @engine.RecalcOutput
+
+pub fn recalc_update(@engine.RecalcState, @engine.Grid, Array[String], @engine.EvalOptions) -> @engine.RecalcOutput
 
 // Errors
 
@@ -29,17 +47,29 @@ pub using @engine {type Cell}
 
 pub using @value {type CellAddr}
 
+pub using @engine {type DepGraph}
+
 pub using @engine {type EvalOptions}
 
 pub using @engine {type EvalOutput}
 
+pub using @engine {type ExplainOutput}
+
+pub using @engine {type ExplainStep}
+
 pub using @engine {type Grid}
+
+pub using @engine {type IterOptions}
+
+pub using @engine {type ParseCache}
 
 pub using @syntax {type ParseError}
 
 pub using @value {type RangeValue}
 
 pub using @engine {type RecalcOutput}
+
+pub using @engine {type RecalcState}
 
 pub using @value {type Value}
 

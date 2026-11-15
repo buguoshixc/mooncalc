@@ -85,3 +85,48 @@ stat-countif-0122	=COUNTIF(A1:A3,"a*")	A1=t:apple|A2=t:Avocado|A3=t:banana		stat
 stat-countif-0123	=COUNTIF(A1:A3,"*a*")	A1=t:cat|A2=t:dog|A3=t:banana		stat,countif,wildcard,infix
 stat-countif-0124	=COUNTIF(A1:A3,"<>a*")	A1=t:apple|A2=t:banana|A3=t:avocado		stat,countif,wildcard,ne
 stat-countif-0125	=COUNTIF(A1:A2,A1)	A1=e:#N/A|A2=1		stat,countif,probe,error-criteria,adjudicated
+stat-stdev-0001	=STDEV(2,4,4,4,5,5,7,9)			stat,stdev,basic
+stat-stdev-0002	=STDEV(A1:A4)	A1=1|A2=2|A3=3|A4=4		stat,stdev,range
+stat-stdev-0003	=STDEV(A1:A4)	A1=1|A2=t:x|A3=blank|A4=3		stat,stdev,ignore
+stat-stdev-0004	=STDEV(A1:A2)	A1=t:x|A2=blank		stat,stdev,error,empty
+stat-stdev-0005	=STDEV(1)			stat,stdev,error,single
+stat-stdev-0006	=STDEV("2",4)			stat,stdev,coercion
+stat-stdev-0007	=STDEV(TRUE,2)			stat,stdev,coercion,bool
+stat-stdev-0008	=STDEV(A1,1)	A1=e:#N/A		stat,stdev,error,propagation
+stat-stdev-0009	=STDEV(A1:A3)	A1=1|A2=b:1|A3=3		stat,stdev,ignore,bool
+stat-stdev-0010	=STDEV(1,2,3,4,5)			stat,stdev,basic
+stat-stdev-0011	=STDEV(A1:A2)	A1=2|A2=2		stat,stdev,zero
+stat-stdev-0012	=STDEV(0.1,0.2,0.3)			stat,stdev,precision
+stat-stdev-0013	=STDEV(A1:A4)	A1=1e10|A2=2e10|A3=3e10|A4=4e10		stat,stdev,large
+stat-stdev-0014	=STDEV("x")			stat,stdev,error,coercion
+stat-stdev-0015	=STDEV(A1:A2,3)	A1=1|A2=2		stat,stdev,mixed
+stat-var-0001	=VAR(2,4,4,4,5,5,7,9)			stat,var,basic
+stat-var-0002	=VAR(A1:A4)	A1=1|A2=2|A3=3|A4=4		stat,var,range
+stat-var-0003	=VAR(A1:A4)	A1=1|A2=t:x|A3=blank|A4=3		stat,var,ignore
+stat-var-0004	=VAR(A1:A2)	A1=t:x|A2=blank		stat,var,error,empty
+stat-var-0005	=VAR(1)			stat,var,error,single
+stat-var-0006	=VAR("2",4)			stat,var,coercion
+stat-var-0007	=VAR(TRUE,2)			stat,var,coercion,bool
+stat-var-0008	=VAR(A1,1)	A1=e:#DIV/0!		stat,var,error,propagation
+stat-var-0009	=VAR(A1:A3)	A1=1|A2=b:1|A3=3		stat,var,ignore,bool
+stat-var-0010	=VAR(1,2,3,4,5)			stat,var,basic
+stat-var-0011	=VAR(A1:A2)	A1=2|A2=2		stat,var,zero
+stat-var-0012	=VAR(0.1,0.2,0.3)			stat,var,precision
+stat-var-0013	=VAR(A1:A4)	A1=1e10|A2=2e10|A3=3e10|A4=4e10		stat,var,large
+stat-var-0014	=VAR("x")			stat,var,error,coercion
+stat-var-0015	=VAR(A1:A2,3)	A1=1|A2=2		stat,var,mixed
+stat-percentile-0001	=PERCENTILE(A1:A4,0.5)	A1=1|A2=2|A3=3|A4=4		stat,percentile,basic
+stat-percentile-0002	=PERCENTILE(A1:A4,0)	A1=1|A2=2|A3=3|A4=4		stat,percentile,min
+stat-percentile-0003	=PERCENTILE(A1:A4,1)	A1=1|A2=2|A3=3|A4=4		stat,percentile,max
+stat-percentile-0004	=PERCENTILE(A1:A4,0.25)	A1=1|A2=2|A3=3|A4=4		stat,percentile,interpolation
+stat-percentile-0005	=PERCENTILE(A1:A4,0.75)	A1=1|A2=2|A3=3|A4=4		stat,percentile,interpolation
+stat-percentile-0006	=PERCENTILE(A1:A1,0.3)	A1=7		stat,percentile,single
+stat-percentile-0007	=PERCENTILE(A1:A4,-0.1)	A1=1|A2=2|A3=3|A4=4		stat,percentile,error,k-negative
+stat-percentile-0008	=PERCENTILE(A1:A4,1.1)	A1=1|A2=2|A3=3|A4=4		stat,percentile,error,k-large
+stat-percentile-0009	=PERCENTILE(A1:A4,"x")	A1=1|A2=2|A3=3|A4=4		stat,percentile,error,k-text
+stat-percentile-0010	=PERCENTILE(A1:A2,0.5)	A1=t:x|A2=blank		stat,percentile,error,empty
+stat-percentile-0011	=PERCENTILE(A1:A3,0.5)	A1=1|A2=t:x|A3=3		stat,percentile,ignore
+stat-percentile-0012	=PERCENTILE(A1:A4,0.333333333333333)	A1=1|A2=2|A3=3|A4=4		stat,percentile,precision
+stat-percentile-0013	=PERCENTILE(A1:A2,0.5)	A1=e:#N/A|A2=1		stat,percentile,error,propagation
+stat-percentile-0014	=PERCENTILE(A1:A5,0.9)	A1=1|A2=2|A3=3|A4=4|A5=5		stat,percentile,interpolation
+stat-percentile-0015	=PERCENTILE(A1:A4,"0.5")	A1=1|A2=2|A3=3|A4=4		stat,percentile,coercion

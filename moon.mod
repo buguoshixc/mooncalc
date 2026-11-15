@@ -1,6 +1,6 @@
 name = "buguoshixc/mooncalc"
 
-version = "0.2.0"
+version = "0.3.0"
 
 readme = "README.md"
 
@@ -17,5 +17,4 @@ supported_targets = "+native+wasm-gc"
 description = "Excel-compatible spreadsheet formula engine in MoonBit"
 import {
   "moonbitlang/x@0.5.7",
-  "moonbitlang/mbtexcel@0.3.2",
 }

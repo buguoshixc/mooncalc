@@ -53,5 +53,8 @@ export async function loadMoonWasm(bytes) {
 export async function loadEngine(wasmUrl = 'web.wasm') {
   const bytes = await (await fetch(wasmUrl)).arrayBuffer();
   const instance = await loadMoonWasm(bytes);
-  return (request) => JSON.parse(instance.exports.evaluate_json(JSON.stringify(request)));
+  return {
+    evaluate: (request) => JSON.parse(instance.exports.evaluate_json(JSON.stringify(request))),
+    explain: (request) => JSON.parse(instance.exports.explain_json(JSON.stringify(request))),
+  };
 }

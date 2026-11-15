@@ -119,3 +119,18 @@ lookup-xlookup-0048	=XLOOKUP(9,A1:A5,B1:B5,"miss",0,2)	A1=5|A2=1|A3=9|A4=3|A5=7|
 lookup-xlookup-0050	=XLOOKUP("",A1:A3,B1:B3,"miss")	A1=5|A2=f:=""|A3=9|B1=10|B2=20|B3=30		lookup,xlookup,probe,empty-lookup,adjudicated
 lookup-match-0111	=MATCH("",A1:A3,0)	A1=t:abc|A2=blank|A3=f:=""		lookup,match,probe,empty-lookup,adjudicated
 lookup-match-0112	=MATCH("",A1:A3,0)			lookup,match,probe,empty-lookup,adjudicated
+lookup-choose-0001	=CHOOSE(2,"a","b","c")			lookup,choose,basic
+lookup-choose-0002	=CHOOSE(1,10,20)			lookup,choose,first
+lookup-choose-0003	=CHOOSE(0,10)			lookup,choose,error,index-zero
+lookup-choose-0004	=CHOOSE(3,10,20)			lookup,choose,error,index-large
+lookup-choose-0005	=CHOOSE(2.9,10,20,30)			lookup,choose,trunc
+lookup-choose-0006	=CHOOSE(1,1,1/0)			lookup,choose,lazy
+lookup-choose-0007	=CHOOSE("2",10,20)			lookup,choose,coercion
+lookup-choose-0008	=CHOOSE(1/0,1,2)			lookup,choose,error,index-error
+lookup-choose-0009	=CHOOSE(A1,10,20)	A1=2		lookup,choose,reference
+lookup-choose-0010	=CHOOSE(2,A1,A2)	A1=10|A2=20		lookup,choose,reference-values
+lookup-choose-0011	=CHOOSE(-1,10)			lookup,choose,error,index-negative
+lookup-choose-0012	=CHOOSE(1.1,10,20)			lookup,choose,trunc
+lookup-choose-0013	=CHOOSE(2,1/0,20)			lookup,choose,lazy,error-unselected
+lookup-choose-0014	=CHOOSE(TRUE,10,20)			lookup,choose,coercion,bool
+lookup-choose-0015	=CHOOSE(2,"a","b")			lookup,choose,text

@@ -18,6 +18,8 @@ pub(all) struct CaseRecord {
   source : String
   /// 裁定备注（可空）。
   notes : String
+  /// 迭代计算设置（spec 可选第 6 列 `iter`）；`None` = 迭代关闭（Excel 默认）。
+  iter : @facade.IterOptions?
 } derive(Show, Debug)
 
 fn decode_record(j : Json) -> CaseRecord raise CodecError {
@@ -48,7 +50,22 @@ fn decode_record(j : Json) -> CaseRecord raise CodecError {
     Some(nj) => jstr(nj)
     None => ""
   }
-  { id, formula, grid, now, expected, tags, source, notes }
+  let iter = match j.value("iter") {
+    Some(ij) => {
+      let mi = match ij.value("max_iterations") {
+        Some(nj) => jnum(nj).to_int()
+        None => raise CodecError("iter.max_iterations required")
+      }
+      let mc = match ij.value("max_change") {
+        Some(nj) => jnum(nj)
+        None => raise CodecError("iter.max_change required")
+      }
+      let opts : @facade.IterOptions = { max_iterations: mi, max_change: mc }
+      Some(opts)
+    }
+    None => None
+  }
+  { id, formula, grid, now, expected, tags, source, notes, iter }
 }
 
 /// JSON → 单条语料用例；字段缺失/类型不符返回 `Err(消息)`。

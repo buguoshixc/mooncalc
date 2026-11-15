@@ -74,6 +74,109 @@ pub fn recalc(grid : Grid, options : EvalOptions) -> RecalcOutput {
   @engine.recalc(grid, options)
 }
 
+/// 调用方持有的公式 AST 缓存：按公式全文缓存解析结果（含解析失败消息）。
+///
+/// 跨多次 `recalc_cached` 复用可跳过重复解析；公式文本变化即产生新键，无需手动失效。
+pub type ParseCache = @engine.ParseCache
+
+/// 创建一个空的公式 AST 缓存。
+pub fn new_parse_cache() -> ParseCache {
+  @engine.new_parse_cache()
+}
+
+/// 按依赖关系重算整个网格，复用调用方持有的 AST 缓存；语义与 `recalc` 完全一致。
+///
+/// 同一份缓存可跨多次重算复用（公式文本未变的格跳过解析），适合交互式编辑场景。
+/// 循环引用复刻 Excel 默认（迭代计算关闭）：环上单元格结果为 0，元数据 `circular: true`。
+pub fn recalc_cached(
+  grid : Grid,
+  options : EvalOptions,
+  cache : ParseCache
+) -> RecalcOutput {
+  @engine.recalc_cached(grid, options, cache)
+}
+
+/// 增量重算状态（调用方持有，单所有者）：依赖图 + AST 缓存 + 上次求值结果。
+pub type RecalcState = @engine.RecalcState
+
+/// 全量重算并建立增量状态；输出与 `recalc` 完全一致。
+pub fn recalc_init(
+  grid : Grid,
+  options : EvalOptions
+) -> (RecalcState, RecalcOutput) {
+  @engine.recalc_init(grid, options)
+}
+
+/// 增量重算：只重算 `changed` 的下游闭包，输出与 `recalc(grid, options)` 逐字段一致。
+///
+/// `changed` 必须列出相对上次调用网格内容发生变化的全部地址（含 Literal↔Formula
+/// 切换与删除）。出现循环引用、解析错误或超大区域时自动回退全量重算，调用方无需感知。
+pub fn recalc_update(
+  state : RecalcState,
+  grid : Grid,
+  changed : Array[String],
+  options : EvalOptions
+) -> RecalcOutput {
+  @engine.recalc_update(state, grid, changed, options)
+}
+
+/// 迭代计算选项（对应 Excel「启用迭代计算」）：`max_iterations` 默认 100，
+/// `max_change` 默认 0.001。用 `new_iter_options()` 缺省构造。
+pub type IterOptions = @engine.IterOptions
+
+/// 创建迭代选项；缺省即 Excel 默认（100 次、最大变化 0.001）。
+pub fn new_iter_options(
+  max_iterations~ : Int = 100,
+  max_change~ : Double = 0.001
+) -> IterOptions {
+  @engine.new_iter_options(max_iterations=max_iterations, max_change=max_change)
+}
+
+/// 启用迭代计算重算整个网格：环上格从 0 起迭代至收敛或次数上限，`circular: true`
+/// 但值为迭代结果。默认 `recalc`（迭代关闭）不受影响。
+pub fn recalc_iterative(
+  grid : Grid,
+  options : EvalOptions,
+  iter : IterOptions
+) -> RecalcOutput {
+  @engine.recalc_iterative(grid, options, iter)
+}
+
+/// 单公式迭代求值（公式挂到空键参与整网格迭代）；解析失败走 `Err(ParseError)` 通道。
+pub fn eval_formula_iterative(
+  formula : String,
+  grid : Grid,
+  options : EvalOptions,
+  iter : IterOptions
+) -> Result[EvalOutput, ParseError] {
+  @engine.eval_formula_iterative(formula, grid, options, iter)
+}
+
+/// 错误传播路径上的一步（addr/formula/value/is_source/precedents）。
+pub type ExplainStep = @engine.ExplainStep
+
+/// 错误解释结果：目标值、传播路径（源→目标）、错误源头、解析失败消息。
+pub type ExplainOutput = @engine.ExplainOutput
+
+/// 解释单元格的错误来源：贡献性错误传播路径（最左错误规则感知）。
+///
+/// 目标非错误值或落在环上时 `steps` 为空；上游超 256 格降级为纯错误前驱链。
+pub fn explain(
+  addr : CellAddr,
+  grid : Grid,
+  options : EvalOptions
+) -> ExplainOutput {
+  @engine.explain(addr, grid, options)
+}
+
+/// 网格依赖图：公式格 → 直接前驱 / 格 → 直接下游（AST 级，区域展开）。
+pub type DepGraph = @engine.DepGraph
+
+/// 提取整网格依赖图；任一区域超 65536 格返回 `None`。
+pub fn dependency_graph(grid : Grid) -> DepGraph? {
+  @engine.dependency_graph(grid)
+}
+
 /// 用 Excel 的 1900 日期系统算法（含 Lotus 幻影日 1900-02-29）把年月日折算为序列日。
 ///
 /// 年参数 0..1899 会先 +1900，再按月溢出归一化；越界（序列 <0 或 >2958465）返回 `#NUM!`。

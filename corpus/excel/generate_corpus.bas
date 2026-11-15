@@ -67,7 +67,10 @@ Private Sub ProcessSpec(fso As Object, f As Object, ws As Worksheet, outDir As S
             parts = Split(line, vbTab)
             If UBound(parts) >= 4 And parts(0) <> "id" Then
                 Dim rec As String
-                rec = EvalCase(ws, parts(0), parts(1), parts(2), parts(3), parts(4))
+                Dim iterSpec As String
+                iterSpec = ""
+                If UBound(parts) >= 5 Then iterSpec = parts(5)
+                rec = EvalCase(ws, parts(0), parts(1), parts(2), parts(3), parts(4), iterSpec)
                 If Len(rec) = 0 Then
                     skipped = skipped & parts(0) & vbLf
                 Else
@@ -87,8 +90,29 @@ Private Sub ProcessSpec(fso As Object, f As Object, ws As Worksheet, outDir As S
 End Sub
 
 Private Function EvalCase(ws As Worksheet, id As String, formula As String, _
-                          grid As String, nowMode As String, tags As String) As String
+                          grid As String, nowMode As String, tags As String, _
+                          iterSpec As String) As String
     ws.Cells.Clear
+    ' Optional 6th spec column "N:C": enable Excel iterative calculation for
+    ' this case only; settings are restored immediately after the read.
+    Dim iterOn As Boolean, iterJson As String
+    Dim oldIter As Boolean, oldMaxIter As Long, oldMaxChange As Double, oldAlerts As Boolean
+    iterOn = (Len(iterSpec) > 0)
+    iterJson = ""
+    If iterOn Then
+        Dim ip() As String
+        ip = Split(iterSpec, ":")
+        oldIter = Application.Iteration
+        oldMaxIter = Application.MaxIterations
+        oldMaxChange = Application.MaxChange
+        oldAlerts = Application.DisplayAlerts
+        Application.DisplayAlerts = False
+        Application.Iteration = True
+        Application.MaxIterations = CLng(ip(0))
+        Application.MaxChange = CDbl(ip(1))
+        iterJson = ",""iter"":{""max_iterations"":" & ip(0) & _
+                   ",""max_change"":" & Replace(ip(1), ",", ".") & "}"
+    End If
     On Error Resume Next
     If Len(grid) > 0 Then
         Dim cells() As String, i As Long
@@ -109,6 +133,12 @@ Private Function EvalCase(ws As Worksheet, id As String, formula As String, _
         ' Excel rejected the formula or a grid cell: skip, do not abort the run.
         Err.Clear
         On Error GoTo 0
+        If iterOn Then
+            Application.Iteration = oldIter
+            Application.MaxIterations = oldMaxIter
+            Application.MaxChange = oldMaxChange
+            Application.DisplayAlerts = oldAlerts
+        End If
         EvalCase = ""
         Exit Function
     End If
@@ -128,6 +158,12 @@ Private Function EvalCase(ws As Worksheet, id As String, formula As String, _
     End If
     Dim v As Variant, expected As String
     v = ws.Range("ZZ1").Value
+    If iterOn Then
+        Application.Iteration = oldIter
+        Application.MaxIterations = oldMaxIter
+        Application.MaxChange = oldMaxChange
+        Application.DisplayAlerts = oldAlerts
+    End If
     If IsError(v) Then
         expected = "{""type"":""error"",""value"":""" & ErrName(v) & """}"
     ElseIf IsEmpty(v) Then
@@ -140,7 +176,7 @@ Private Function EvalCase(ws As Worksheet, id As String, formula As String, _
         expected = "{""type"":""number"",""value"":" & NumToJson(CDbl(v)) & "}"
     End If
     EvalCase = "{""id"":""" & JsonEsc(id) & """,""formula"":""" & JsonEsc(formula) & _
-               """,""grid"":" & GridJson(grid) & nowJson & _
+               """,""grid"":" & GridJson(grid) & nowJson & iterJson & _
                ",""expected"":" & expected & _
                ",""tags"":" & TagsJson(tags) & _
                ",""source"":""excel-desktop"",""notes"":""""}"

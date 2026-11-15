@@ -8,6 +8,7 @@ _build/
 target/
 _scratch/
 playground/web.wasm
+moon.work
 
 # 语料与生成器（含真实 Excel 答案键，不属于库）
 corpus/

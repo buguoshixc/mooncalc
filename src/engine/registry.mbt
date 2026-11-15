@@ -56,6 +56,16 @@ fn lookup_fn(name : String) -> FnSpec? {
     "DAY" => Some({ min: 1, max: 1, call: fn_day })
     "TODAY" => Some({ min: 0, max: 0, call: fn_today })
     "NOW" => Some({ min: 0, max: 0, call: fn_now })
+    "STDEV" => Some({ min: 1, max: 30, call: fn_stdev })
+    "VAR" => Some({ min: 1, max: 30, call: fn_var })
+    "PERCENTILE" => Some({ min: 2, max: 2, call: fn_percentile })
+    "REPLACE" => Some({ min: 4, max: 4, call: fn_replace })
+    "SEARCH" => Some({ min: 2, max: 3, call: fn_search })
+    "PROPER" => Some({ min: 1, max: 1, call: fn_proper })
+    "CEILING" => Some({ min: 2, max: 2, call: fn_ceiling })
+    "FLOOR" => Some({ min: 2, max: 2, call: fn_floor })
+    "CHOOSE" => Some({ min: 2, max: 254, call: fn_choose })
+    "XOR" => Some({ min: 1, max: 254, call: fn_xor })
     _ => None
   }
 }

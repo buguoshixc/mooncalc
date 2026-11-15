@@ -87,3 +87,18 @@ logic-switch-0014	=SWITCH(1,1,SWITCH(2,2,"inner","x"),"outer")			logic,switch,ne
 logic-switch-0015	=SWITCH(1,1,"hit",1/0)			logic,switch,lazy-default-unused
 logic-switch-0016	=SWITCH(2.5,2.5,"frac","other")			logic,switch,float
 logic-switch-0017	=SWITCH(A1,1,"one","other")	A1=blank		logic,switch,blank,probe
+logic-xor-0001	=XOR(TRUE,FALSE)			logic,xor,basic
+logic-xor-0002	=XOR(TRUE,TRUE)			logic,xor,even
+logic-xor-0003	=XOR(TRUE,TRUE,TRUE)			logic,xor,odd
+logic-xor-0004	=XOR(FALSE,FALSE)			logic,xor,even
+logic-xor-0005	=XOR(1,0)			logic,xor,numbers
+logic-xor-0006	=XOR("TRUE","FALSE")			logic,xor,text-literal
+logic-xor-0007	=XOR("x")			logic,xor,error,no-logical
+logic-xor-0008	=XOR(TRUE,1/0)			logic,xor,error,eager
+logic-xor-0009	=XOR(A1:A2)	A1=b:1|A2=b:0		logic,xor,range
+logic-xor-0010	=XOR(A1:A2)	A1=1|A2=t:x		logic,xor,range,ignore-text
+logic-xor-0011	=XOR(0.5,0)			logic,xor,numbers,fraction
+logic-xor-0012	=XOR(FALSE,TRUE,TRUE,TRUE)			logic,xor,odd,four
+logic-xor-0013	=XOR(A1)	A1=e:#N/A		logic,xor,error,propagation
+logic-xor-0014	=XOR("false","FALSE")			logic,xor,text-literal,case
+logic-xor-0015	=XOR(1,2,3)			logic,xor,numbers,odd

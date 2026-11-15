@@ -14,15 +14,33 @@ pub fn date_serial(Int32, Int32, Int32) -> Result[Int32, @value.XlError]
 
 pub fn days_in_month(Int32, Int32) -> Int32
 
+pub fn dependency_graph(Grid) -> DepGraph?
+
 pub fn eval_at(@value.CellAddr, Grid, EvalOptions) -> EvalOutput
 
 pub fn eval_formula(String, Grid, EvalOptions) -> Result[EvalOutput, @syntax.ParseError]
 
+pub fn eval_formula_iterative(String, Grid, EvalOptions, IterOptions) -> Result[EvalOutput, @syntax.ParseError]
+
+pub fn explain(@value.CellAddr, Grid, EvalOptions) -> ExplainOutput
+
 pub fn new_grid() -> Grid
+
+pub fn new_iter_options(max_iterations? : Int32, max_change? : Double) -> IterOptions
+
+pub fn new_parse_cache() -> ParseCache
 
 pub fn number_to_text(Double) -> String
 
 pub fn recalc(Grid, EvalOptions) -> RecalcOutput
+
+pub fn recalc_cached(Grid, EvalOptions, ParseCache) -> RecalcOutput
+
+pub fn recalc_init(Grid, EvalOptions) -> (RecalcState, RecalcOutput)
+
+pub fn recalc_iterative(Grid, EvalOptions, IterOptions) -> RecalcOutput
+
+pub fn recalc_update(RecalcState, Grid, Array[String], EvalOptions) -> RecalcOutput
 
 pub fn round_excel(Double, Int32, Int32) -> Double
 
@@ -41,6 +59,8 @@ pub fn to_text(@value.Value) -> Result[String, @value.XlError]
 // Errors
 
 // Types and methods
+type CachedAst
+
 #derive(Eq, Show, @debug.Debug)
 pub(all) enum Cell {
   Literal(@value.Value)
@@ -56,6 +76,12 @@ type Ctx
 type Dec
 
 #derive(Show, @debug.Debug)
+pub(all) struct DepGraph {
+  precedents : Map[String, Array[String]]
+  dependents : Map[String, Array[String]]
+}
+
+#derive(Show, @debug.Debug)
 pub(all) struct EvalOptions {
   now : Double?
 }
@@ -64,6 +90,25 @@ pub(all) struct EvalOptions {
 pub(all) struct EvalOutput {
   value : @value.Value
   circular : Bool
+}
+
+#derive(Show, @debug.Debug)
+pub(all) struct ExplainOutput {
+  target : String
+  value : @value.Value
+  circular : Bool
+  steps : Array[ExplainStep]
+  sources : Array[String]
+  parse_error : String?
+}
+
+#derive(Show, @debug.Debug)
+pub(all) struct ExplainStep {
+  addr : String
+  formula : String
+  value : @value.Value
+  is_source : Bool
+  precedents : Array[String]
 }
 
 type FmtCond
@@ -79,9 +124,24 @@ pub(all) struct Grid {
   cells : Map[String, Cell]
 }
 
+#derive(Show, @debug.Debug)
+pub(all) struct IterOptions {
+  max_iterations : Int32
+  max_change : Double
+}
+
+pub struct ParseCache {
+  // private fields
+}
+pub fn ParseCache::clear(Self) -> Unit
+
 pub(all) struct RecalcOutput {
   cells : Map[String, EvalOutput]
   parse_errors : Array[(String, String)]
+}
+
+pub struct RecalcState {
+  // private fields
 }
 
 type SectionChoice

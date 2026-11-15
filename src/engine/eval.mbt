@@ -44,6 +44,7 @@ struct Ctx {
   grid : Grid
   cache : Map[String, Value]
   range_cache : Map[String, Value]
+  ast_cache : Map[String, CachedAst]?
   stack : Array[String]
   on_stack : Map[String, Bool]
   circular : Map[String, Bool]
@@ -51,16 +52,55 @@ struct Ctx {
   now : Double?
 }
 
-fn new_ctx(grid : Grid, options : EvalOptions) -> Ctx {
+fn new_ctx(
+  grid : Grid,
+  options : EvalOptions,
+  ast_cache : Map[String, CachedAst]?
+) -> Ctx {
   {
     grid,
     cache: Map::new(),
     range_cache: Map::new(),
+    ast_cache,
     stack: [],
     on_stack: Map::new(),
     circular: Map::new(),
     parse_errors: [],
     now: options.now,
+  }
+}
+
+// None = uncached fast path (plain recalc): unique-text workloads must not pay
+// cache hashing overhead. Some = content-addressed cache shared across cells
+// and/or recalcs (recalc_cached).
+fn parse_formula(ctx : Ctx, key : String, src : String) -> @syntax.Expr? {
+  match ctx.ast_cache {
+    None =>
+      try @syntax.parse(src) catch {
+        @syntax.ParseError(msg) => {
+          ctx.parse_errors.push((key, msg))
+          None
+        }
+      } noraise { e => Some(e) }
+    Some(cache) =>
+      match cache.get(src) {
+        Some(Ast(e)) => Some(e)
+        Some(Bad(msg)) => {
+          ctx.parse_errors.push((key, msg))
+          None
+        }
+        None =>
+          try @syntax.parse(src) catch {
+            @syntax.ParseError(msg) => {
+              cache[src] = Bad(msg)
+              ctx.parse_errors.push((key, msg))
+              None
+            }
+          } noraise { e => {
+            cache[src] = Ast(e)
+            Some(e)
+          } }
+      }
   }
 }
 
@@ -84,12 +124,7 @@ fn cell_value(ctx : Ctx, key : String) -> Value {
     None => Value::Blank
     Some(Literal(lit)) => lit
     Some(Formula(src)) => {
-      let expr = try @syntax.parse(src) catch {
-        @syntax.ParseError(msg) => {
-          ctx.parse_errors.push((key, msg))
-          None
-        }
-      } noraise { e => Some(e) }
+      let expr = parse_formula(ctx, key, src)
       match expr {
         None => Value::Err(XlError::Value)
         Some(e) => {
@@ -331,7 +366,7 @@ pub fn eval_formula(
   options : EvalOptions
 ) -> Result[EvalOutput, @syntax.ParseError] {
   let expr = try @syntax.parse(formula) catch { e => return Err(e) }
-  let ctx = new_ctx(grid, options)
+  let ctx = new_ctx(grid, options, None)
   let v = eval_expr(ctx, expr)
   Ok({ value: scalar_output(v), circular: ctx.circular.length() > 0 })
 }
@@ -342,7 +377,7 @@ pub fn eval_at(
   grid : Grid,
   options : EvalOptions
 ) -> EvalOutput {
-  let ctx = new_ctx(grid, options)
+  let ctx = new_ctx(grid, options, None)
   let key = addr.key()
   let v = scalar_output(cell_value(ctx, key))
   { value: v, circular: ctx.circular.contains(key) }
@@ -352,16 +387,5 @@ pub fn eval_at(
 ///
 /// 循环引用复刻 Excel 默认（迭代计算关闭）：环上单元格结果为 0，元数据 `circular: true`。
 pub fn recalc(grid : Grid, options : EvalOptions) -> RecalcOutput {
-  let ctx = new_ctx(grid, options)
-  let out : Map[String, EvalOutput] = Map::new()
-  for key, cell in grid.cells {
-    match cell {
-      Formula(_) => {
-        let v = scalar_output(cell_value(ctx, key))
-        out[key] = { value: v, circular: ctx.circular.contains(key) }
-      }
-      Literal(_) => ()
-    }
-  }
-  { cells: out, parse_errors: ctx.parse_errors }
+  recalc_impl(grid, options, None).0
 }

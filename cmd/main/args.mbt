@@ -4,6 +4,7 @@ struct Args {
   mut formula : String?
   mut addr : String?
   mut now : String?
+  mut iter : String?
   mut out : String?
   mut corpus : String?
   mut report : String?
@@ -17,9 +18,10 @@ struct Args {
 
 fn usage() -> String {
   "usage:\n" +
-  "  mooncalc eval --grid <grid.json> [--formula \"=...\" | --addr B1] [--now <serial|ISO>] [--out result.json]\n" +
+  "  mooncalc eval --grid <grid.json> [--formula \"=...\" | --addr B1] [--now <serial|ISO>] [--iter N:C] [--out result.json]\n" +
   "  mooncalc bench --corpus <dir> [--report report.json] [--tol 1e-9] [--clock-tol 1e-6] [--filter <tag>] [--fail-under 1.0]\n" +
   "  mooncalc perf [--cells 10000] [--repeat 3]\n" +
+  "  mooncalc explain --grid <grid.json> --addr B1 [--now <serial|ISO>] [--out result.json]\n" +
   "exit codes: 0 = gate met, 1 = diffs below gate, 2 = usage/IO/parse error"
 }
 
@@ -32,7 +34,7 @@ fn parse_args(argv : Array[String]) -> Result[Args, String] {
     return Err(usage())
   }
   let cmd = argv[1]
-  if cmd != "eval" && cmd != "bench" && cmd != "perf" {
+  if cmd != "eval" && cmd != "bench" && cmd != "perf" && cmd != "explain" {
     return Err("unknown command: " + cmd + "\n" + usage())
   }
   let a : Args = {
@@ -41,6 +43,7 @@ fn parse_args(argv : Array[String]) -> Result[Args, String] {
     formula: None,
     addr: None,
     now: None,
+    iter: None,
     out: None,
     corpus: None,
     report: None,
@@ -63,6 +66,7 @@ fn parse_args(argv : Array[String]) -> Result[Args, String] {
       "--formula" => a.formula = Some(val)
       "--addr" => a.addr = Some(val)
       "--now" => a.now = Some(val)
+      "--iter" => a.iter = Some(val)
       "--out" => a.out = Some(val)
       "--corpus" => a.corpus = Some(val)
       "--report" => a.report = Some(val)

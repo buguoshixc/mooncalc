@@ -137,3 +137,33 @@ math-sumif-0125	=SUMIF(A1:A2,A1)	A1=e:#N/A|A2=1		math,sumif,probe,error-criteria
 math-sumif-0126	=SUMIF(A1:A3,B1,B1:B1)	A1=1|A2=2|A3=3|B1=e:#N/A		math,sumif,probe,error-criteria,adjudicated
 math-sumif-0127	=SUMIF(A1:A2,A1,A1:A2)	A1=e:#N/A|A2=1		math,sumif,probe,error-criteria,adjudicated
 math-sumif-0128	=SUMIF(A1:A3,B1)	A1=1|A2=2|A3=3|B1=e:#N/A		math,sumif,probe,error-criteria,adjudicated
+math-ceiling-0001	=CEILING(2.5,2)			math,ceiling,basic
+math-ceiling-0002	=CEILING(-2.5,-2)			math,ceiling,sign,both-negative
+math-ceiling-0003	=CEILING(-2.5,2)			math,ceiling,sign,negative-positive
+math-ceiling-0004	=CEILING(2.5,-2)			math,ceiling,error,positive-negative
+math-ceiling-0005	=CEILING(0.3,0.1)			math,ceiling,precision
+math-ceiling-0006	=CEILING(5,0)			math,ceiling,zero-significance
+math-ceiling-0007	=CEILING(-5,0)			math,ceiling,zero-significance,negative
+math-ceiling-0008	=CEILING(7,3)			math,ceiling,basic
+math-ceiling-0009	=CEILING(-7,-3)			math,ceiling,sign,both-negative
+math-ceiling-0010	=CEILING(-7,3)			math,ceiling,sign,negative-positive
+math-ceiling-0011	=CEILING(1.1,0.01)			math,ceiling,precision
+math-ceiling-0012	=CEILING("2.5",2)			math,ceiling,coercion
+math-ceiling-0013	=CEILING(A1,A2)	A1=2.5|A2=2		math,ceiling,reference
+math-ceiling-0014	=CEILING(2.5,"x")			math,ceiling,error,coercion
+math-ceiling-0015	=CEILING(0,2)			math,ceiling,zero
+math-floor-0001	=FLOOR(2.5,2)			math,floor,basic
+math-floor-0002	=FLOOR(-2.5,-2)			math,floor,sign,both-negative
+math-floor-0003	=FLOOR(-2.5,2)			math,floor,sign,negative-positive
+math-floor-0004	=FLOOR(2.5,-2)			math,floor,error,positive-negative
+math-floor-0005	=FLOOR(0.3,0.1)			math,floor,precision
+math-floor-0006	=FLOOR(5,0)			math,floor,zero-significance
+math-floor-0007	=FLOOR(-5,0)			math,floor,zero-significance,negative
+math-floor-0008	=FLOOR(7,3)			math,floor,basic
+math-floor-0009	=FLOOR(-7,-3)			math,floor,sign,both-negative
+math-floor-0010	=FLOOR(-7,3)			math,floor,sign,negative-positive
+math-floor-0011	=FLOOR(1.1,0.01)			math,floor,precision
+math-floor-0012	=FLOOR("2.5",2)			math,floor,coercion
+math-floor-0013	=FLOOR(A1,A2)	A1=2.5|A2=2		math,floor,reference
+math-floor-0014	=FLOOR(2.5,"x")			math,floor,error,coercion
+math-floor-0015	=FLOOR(0,2)			math,floor,zero

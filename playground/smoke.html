@@ -7,6 +7,7 @@
 <div id="done">RUNNING</div>
 <script type="module">
 import { loadEngine } from './loader.js';
+import { parseCsv } from './csv.js';
 
 const results = document.getElementById('results');
 const done = document.getElementById('done');
@@ -30,7 +31,7 @@ function check(name, resp, target, expected, circular) {
 }
 
 try {
-  const evaluate = await loadEngine();
+  const { evaluate, explain } = await loadEngine();
   check('arithmetic', evaluate({ grid: {}, formula: '=1+1' }), 'formula', { type: 'number', value: 2 });
   check('coercion', evaluate({ grid: {}, formula: '=SUM("3",4)' }), 'formula', { type: 'number', value: 7 });
   check('lazy IF', evaluate({ grid: {}, formula: '=IF(TRUE,1,1/0)' }), 'formula', { type: 'number', value: 1 });
@@ -53,6 +54,17 @@ try {
   check('dependent of cycle', circ, 'D2', { type: 'number', value: 5 }, false);
   const bad = evaluate({ grid: {}, formula: '=1+' });
   report('parse error rejected', bad.ok === false, bad.ok ? 'unexpected ok' : '');
+  const gresp = evaluate({ grid: { A1: 1, B1: { formula: '=A1+"A1"' }, C1: { formula: '=SUM(A1:A2)' } } });
+  report('graph precedents AST-level', gresp.ok && JSON.stringify(gresp.graph.precedents.B1) === '["A1"]' && JSON.stringify(gresp.graph.precedents.C1) === '["A1","A2"]', JSON.stringify(gresp.graph));
+  const ex1 = explain({ grid: { A1: { formula: '=1/0' }, B1: { formula: '=A1+1' } }, addr: 'B1' });
+  report('explain sources', ex1.ok && JSON.stringify(ex1.sources) === '["A1"]' && ex1.steps.length === 2 && ex1.steps[0].is_source === true, JSON.stringify(ex1));
+  const ex2 = explain({ grid: { A1: { formula: '=1/0' }, A2: { formula: '="x"+1' }, B1: { formula: '=A1+A2' } }, addr: 'B1' });
+  report('explain leftmost source', ex2.ok && JSON.stringify(ex2.sources) === '["A1"]', JSON.stringify(ex2.sources));
+  const ex3 = explain({ grid: { A1: 1, B1: { formula: '=A1+1' } }, addr: 'B1' });
+  report('explain non-error empty', ex3.ok && ex3.steps.length === 0, JSON.stringify(ex3));
+  report('csv quotes/escapes', JSON.stringify(parseCsv('a,"b""c",d')) === '[["a","b\\"c","d"]]', JSON.stringify(parseCsv('a,"b""c",d')));
+  report('csv crlf', JSON.stringify(parseCsv('a,b\r\nc,d\r\n')) === '[["a","b"],["c","d"]]', JSON.stringify(parseCsv('a,b\r\nc,d\r\n')));
+  report('csv empty fields', JSON.stringify(parseCsv(',a\nb,')) === '[["","a"],["b",""]]', JSON.stringify(parseCsv(',a\nb,')));
   done.textContent = failures === 0 ? 'SMOKE PASS' : 'SMOKE FAIL';
 } catch (err) {
   report('engine load', false, err.message);

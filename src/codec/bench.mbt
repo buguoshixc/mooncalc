@@ -78,7 +78,12 @@ fn compare_case(rec : CaseRecord, tol : Double, clock_tol : Double) -> CaseResul
     actual: Json::null(),
     detail: "",
   }
-  let out = match @facade.eval_formula(rec.formula, rec.grid, { now: rec.now }) {
+  let evaluated = match rec.iter {
+    Some(it) =>
+      @facade.eval_formula_iterative(rec.formula, rec.grid, { now: rec.now }, it)
+    None => @facade.eval_formula(rec.formula, rec.grid, { now: rec.now })
+  }
+  let out = match evaluated {
     Ok(o) => o
     Err(@syntax.ParseError(msg)) =>
       return {

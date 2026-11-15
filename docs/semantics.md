@@ -221,6 +221,43 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 7. **SWITCH 错误传播**：表达式或已求值候选为错误值时立即传播；命中结果/默认值仍惰性（`logic-switch-0008/0009`）。
 8. **IFS 奇数参数**：Excel 拒绝录入（VBA 1004），无答案键；引擎按 `#VALUE!` 处理并显式标为 `subset-out`（`logic-ifs-0005/0015`，跳过日志见 `corpus/cases/logic.skipped.txt`）。
 
+## M7 新增函数（临时语义，待语料裁定）
+
+ADR 0007 扩列 10 函数，实现见 `src/engine/fn_batch4.mbt`，单测期望为 manual 临时值
+（`fn_batch4_test.mbt`），150 条规格已备齐（stat/text/math/lookup/logic.tsv），
+答案键由桌面 Excel 生成后逐条裁定：
+
+- **STDEV/VAR**（样本，n-1）：双通道同 AVERAGE（区域只收数字、字面量强转、错误传播）；
+  n<2 → `#DIV/0!`（待裁定）。两遍法求均值再求平方和。
+- **PERCENTILE**（inclusive）：排序后 rank=k(n-1) 线性插值；空数组/k∉[0,1] → `#NUM!`，
+  k 非数 → `#VALUE!`；区域忽略文本/布尔/空白，错误传播。
+- **REPLACE**：按 UTF-16 码元（同 MID/LEN）；start<1/count<0 → `#VALUE!`；
+  start>len 追加（临时）；半代理对切割行为待裁定。
+- **SEARCH**：FIND 的大小写不敏感 + 通配符版（`*`/`?`/`~` 转义，子串 glob，
+  模式耗尽即命中）；位置按码元；未命中/start 越界 → `#VALUE!`；空 needle → start。
+- **PROPER**：词边界 = 任何无大小写区分的字符（"they're"→"They'Re"）；
+  BMP 简单映射（unicode_upper/lower 查表），ß/İ 等全/标题映射待裁定。
+- **CEILING/FLOOR**（legacy）：商经 15 位有效数字四舍五入归一后 ceil/floor 再乘回
+  （消除 0.3/0.1 类尾差）；number>0 且 sig<0 → `#NUM!`；sig=0 → 0；
+  双负远离零、负正趋向零（CEILING）/远离零（FLOOR）——全部符号组合待裁定。
+- **CHOOSE**：index trunc 1-based，**惰性**只求被选值；越界 → `#VALUE!`；index 错误传播。
+- **XOR**：TRUE 个数奇 → TRUE；**急切**通道同 AND/OR（错误立即传播，
+  XOR(TRUE,1/0)=`#DIV/0!` 待裁定）；无逻辑值 → `#VALUE!`。
+
+## 迭代计算（opt-in）
+
+`recalc_iterative` / `eval_formula_iterative` 对齐 Excel「启用迭代计算」：环上格从 0
+起按网格插入序就地迭代（Gauss-Seidel），一轮内最大绝对变化 < `max_change`（默认
+0.001）或达 `max_iterations`（默认 100，Excel 上限 32767）即停；环上格 `circular: true`
+但值为迭代结果（不再是 0）。非环格与 `recalc` 一致。**默认 `recalc` 路径不变**（迭代
+关闭是 Excel 默认，环上为 0）。`now` 注入一次、跨轮不变（确定性）。
+
+语料：`corpus/spec/iter.tsv`（spec 可选第 6 列 `iter=N:C`；生成器对该用例临时设置
+`Application.Iteration/MaxIterations/MaxChange` 并抑制循环引用弹窗，读取答案后立即
+还原；record 追加可选 `iter` 字段，bench 走 `eval_formula_iterative`）。围栏（100 轮
+还是 101）、迭代序（网格序 vs Excel 依赖序）与收敛细节以真实 Excel 答案键裁定；
+单测期望为 manual 临时值。
+
 ## 零 IO 与确定性
 
 核心（src/、web/、facade.mbt）禁 `@fs`/`@sys`/`println`/`extern "C"`，由 scripts/check.sh 机械守卫；双目标（native + wasm-gc）编译保证无平台依赖。唯一 IO 点是 cmd/main 壳层。同输入同输出，时钟经显式注入。

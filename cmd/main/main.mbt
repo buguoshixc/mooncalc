@@ -9,6 +9,7 @@ fn main {
     "eval" => run_eval(args)
     "bench" => run_bench_cmd(args)
     "perf" => run_perf(args)
+    "explain" => run_explain(args)
     _ => ()
   }
 }
@@ -30,6 +31,31 @@ fn parse_json_or_die(text : String, path : String) -> Json {
   try @json.parse(text) catch { _ => die("invalid JSON in " + path) }
 }
 
+fn parse_iter_or_die(s : String) -> Json {
+  let mut sep = -1
+  for i in 0..<s.length() {
+    if s[i] == ':' {
+      sep = i
+      break
+    }
+  }
+  if sep < 1 || sep == s.length() - 1 {
+    die("--iter expects <max_iterations>:<max_change>")
+  }
+  let n = match parse_int_arg(s.substring(start=0, end=sep)) {
+    Some(v) => v
+    None => die("--iter max_iterations not a positive integer")
+  }
+  let c = match parse_double_arg(s.substring(start=sep + 1, end=s.length())) {
+    Ok(d) => d
+    Err(m) => die("--iter max_change " + m)
+  }
+  let m : Map[String, Json] = Map::new()
+  m["max_iterations"] = Json::number(n.to_double())
+  m["max_change"] = Json::number(c)
+  Json::object(m)
+}
+
 fn run_eval(a : Args) -> Unit {
   let grid_path = match a.grid {
     Some(p) => p
@@ -47,7 +73,41 @@ fn run_eval(a : Args) -> Unit {
   if a.now is Some(s) {
     req["now"] = Json::number(parse_now_or_die(s))
   }
+  if a.iter is Some(s) {
+    req["iter"] = parse_iter_or_die(s)
+  }
   let response = @codec.evaluate_json(Json::stringify(Json::object(req)))
+  match a.out {
+    Some(path) =>
+      try @fs.write_string_to_file(path, response + "\n") catch {
+        _ => die("cannot write file: " + path)
+      }
+    None => println(response)
+  }
+  let j = try @json.parse(response) catch { _ => die("internal: bad response") }
+  match j.value("ok") {
+    Some(ok) => if ok.as_bool() == Some(true) { @sys.exit(0) } else { @sys.exit(2) }
+    None => @sys.exit(2)
+  }
+}
+
+fn run_explain(a : Args) -> Unit {
+  let grid_path = match a.grid {
+    Some(p) => p
+    None => die("explain requires --grid\n" + usage())
+  }
+  let addr = match a.addr {
+    Some(s) => s
+    None => die("explain requires --addr\n" + usage())
+  }
+  let grid_json = parse_json_or_die(read_text(grid_path), grid_path)
+  let req : Map[String, Json] = Map::new()
+  req["grid"] = grid_json
+  req["addr"] = Json::string(addr)
+  if a.now is Some(s) {
+    req["now"] = Json::number(parse_now_or_die(s))
+  }
+  let response = @codec.explain_json(Json::stringify(Json::object(req)))
   match a.out {
     Some(path) =>
       try @fs.write_string_to_file(path, response + "\n") catch {

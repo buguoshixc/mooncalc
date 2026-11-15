@@ -1,0 +1,19 @@
+id	formula	grid	now	tags	iter
+iter-self-diverge-0001	=A1	A1=f:=A1+1		iter,self,diverge	100:0.001
+iter-self-converge-0002	=A1	A1=f:=A1/2+1		iter,self,converge	100:0.001
+iter-mutual-0003	=A1+B1	A1=f:=B1+1|B1=f:=A1+1		iter,mutual,diverge	100:0.001
+iter-maxchange-0004	=A1	A1=f:=A1+0.0005		iter,maxchange	100:0.001
+iter-single-0005	=A1	A1=f:=A1+1		iter,single	1:0.001
+iter-noncircular-0006	=A1*2	A1=5		iter,noncircular	100:0.001
+iter-text-cycle-0007	=A1	A1=f:=A1&"x"		iter,text	5:0.001
+iter-bool-cycle-0008	=A1	A1=f:=NOT(A1)		iter,bool	6:0.001
+iter-error-cycle-0009	=A1	A1=f:=A1/0		iter,error	100:0.001
+iter-outside-0010	=B1	A1=f:=A1+1|B1=7		iter,outside	100:0.001
+iter-three-cycle-0011	=A1	A1=f:=B1|B1=f:=C1|C1=f:=A1+1		iter,three	100:0.001
+iter-tight-tol-0012	=A1	A1=f:=A1/3+1		iter,converge,precision	100:0.0000000001
+iter-fixed-point-0013	=A1	A1=f:=A1		iter,fixedpoint	100:0.001
+iter-blank-ref-0014	=A1+B1	A1=f:=B1|B1=blank		iter,blank	100:0.001
+iter-max-count-0015	=A1	A1=f:=A1+1		iter,maxcount	32767:0.001
+iter-off-control-0016	=A1	A1=f:=A1+1		iter,control
+iter-large-change-0017	=A1	A1=f:=A1+1		iter,largechange	100:1000
+iter-two-converge-0018	=A1	A1=f:=B1/2+1|B1=f:=A1		iter,converge,mutual	100:0.001

@@ -1,14 +1,15 @@
 import { loadEngine } from './loader.js';
+import { parseCsv } from './csv.js';
 
 const COLS = 8, ROWS = 8;
 const cells = new Map();
 let selected = 'A1';
 let evaluate = null;
 let lastResults = new Map();
-// Front-end dependency graph. The engine subset has no cross-sheet refs, no
-// defined names and no array literals, so a regex over each formula is enough;
-// the engine's RecalcOutput contract stays untouched.
+// Dependency graph provided by the engine (AST-level, ranges expanded, quoted
+// strings ignored) via the evaluate_json response's `graph` field.
 let graph = { precedents: new Map(), dependents: new Map() };
+let explain = null;
 
 const gridEl = document.getElementById('grid');
 const barEl = document.getElementById('formula-bar');
@@ -36,48 +37,13 @@ function allAddrs() {
   return out;
 }
 
-// Parse A1-style single-cell and range references out of a formula. Quoted
-// string literals are blanked first so text such as "A1" never creates edges.
-const REF_RE = /(?<![A-Za-z0-9_$])\$?([A-Ha-h])\$?([1-8])(?!\d)(?:\s*:\s*\$?([A-Ha-h])\$?([1-8])(?!\d))?/g;
-
-function parseFormulaRefs(raw) {
-  if (!raw || !raw.startsWith('=')) return [];
-  let s = '';
-  let inQuote = false;
-  for (const ch of raw) {
-    if (ch === '"') { inQuote = !inQuote; s += ' '; continue; }
-    s += inQuote ? ' ' : ch;
-  }
-  const refs = new Set();
-  let m;
-  REF_RE.lastIndex = 0;
-  while ((m = REF_RE.exec(s))) {
-    const c1 = m[1].toUpperCase().charCodeAt(0) - 65;
-    const r1 = Number(m[2]) - 1;
-    if (m[3]) {
-      const c2 = m[3].toUpperCase().charCodeAt(0) - 65;
-      const r2 = Number(m[4]) - 1;
-      for (let r = Math.min(r1, r2); r <= Math.max(r1, r2); r++) {
-        for (let c = Math.min(c1, c2); c <= Math.max(c1, c2); c++) refs.add(addr(c, r));
-      }
-    } else {
-      refs.add(addr(c1, r1));
-    }
-  }
-  return [...refs];
-}
-
-function buildGraph() {
-  const prec = new Map();
-  const dep = new Map();
-  for (const a of allAddrs()) { prec.set(a, new Set()); dep.set(a, new Set()); }
+function currentGrid() {
+  const grid = {};
   for (const [a, raw] of cells) {
-    for (const ref of parseFormulaRefs(raw)) {
-      prec.get(a).add(ref);
-      dep.get(ref).add(a);
-    }
+    const spec = cellSpec(raw);
+    if (spec !== null) grid[a] = spec;
   }
-  graph = { precedents: prec, dependents: dep };
+  return grid;
 }
 
 // Transitive closure in one direction (precedents or dependents).
@@ -98,26 +64,14 @@ function isErrorAddr(a) {
   return !!r && r.value.type === 'error';
 }
 
-// Walk upstream from an error cell through error-valued precedents; the cells
-// with no error precedent are the propagation sources.
+// Contribution-aware error trace from the engine (leftmost-wins probes).
 function errorTrace(start) {
-  const chain = new Set([start]);
-  const sources = [];
-  const stack = [start];
-  const seen = new Set([start]);
-  while (stack.length) {
-    const a = stack.pop();
-    let hasErrPrec = false;
-    for (const p of graph.precedents.get(a) ?? []) {
-      if (isErrorAddr(p)) {
-        hasErrPrec = true;
-        chain.add(p);
-        if (!seen.has(p)) { seen.add(p); stack.push(p); }
-      }
-    }
-    if (!hasErrPrec) sources.push(a);
-  }
-  return { chain, sources: sources.sort(addrSort) };
+  if (!explain) return { chain: new Set([start]), sources: [], steps: [] };
+  const resp = explain({ grid: currentGrid(), addr: start });
+  if (!resp.ok) return { chain: new Set([start]), sources: [], steps: [] };
+  const chain = new Set(resp.steps.map(s => s.addr));
+  chain.add(start);
+  return { chain, sources: resp.sources, steps: resp.steps };
 }
 
 function buildGrid() {
@@ -216,13 +170,7 @@ function scheduleRecalc() {
 
 function recalc() {
   if (!evaluate) return;
-  buildGraph();
-  const grid = {};
-  for (const [a, raw] of cells) {
-    const spec = cellSpec(raw);
-    if (spec !== null) grid[a] = spec;
-  }
-  const resp = evaluate({ grid });
+  const resp = evaluate({ grid: currentGrid() });
   errorsEl.textContent = '';
   lastResults = new Map();
   document.querySelectorAll('td .val').forEach(v => {
@@ -235,6 +183,10 @@ function recalc() {
     renderDetail();
     return;
   }
+  graph = {
+    precedents: new Map(Object.entries(resp.graph?.precedents ?? {})),
+    dependents: new Map(Object.entries(resp.graph?.dependents ?? {})),
+  };
   for (const r of resp.results) {
     lastResults.set(r.target, r);
     const el = inputFor(r.target)?.parentElement.querySelector('.val');
@@ -277,7 +229,8 @@ function renderDetail() {
   if (prec.length) text += `\nprecedents: ${prec.join(', ')}`;
   if (dep.length) text += `\ndependents: ${dep.join(', ')}`;
   if (isErrorAddr(selected)) {
-    const { chain, sources } = errorTrace(selected);
+    const tr = errorTrace(selected);
+    const { chain, sources } = tr;
     const chainText = [...chain].sort(addrSort).join(', ');
     const sourceText = sources.map((a) => {
       const src = cells.get(a) ?? '';
@@ -286,6 +239,7 @@ function renderDetail() {
     }).join('; ');
     text += `\nerror trace: ${chainText}`;
     text += `\nerror source: ${sourceText}`;
+    if (tr.steps.length) text += `\npath: ${tr.steps.map(s => s.addr).join(' → ')}`;
   } else if (evaluate && lastResults.size === 0) {
     text += '\nengine ready — edit a cell or pick a preset';
   }
@@ -355,8 +309,47 @@ document.getElementById('presets').addEventListener('change', (e) => {
 
 buildGrid();
 select('A1');
+
+// CSV import: drag-drop onto the page or the Import CSV button. Row-major into
+// the 8×8 grid; cellSpec typing applies (=formula cells are the demo point).
+function importCsvText(text) {
+  const rows = parseCsv(text);
+  let overflow = false;
+  cells.clear();
+  gridEl.querySelectorAll('input').forEach(i => { i.value = ''; });
+  for (let r = 0; r < rows.length; r++) {
+    for (let c = 0; c < rows[r].length; c++) {
+      if (r >= ROWS || c >= COLS) { overflow = true; continue; }
+      const raw = rows[r][c];
+      if (raw === '') continue;
+      const a = addr(c, r);
+      cells.set(a, raw);
+      inputFor(a).value = raw;
+    }
+  }
+  select(selected);
+  recalc();
+  if (overflow) errorsEl.textContent = 'CSV truncated to the 8×8 grid';
+}
+
+document.body.addEventListener('dragover', (e) => { e.preventDefault(); });
+document.body.addEventListener('drop', (e) => {
+  e.preventDefault();
+  const file = e.dataTransfer?.files?.[0];
+  if (file) file.text().then(importCsvText);
+});
+const csvFileEl = document.getElementById('csv-file');
+document.getElementById('csv-import').addEventListener('click', () => csvFileEl.click());
+csvFileEl.addEventListener('change', () => {
+  const f = csvFileEl.files?.[0];
+  if (f) f.text().then(importCsvText);
+  csvFileEl.value = '';
+});
+
 try {
-  evaluate = await loadEngine();
+  const eng = await loadEngine();
+  evaluate = eng.evaluate;
+  explain = eng.explain;
   recalc();
 } catch (err) {
   detailEl.textContent = 'failed to load engine: ' + err.message;

@@ -46,13 +46,15 @@ number→JSON 数字；text→字符串；bool→true/false；error→错误名�
 
 - `now`：可选。注入时钟（Excel 序列日，含小数）。TODAY/NOW 用例必填，
   由生成器在计算后立即捕获当时 `Now` 序列值，tags 含 `clock`。
+- `iter`：可选。迭代计算设置 `{"max_iterations":N,"max_change":C}`；缺失 = 迭代关闭
+  （Excel 默认）。由 spec 可选第 6 列生成，bench 走 `eval_formula_iterative`。
 - `tags`：族名 + 边界类别；`clock` 标签的记录允许配置容差（报告披露）。
 - `source`：`excel-desktop`（权威）或 `manual`（过渡，非权威）。
   **bench 报告按 source 分栏；manual 通过率不得作为对外指标。**
 
 ## 用例规格 TSV（corpus/spec/*.tsv，AI 编写，Excel 填期望值）
 
-制表符分隔 5 列，首行表头 `id	formula	grid	now	tags`：
+制表符分隔 5 列（可选第 6 列 `iter`），首行表头 `id	formula	grid	now	tags`：
 
 - `formula`：含前导 `=`。
 - `grid`：单元格以 `|` 分隔，每格 `ADDR=spec`；spec 形态：
@@ -64,6 +66,9 @@ number→JSON 数字；text→字符串；bool→true/false；error→错误名�
   - `blank`（空白）
 - `now`：空（不注入）或 `capture`（生成器在同一重算中经 `=NOW()` 辅助格捕获序列值；恢复时转为 15 位十进制写入 `now`）。
 - `tags`：逗号分隔。
+- `iter`（可选第 6 列）：`最大次数:最大变化`（如 `100:0.001`），空 = 迭代关闭。
+  生成器对该用例临时启用 `Application.Iteration/MaxIterations/MaxChange`
+  （并抑制循环引用弹窗），读取答案后立即还原；record 追加 `iter` 字段。
 - 限制：文本值不得含 `|` 或制表符；网格地址限 A1:H20（结果写 ZZ1，避免冲突）。
 
 ## 比较策略（bench）

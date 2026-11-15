@@ -42,6 +42,11 @@
   <span class="hint">=formula · number · TRUE/FALSE · 'text (leading quote forces text) · empty = blank · blue = precedents · green = dependents</span>
 </div>
 <div class="bar">
+  <button id="csv-import">Import CSV</button>
+  <input type="file" id="csv-file" accept=".csv,text/csv" hidden>
+  <span class="hint">or drag a .csv onto the page (row-major, truncated to 8×8; =formula cells work)</span>
+</div>
+<div class="bar">
   <span id="sel-addr">A1</span>
   <input id="formula-bar" placeholder="cell content / formula">
 </div>
