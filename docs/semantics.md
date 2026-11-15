@@ -242,7 +242,7 @@ ADR 0007 扩列 10 函数，实现见 `src/engine/fn_batch4.mbt`，150 条规格
 - **CHOOSE**：index trunc 1-based，惰性；越界 → `#VALUE!`。
 - **XOR**：TRUE 个数奇 → TRUE；急切通道同 AND/OR（XOR(TRUE,1/0)=`#DIV/0!` 已裁定）。
 
-## 迭代计算（opt-in，已由 iter 语料裁定 17/18）
+## 迭代计算（opt-in，已由 iter 语料裁定 18/18）
 
 `recalc_iterative` / `eval_formula_iterative` 对齐 Excel「启用迭代计算」，裁定语义
 （iter-self-diverge/single/max-count/maxchange/text-cycle 等）：
@@ -256,8 +256,8 @@ ADR 0007 扩列 10 函数，实现见 `src/engine/fn_batch4.mbt`，150 条规格
 - 默认 `recalc` 路径不变（迭代关闭是 Excel 默认，环上为 0）。
 - 语料管线：spec 可选第 6 列 `iter=N:C`；生成器临时设置
   `Application.Iteration/MaxIterations/MaxChange` 并抑制弹窗，读后还原；record 附 `iter` 字段。
-- 待重生成：`iter-off-control-0016` 原为环上控制用例，VBA 单步 `Application.Calculate`
-  在迭代刚关闭时返回 1（瞬态，非稳态语义）；spec 已改为非环控制（`=A1*2`, A1=5）。
+- 控制用例 `iter-off-control-0016`：原环上设计撞 VBA 单步 `Application.Calculate`
+  瞬态（迭代刚关闭时返回 1），已改为非环控制（`=A1*2`, A1=5）并重新生成，通过。
 
 ## 零 IO 与确定性
 

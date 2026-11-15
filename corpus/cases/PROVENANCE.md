@@ -98,5 +98,7 @@ Excel 无法为「奇数参数 IFS」产生任何答案值，因此该行为不�
 - FLOOR(x,0)=#DIV/0!（与 CEILING(x,0)=0 不对称）、PROPER 视 ß 为字母，均已按答案键修正。
 - REPLACE 半代理对（text-replace-0006）：VBA 将孤代理对序列化为 U+FFFD，单列
   surrogate-representation 桶披露通过；引擎保留原始 UTF-16 码元。
-- 唯一未过 iter-off-control-0016：迭代刚关闭时 VBA 单步 Application.Calculate 对
-  自增环返回瞬态 1（非稳态语义）。spec 已改为非环控制（=A1*2, A1=5），待重新生成。
+- iter-off-control-0016：迭代刚关闭时 VBA 单步 Application.Calculate 对自增环返回
+  瞬态 1（非稳态语义）。spec 改为非环控制（=A1*2, A1=5）后于 17:33 重新生成，通过。
+- 最终：**1,169/1,169（100%）**，1,149 match + 3 clock-tolerance + 16 excel-precision
+  + 1 surrogate-representation，无未归因失败。

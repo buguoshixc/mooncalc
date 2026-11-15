@@ -2,7 +2,7 @@
 
 **Excel 兼容的电子表格公式引擎，用 MoonBit 编写。**
 
-> 状态（2026-11-15，M7 裁定完成）：60 函数引擎（**MoonBit**，ADR 0007 扩列 +10）、native CLI、wasm-gc playground、mbtexcel 读→算→写示例已实现；新增 AST 缓存（热态 2.7×）、增量重算（改一格 5×）、可选迭代计算、错误解释 API（explain + 依赖图）。**真实 Excel 答案键语料 1,168/1,169（99.9%）**（Excel 2024 · 16.0.20527.20196 · zh-CN 生成；2 条奇数参数 IFS 被 Excel 拒绝录入，显式标为子集外）：1,148 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation（均披露）；唯一未过为 VBA 单步计算伪影（spec 已修待重生成）。规格语料共 1,171 条。2026 MoonBit 年度黑客松 11 月赛参赛项目。
+> 状态（2026-11-15，M7 完成）：60 函数引擎（**MoonBit**，ADR 0007 扩列 +10）、native CLI、wasm-gc playground、mbtexcel 读→算→写示例已实现；新增 AST 缓存（热态 2.7×）、增量重算（改一格 5×）、可选迭代计算、错误解释 API（explain + 依赖图）。**真实 Excel 答案键语料 1,169/1,169（100%）**（Excel 2024 · 16.0.20527.20196 · zh-CN 生成；2 条奇数参数 IFS 被 Excel 拒绝录入，显式标为子集外），无未归因失败：1,149 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation（均在报告披露）。规格语料共 1,171 条。2026 MoonBit 年度黑客松 11 月赛参赛项目。
 
 ## 这是什么
 
@@ -99,7 +99,7 @@ fn main {
 | 单元/快照测试 | 135/135 | 手写期望（引擎语义回归 + codec + 语法 + bench 桶 + 限制边界 + 确定性 fuzz + 增量等价 + 迭代 + explain） |
 | 过渡语料 bench | 34/34（100%） | source: manual，**非权威**，仅证明流程 |
 | 用例规格 | 1,171 条（corpus/spec/，每函数 ≥15） | 1,169 条已生成权威答案键；2 条奇数参数 IFS 被 Excel 拒绝录入（子集外，不进入分母） |
-| **真实 Excel 语料** | **1,168/1,169（99.9%）** | Excel 2024 为唯一裁判；1,148 match + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation；唯一未过为 VBA 单步伪影（spec 已修待重生成），见 `corpus/reports/real.json` |
+| **真实 Excel 语料** | **1,169/1,169（100%）** | Excel 2024 为唯一裁判；1,149 match + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，0 条未归因失败，见 `corpus/reports/real.json` |
 
 比较策略：默认精确相等；**15 位有效数字表征差**（相对差 ≤1e-14）单列 `excel-precision` 桶并通过（源头是 Excel/VBA 只能以 15 位十进制序列化答案）；`clock` 用例按**绝对天数**容差（`--clock-tol`，默认 1e-6 天）单列 `clock-tolerance` 桶并通过（`now` 由生成器在同一重算里经 `=NOW()` 辅助格捕获）；**孤代理对表征差**（VBA 将 REPLACE 半代理对切割产生的孤代理对序列化为 U+FFFD）单列 `surrogate-representation` 桶并通过；相对差 <1e-9 仍单列 `numeric-tolerance` 桶计失败并归因。权威报告：`corpus/reports/real.json`。
 

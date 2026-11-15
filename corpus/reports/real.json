@@ -1,14 +1,14 @@
 {
   "total": 1169,
-  "passed": 1168,
-  "rate": 0.9991445680068435,
+  "passed": 1169,
+  "rate": 1,
   "tol": 1e-9,
   "clock_tol": 0.000001,
   "by_source": {
     "excel-desktop": {
       "total": 1169,
-      "passed": 1168,
-      "rate": 0.9991445680068435
+      "passed": 1169,
+      "rate": 1
     }
   },
   "by_tag": {
@@ -259,8 +259,8 @@
     },
     "iter": {
       "total": 18,
-      "passed": 17,
-      "rate": 0.9444444444444444
+      "passed": 18,
+      "rate": 1
     },
     "self": {
       "total": 2,
@@ -324,8 +324,8 @@
     },
     "control": {
       "total": 1,
-      "passed": 0,
-      "rate": 0
+      "passed": 1,
+      "rate": 1
     },
     "largechange": {
       "total": 1,
@@ -1854,31 +1854,10 @@
     }
   },
   "buckets": {
-    "match": 1148,
+    "match": 1149,
     "clock-tolerance": 3,
     "excel-precision": 16,
-    "value-mismatch": 1,
     "surrogate-representation": 1
   },
-  "failures": [
-    {
-      "id": "iter-off-control-0016",
-      "formula": "=A1",
-      "source": "excel-desktop",
-      "tags": [
-        "iter",
-        "control"
-      ],
-      "bucket": "value-mismatch",
-      "expected": {
-        "type": "number",
-        "value": 1
-      },
-      "actual": {
-        "type": "number",
-        "value": 0
-      },
-      "detail": ""
-    }
-  ]
+  "failures": []
 }

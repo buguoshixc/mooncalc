@@ -1,6 +1,6 @@
 # 函数支持矩阵（60 函数）
 
-状态截至 2026-11-15（M7 裁定完成）。**权威语料（真实 Excel 导出）**：`corpus/cases/` 1,169 条由 Excel 2024（16.0.20527.20196, zh-CN）生成（含 M7 新增 150 条函数 + 18 条迭代）；2 条奇数参数 IFS 被 Excel 拒绝录入（`logic.skipped.txt`，spec 标 `subset-out`，不进入分母）。权威跑分 **1,168/1,169（99.9%）**（报告 `corpus/reports/real.json`）：1,148 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation；唯一未过 `iter-off-control-0016` 为 VBA 单步计算伪影（spec 已改为非环控制，待重新生成）。
+状态截至 2026-11-15（M7 完成）。**权威语料（真实 Excel 导出）**：`corpus/cases/` 1,169 条由 Excel 2024（16.0.20527.20196, zh-CN）生成（含 M7 新增 150 条函数 + 18 条迭代）；2 条奇数参数 IFS 被 Excel 拒绝录入（`logic.skipped.txt`，spec 标 `subset-out`，不进入分母）。权威跑分 **1,169/1,169（100%）**（报告 `corpus/reports/real.json`）：1,149 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，无未归因失败。
 
 - 规格用例：`corpus/spec/*.tsv` 共 **1,171 条**（另 8 行表头）；逐函数计数按「公式中出现该函数调用」统计（含嵌套，一条用例可计入多个函数）。
 - 权威语料列：**1,001 条已生成语料**中该函数的通过数；括号外的分子/分母均来自实际生成记录。
@@ -101,6 +101,6 @@
 
 - 60/60 已注册；`moon test` 135 项全绿（引擎语义回归 + codec + 语法 + bench 桶 + 限制边界 + 确定性 fuzz + 增量等价 + 迭代 + explain + batch4）。
 - 运算符/语法另有 28 条规格用例（优先级、`-2^2`、`2^3^2`、`%`、`&`、一元 `+`、比较排序、错误字面量、空白引用），不调用任何函数。
-- 权威语料 1,168/1,169（99.9%）：1,148 精确命中；3 clock-tolerance；16 excel-precision（STDEV/VAR/PERCENTILE/SQRT 等 15 位表征差）；1 surrogate-representation（REPLACE 半代理对，VBA 序列化为 U+FFFD）。唯一未过：iter-off-control-0016（VBA 单步计算伪影，spec 已改非环控制待重生成）。
+- 权威语料 1,169/1,169（100%）：1,149 精确命中；3 clock-tolerance；16 excel-precision（STDEV/VAR/PERCENTILE/SQRT 等 15 位表征差）；1 surrogate-representation（REPLACE 半代理对，VBA 序列化为 U+FFFD）。无未归因失败。
 - M6 规格用例新增 251 条（总 1,003）：5 个新函数 112 条、criteria 边界 53 条、MATCH 边界 12 条、TEXT 新格式 61 条、XLOOKUP 二分/空查找 13 条；除 2 条 Excel 拒绝录入的 IFS 奇数参数外全部生成答案键并通过。
 - M7（ADR 0007）新增 10 函数 150 条 + 迭代 18 条（总 1,171 规格 / 1,169 生成）：全部裁定通过（10 函数各 15/15，FLOOR 含嵌套 17/17）；迭代语义裁定为「初始 1 轮 + 至多 N 轮、每轮后查收敛、非数值变化不阻止收敛」。
