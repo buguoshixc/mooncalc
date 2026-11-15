@@ -2,7 +2,7 @@
 
 **Excel 兼容的电子表格公式引擎，用 MoonBit 编写。**
 
-> 状态（2026-11-15，M7 完成）：60 函数引擎（**MoonBit**，ADR 0007 扩列 +10）、native CLI、wasm-gc playground、mbtexcel 读→算→写示例已实现；新增 AST 缓存（热态 2.7×）、增量重算（改一格 5×）、可选迭代计算、错误解释 API（explain + 依赖图）。**真实 Excel 答案键语料 1,169/1,169（100%）**（Excel 2024 · 16.0.20527.20196 · zh-CN 生成；2 条奇数参数 IFS 被 Excel 拒绝录入，显式标为子集外），无未归因失败：1,149 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation（均在报告披露）。规格语料共 1,171 条。2026 MoonBit 年度黑客松 11 月赛参赛项目。
+> 状态（2026-11-15，M7 完成）：60 函数引擎（**MoonBit**，ADR 0007 扩列 +10）、native CLI、wasm-gc playground、mbtexcel 读→算→写示例已实现；新增 AST 缓存（热态约 2.6×）、增量重算（改一格 5×）、可选迭代计算、错误解释 API（explain + 依赖图）。**真实 Excel 答案键语料 1,169/1,169（100%）**（Excel 2024 · 16.0.20527.20196 · zh-CN 生成；2 条奇数参数 IFS 被 Excel 拒绝录入，显式标为子集外），无未归因失败：1,149 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation（均在报告披露）。规格语料共 1,171 条。2026 MoonBit 年度黑客松 11 月赛参赛项目。
 
 ## 这是什么
 
@@ -36,6 +36,8 @@ bash scripts/build-playground.sh
 # headless Chromium 冒烟（20 断言，零 npm 依赖）
 node scripts/smoke.mjs
 ```
+
+在线 playground 已部署 GitHub Pages：<https://buguoshixc.github.io/mooncalc/>（push main 自动构建部署，见 [.github/workflows/pages.yml](.github/workflows/pages.yml)）。
 
 ### XLSX 读 → 算 → 写（示例壳，核心零改动）
 
@@ -86,7 +88,7 @@ fn main {
 - `eval_formula(formula, grid, options)`：单公式求值；解析失败走 `Result` 的 `Err` 通道，求值错误值（如 `#DIV/0!`）作为 `Value::Err` 返回。
 - `eval_at(addr, grid, options)`：求值单个单元格。
 - `recalc(grid, options)`：整网格按依赖关系重算，循环引用复刻 Excel 默认（环上为 0，`circular: true`）。
-- `recalc_cached(grid, options, cache)`：同 `recalc`，复用调用方持有的 `ParseCache`（按公式全文缓存 AST），交互式编辑场景热态约 2.7×。
+- `recalc_cached(grid, options, cache)`：同 `recalc`，复用调用方持有的 `ParseCache`（按公式全文缓存 AST），交互式编辑场景热态约 2.6×（记录值 2.65×，见 [docs/performance.md](docs/performance.md)）。
 - `recalc_init` / `recalc_update`：增量重算——改一格只重算下游闭包，输出与全量逐字段一致（环/解析错误自动回退全量），10 万格改一格约 5×。
 - `recalc_iterative` / `eval_formula_iterative`：可选迭代计算（对齐 Excel「启用迭代计算」，默认 100 次/0.001），默认路径不变。
 - `explain(addr, grid, options)`：错误解释——贡献性错误传播路径（最左错误规则感知）与错误源头；`dependency_graph(grid)` 提供 AST 级依赖图。
@@ -149,7 +151,7 @@ fn main {
 - [x] 健壮性加固：Excel 公式限制（8192 字符/64 层嵌套）+ 长链迭代求值，修复超长/超深公式段错误；边界回归 + 确定性 fuzz（88 项单测）
 - [x] 公开 API 文档补全（全部 pub 类型/构造器/字段/方法 /// 注释）
 - [x] 性能基准：`perf` 子命令（4 场景 × 10 万格线性扩展）+ 区域缓存优化（shared 2.2×），见 [docs/performance.md](docs/performance.md)
-- [x] M7：公式 AST 缓存（`recalc_cached`，opt-in 零回归；dup 6.5× / repeat 热态 2.7×）+ perf 新增 dup/repeat/edit/edit-chain 场景
+- [x] M7：公式 AST 缓存（`recalc_cached`，opt-in 零回归；dup 6.5× / repeat 热态 2.65×）+ perf 新增 dup/repeat/edit/edit-chain 场景
 - [x] M7：增量重算（`recalc_init`/`recalc_update`，输出与全量逐字段一致，环/解析错误自动回退；10 万格改一格 5.2×）+ 500 轮确定性等价 fuzz
 - [x] M7：可选迭代计算（`recalc_iterative`/`eval_formula_iterative`，Excel 默认 100 次/0.001；spec 第 6 列 + VBA 生成器迭代支持 + 18 条规格）
 - [x] M7：错误解释 API（`explain` 贡献性探针 + `dependency_graph`；CLI explain、wasm explain_json、playground 迁移引擎图，smoke 24 断言）
