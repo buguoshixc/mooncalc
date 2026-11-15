@@ -1,14 +1,14 @@
 {
-  "total": 1001,
-  "passed": 1001,
-  "rate": 1,
+  "total": 1169,
+  "passed": 1168,
+  "rate": 0.9991445680068435,
   "tol": 1e-9,
   "clock_tol": 0.000001,
   "by_source": {
     "excel-desktop": {
-      "total": 1001,
-      "passed": 1001,
-      "rate": 1
+      "total": 1169,
+      "passed": 1168,
+      "rate": 0.9991445680068435
     }
   },
   "by_tag": {
@@ -68,8 +68,8 @@
       "rate": 1
     },
     "error": {
-      "total": 93,
-      "passed": 93,
+      "total": 125,
+      "passed": 125,
       "rate": 1
     },
     "boundary.max": {
@@ -98,13 +98,13 @@
       "rate": 1
     },
     "bool": {
-      "total": 42,
-      "passed": 42,
+      "total": 48,
+      "passed": 48,
       "rate": 1
     },
     "blank": {
-      "total": 67,
-      "passed": 67,
+      "total": 68,
+      "passed": 68,
       "rate": 1
     },
     "composed": {
@@ -133,8 +133,8 @@
       "rate": 1
     },
     "fraction": {
-      "total": 4,
-      "passed": 4,
+      "total": 5,
+      "passed": 5,
       "rate": 1
     },
     "today": {
@@ -158,13 +158,13 @@
       "rate": 1
     },
     "text": {
-      "total": 318,
-      "passed": 318,
+      "total": 365,
+      "passed": 365,
       "rate": 1
     },
     "coercion": {
-      "total": 89,
-      "passed": 89,
+      "total": 104,
+      "passed": 104,
       "rate": 1
     },
     "eomonth": {
@@ -257,9 +257,84 @@
       "passed": 1,
       "rate": 1
     },
+    "iter": {
+      "total": 18,
+      "passed": 17,
+      "rate": 0.9444444444444444
+    },
+    "self": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "diverge": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "converge": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "mutual": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "maxchange": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "single": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "noncircular": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "outside": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "three": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "precision": {
+      "total": 9,
+      "passed": 9,
+      "rate": 1
+    },
+    "fixedpoint": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "maxcount": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "control": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "largechange": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
     "math": {
-      "total": 138,
-      "passed": 138,
+      "total": 168,
+      "passed": 168,
       "rate": 1
     },
     "round": {
@@ -313,8 +388,8 @@
       "rate": 1
     },
     "sign": {
-      "total": 5,
-      "passed": 5,
+      "total": 13,
+      "passed": 13,
       "rate": 1
     },
     "power": {
@@ -333,13 +408,13 @@
       "rate": 1
     },
     "range": {
-      "total": 22,
-      "passed": 22,
+      "total": 26,
+      "passed": 26,
       "rate": 1
     },
     "ignore": {
-      "total": 4,
-      "passed": 4,
+      "total": 9,
+      "passed": 9,
       "rate": 1
     },
     "refchannel": {
@@ -358,13 +433,13 @@
       "rate": 1
     },
     "case": {
-      "total": 10,
-      "passed": 10,
+      "total": 11,
+      "passed": 11,
       "rate": 1
     },
     "wildcard": {
-      "total": 37,
-      "passed": 37,
+      "total": 42,
+      "passed": 42,
       "rate": 1
     },
     "omitted-range": {
@@ -427,11 +502,6 @@
       "passed": 15,
       "rate": 1
     },
-    "precision": {
-      "total": 1,
-      "passed": 1,
-      "rate": 1
-    },
     "integer": {
       "total": 2,
       "passed": 2,
@@ -443,8 +513,8 @@
       "rate": 1
     },
     "floor": {
-      "total": 2,
-      "passed": 2,
+      "total": 17,
+      "passed": 17,
       "rate": 1
     },
     "single-array": {
@@ -463,8 +533,8 @@
       "rate": 1
     },
     "escape": {
-      "total": 6,
-      "passed": 6,
+      "total": 7,
+      "passed": 7,
       "rate": 1
     },
     "gt": {
@@ -493,8 +563,8 @@
       "rate": 1
     },
     "number": {
-      "total": 2,
-      "passed": 2,
+      "total": 3,
+      "passed": 3,
       "rate": 1
     },
     "text-number": {
@@ -518,8 +588,8 @@
       "rate": 1
     },
     "mixed": {
-      "total": 2,
-      "passed": 2,
+      "total": 6,
+      "passed": 6,
       "rate": 1
     },
     "ne-case": {
@@ -562,9 +632,54 @@
       "passed": 37,
       "rate": 1
     },
+    "ceiling": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "basic": {
+      "total": 13,
+      "passed": 13,
+      "rate": 1
+    },
+    "both-negative": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "negative-positive": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "positive-negative": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "zero-significance": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "negative": {
+      "total": 12,
+      "passed": 12,
+      "rate": 1
+    },
+    "reference": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "zero": {
+      "total": 9,
+      "passed": 9,
+      "rate": 1
+    },
     "stat": {
-      "total": 86,
-      "passed": 86,
+      "total": 131,
+      "passed": 131,
       "rate": 1
     },
     "average": {
@@ -593,18 +708,18 @@
       "rate": 1
     },
     "min": {
-      "total": 15,
-      "passed": 15,
+      "total": 16,
+      "passed": 16,
       "rate": 1
     },
     "empty": {
-      "total": 9,
-      "passed": 9,
+      "total": 14,
+      "passed": 14,
       "rate": 1
     },
     "max": {
-      "total": 15,
-      "passed": 15,
+      "total": 16,
+      "passed": 16,
       "rate": 1
     },
     "median": {
@@ -613,13 +728,13 @@
       "rate": 1
     },
     "odd": {
-      "total": 2,
-      "passed": 2,
+      "total": 5,
+      "passed": 5,
       "rate": 1
     },
     "even": {
-      "total": 3,
-      "passed": 3,
+      "total": 5,
+      "passed": 5,
       "rate": 1
     },
     "mix": {
@@ -628,8 +743,8 @@
       "rate": 1
     },
     "propagation": {
-      "total": 1,
-      "passed": 1,
+      "total": 6,
+      "passed": 6,
       "rate": 1
     },
     "count-ignore": {
@@ -637,19 +752,9 @@
       "passed": 1,
       "rate": 1
     },
-    "zero": {
-      "total": 5,
-      "passed": 5,
-      "rate": 1
-    },
     "literal": {
       "total": 5,
       "passed": 5,
-      "rate": 1
-    },
-    "negative": {
-      "total": 10,
-      "passed": 10,
       "rate": 1
     },
     "tie": {
@@ -668,13 +773,13 @@
       "rate": 1
     },
     "star": {
-      "total": 3,
-      "passed": 3,
+      "total": 4,
+      "passed": 4,
       "rate": 1
     },
     "question": {
-      "total": 3,
-      "passed": 3,
+      "total": 4,
+      "passed": 4,
       "rate": 1
     },
     "escape-tilde": {
@@ -698,6 +803,46 @@
       "rate": 1
     },
     "infix": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "stdev": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "large": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "var": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "percentile": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "interpolation": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "k-negative": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "k-large": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "k-text": {
       "total": 1,
       "passed": 1,
       "rate": 1
@@ -783,18 +928,18 @@
       "rate": 1
     },
     "start": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "empty-needle": {
       "total": 3,
       "passed": 3,
       "rate": 1
     },
-    "empty-needle": {
-      "total": 2,
-      "passed": 2,
-      "rate": 1
-    },
     "not-found": {
-      "total": 7,
-      "passed": 7,
+      "total": 8,
+      "passed": 8,
       "rate": 1
     },
     "substitute": {
@@ -1007,11 +1152,6 @@
       "passed": 1,
       "rate": 1
     },
-    "large": {
-      "total": 1,
-      "passed": 1,
-      "rate": 1
-    },
     "small": {
       "total": 1,
       "passed": 1,
@@ -1092,9 +1232,139 @@
       "passed": 8,
       "rate": 1
     },
+    "replace": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "insert": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "start-beyond-len": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "count-beyond-len": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "emoji": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "whole-pair": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "half-pair": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "start-zero": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "count-negative": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "delete-all": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "punctuation": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "trunc": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "search": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "case-insensitive": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "start-past-match": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "start-beyond": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "multi-char": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "single-any": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "multi-star": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "proper": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "apostrophe": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "digit-boundary": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "all-upper": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "unicode": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "sharp-s": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "spaces": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
     "logic": {
-      "total": 86,
-      "passed": 86,
+      "total": 101,
+      "passed": 101,
       "rate": 1
     },
     "if": {
@@ -1103,8 +1373,8 @@
       "rate": 1
     },
     "lazy": {
-      "total": 7,
-      "passed": 7,
+      "total": 9,
+      "passed": 9,
       "rate": 1
     },
     "and": {
@@ -1113,8 +1383,8 @@
       "rate": 1
     },
     "eager": {
-      "total": 2,
-      "passed": 2,
+      "total": 3,
+      "passed": 3,
       "rate": 1
     },
     "or": {
@@ -1192,9 +1462,39 @@
       "passed": 1,
       "rate": 1
     },
+    "xor": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "numbers": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "text-literal": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "no-logical": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "ignore-text": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "four": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
     "lookup": {
-      "total": 120,
-      "passed": 120,
+      "total": 135,
+      "passed": 135,
       "rate": 1
     },
     "vlookup": {
@@ -1230,11 +1530,6 @@
     "type-mismatch": {
       "total": 3,
       "passed": 3,
-      "rate": 1
-    },
-    "case-insensitive": {
-      "total": 2,
-      "passed": 2,
       "rate": 1
     },
     "blank-result": {
@@ -1462,6 +1757,46 @@
       "passed": 4,
       "rate": 1
     },
+    "choose": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "first": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "index-zero": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "index-large": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "index-error": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "reference-values": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "index-negative": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-unselected": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
     "generic": {
       "total": 237,
       "passed": 237,
@@ -1519,9 +1854,31 @@
     }
   },
   "buckets": {
-    "match": 996,
-    "clock-tolerance": 4,
-    "excel-precision": 1
+    "match": 1148,
+    "clock-tolerance": 3,
+    "excel-precision": 16,
+    "value-mismatch": 1,
+    "surrogate-representation": 1
   },
-  "failures": []
+  "failures": [
+    {
+      "id": "iter-off-control-0016",
+      "formula": "=A1",
+      "source": "excel-desktop",
+      "tags": [
+        "iter",
+        "control"
+      ],
+      "bucket": "value-mismatch",
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "detail": ""
+    }
+  ]
 }

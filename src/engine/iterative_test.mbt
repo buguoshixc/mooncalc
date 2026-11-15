@@ -1,11 +1,11 @@
-// Iterative calculation: provisional expectations (source: manual). The
-// real-Excel iter corpus (corpus/spec/iter.tsv) is the authoritative judge for
-// fenceposts, iteration order and convergence details.
+// Iterative calculation semantics adjudicated by the real-Excel iter corpus
+// (corpus/spec/iter.tsv): initial pass + up to N iterations, convergence checked
+// after each iteration; non-numeric changes do not prevent convergence.
 
 test "iterative: self-loop diverges to iteration count" {
   let g = grid([("A1", f("=A1+1"))])
   let out = recalc_iterative(g, { now: None }, new_iter_options())
-  assert_num(out.cells["A1"].value, 100.0)
+  assert_num(out.cells["A1"].value, 101.0)
   assert_eq(out.cells["A1"].circular, true)
 }
 
@@ -32,13 +32,25 @@ test "iterative: single iteration" {
     { now: None },
     new_iter_options(max_iterations=1),
   )
-  assert_num(out.cells["A1"].value, 1.0)
+  assert_num(out.cells["A1"].value, 2.0)
 }
 
 test "iterative: max_change early stop" {
   let g = grid([("A1", f("=A1+0.0005"))])
   let out = recalc_iterative(g, { now: None }, new_iter_options())
-  assert_num(out.cells["A1"].value, 0.0005)
+  assert_num(out.cells["A1"].value, 0.001)
+}
+
+test "iterative: large max_change stops after first iteration" {
+  let g = grid([("A1", f("=A1+1"))])
+  let out = recalc_iterative(g, { now: None }, new_iter_options(max_change=1000.0))
+  assert_num(out.cells["A1"].value, 2.0)
+}
+
+test "iterative: text cycle converges after initial plus one" {
+  let g = grid([("A1", f("=A1&\"x\""))])
+  let out = recalc_iterative(g, { now: None }, new_iter_options(max_iterations=5))
+  assert_text(out.cells["A1"].value, "0xx")
 }
 
 test "iterative: non-circular cells match recalc" {
@@ -69,7 +81,7 @@ test "iterative: eval_formula_iterative channels" {
   let g = grid([("A1", f("=A1+1"))])
   match eval_formula_iterative("=A1", g, { now: None }, new_iter_options()) {
     Ok(o) => {
-      assert_num(o.value, 100.0)
+      assert_num(o.value, 101.0)
       assert_eq(o.circular, true)
     }
     Err(_) => panic()

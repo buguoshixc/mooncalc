@@ -221,8 +221,24 @@ fn fn_search(_ctx : Ctx, args : Array[Thunk]) -> Value {
 }
 
 // PROPER: capitalize the first letter of each word, lowercase the rest; word
-// boundary = any character without case distinction (ASCII + BMP simple
-// mappings via the shared case tables; full/title mappings adjudicated later).
+// boundary = any non-letter. Letterhood = case-mapping OR ASCII letter OR the
+// identity-case letter set (ß etc., adjudicated by text-proper-0011: Excel
+// treats ß as a letter, so "ßeta" stays "ßeta"). BMP simple mappings.
+fn proper_letter(c : Char) -> Bool {
+  if @value.is_ascii_letter(c) {
+    return true
+  }
+  let cs = c.to_string()
+  if @value.unicode_upper(cs) != cs || @value.unicode_lower(cs) != cs {
+    return true
+  }
+  let v = c.to_int()
+  v == 0xDF || v == 0x149 || v == 0x1F0 || v == 0x390 || v == 0x3B0 ||
+  (v >= 0x1E96 && v <= 0x1E9B) ||
+  v == 0x1F50 || v == 0x1F52 || v == 0x1F54 || v == 0x1F56 || v == 0x1F57 ||
+  (v >= 0xFB00 && v <= 0xFB06) || (v >= 0xFB13 && v <= 0xFB17)
+}
+
 fn fn_proper(_ctx : Ctx, args : Array[Thunk]) -> Value {
   match text_arg(args[0]()) {
     Err(e) => Value::Err(e)
@@ -231,10 +247,9 @@ fn fn_proper(_ctx : Ctx, args : Array[Thunk]) -> Value {
       let mut word_start = true
       for c in s.iter() {
         let cs = c.to_string()
-        let up = @value.unicode_upper(cs)
-        let lo = @value.unicode_lower(cs)
-        if up != lo {
-          out = out + (if word_start { up } else { lo })
+        if proper_letter(c) {
+          out = out +
+            (if word_start { @value.unicode_upper(cs) } else { @value.unicode_lower(cs) })
           word_start = false
         } else {
           out = out + cs
@@ -276,7 +291,8 @@ fn ceiling_floor(args : Array[Thunk], up : Bool) -> Value {
     return Value::Err(XlError::Num)
   }
   if sig == 0.0 {
-    return Value::Num(0.0)
+    // Excel adjudication: CEILING(x,0)=0 but FLOOR(x,0)=#DIV/0! (asymmetric).
+    return if up { Value::Num(0.0) } else { Value::Err(XlError::Div0) }
   }
   if d > 0.0 && sig < 0.0 {
     return Value::Err(XlError::Num)

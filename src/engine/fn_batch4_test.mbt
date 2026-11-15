@@ -77,6 +77,8 @@ test "proper: word boundaries are non-letters" {
   assert_text(ev("=PROPER(\"\")"), "")
   assert_text(ev("=PROPER(\"HELLO\")"), "Hello")
   assert_text(ev("=PROPER(\"hello WORLD\")"), "Hello World")
+  assert_text(ev("=PROPER(\"ßeta\")"), "ßeta")
+  assert_text(ev("=PROPER(\"ßETA\")"), "ßeta")
 }
 
 test "ceiling: legacy sign combinations" {
@@ -96,6 +98,8 @@ test "floor: legacy sign combinations" {
   assert_err(ev("=FLOOR(2.5,-2)"), @value.XlError::Num)
   assert_num(ev("=FLOOR(0.3,0.1)"), 0.3)
   assert_num(ev("=FLOOR(7,3)"), 6.0)
+  assert_err(ev("=FLOOR(5,0)"), @value.XlError::Div0)
+  assert_err(ev("=FLOOR(-5,0)"), @value.XlError::Div0)
 }
 
 test "choose: lazy 1-based selection" {

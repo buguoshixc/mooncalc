@@ -14,6 +14,6 @@ iter-tight-tol-0012	=A1	A1=f:=A1/3+1		iter,converge,precision	100:0.0000000001
 iter-fixed-point-0013	=A1	A1=f:=A1		iter,fixedpoint	100:0.001
 iter-blank-ref-0014	=A1+B1	A1=f:=B1|B1=blank		iter,blank	100:0.001
 iter-max-count-0015	=A1	A1=f:=A1+1		iter,maxcount	32767:0.001
-iter-off-control-0016	=A1	A1=f:=A1+1		iter,control
+iter-off-control-0016	=A1*2	A1=5		iter,control
 iter-large-change-0017	=A1	A1=f:=A1+1		iter,largechange	100:1000
 iter-two-converge-0018	=A1	A1=f:=B1/2+1|B1=f:=A1		iter,converge,mutual	100:0.001

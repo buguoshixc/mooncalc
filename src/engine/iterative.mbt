@@ -20,9 +20,14 @@ pub fn new_iter_options(
 }
 
 fn value_delta(a : Value, b : Value) -> Double {
+  // Raw values may be 1x1 Range wrappers (references); unwrap before compare.
+  // Excel adjudication (iter-text-cycle-0007): non-numeric changes do not
+  // prevent convergence — only numeric deltas count.
+  let a = scalarize(a)
+  let b = scalarize(b)
   match (a, b) {
     (Num(x), Num(y)) => (x - y).abs()
-    _ => if a == b { 0.0 } else { 1.0e308 }
+    _ => 0.0
   }
 }
 
@@ -46,9 +51,12 @@ pub fn recalc_iterative(
       Formula(_) => work[key] = Value::Num(0.0)
     }
   }
+  // Excel fencepost (adjudicated by iter-self-diverge/single/max-count):
+  // one initial calculation, then up to max_iterations additional passes;
+  // convergence is checked after each iteration, never after the initial pass.
   let max_passes = if iter.max_iterations < 1 { 1 } else { iter.max_iterations }
   let mut pass = 0
-  while pass < max_passes {
+  while pass <= max_passes {
     let ctx = new_ctx(grid, options, Some(cache.entries))
     for key, v in work {
       ctx.cache[key] = v
@@ -72,10 +80,10 @@ pub fn recalc_iterative(
         Literal(_) => ()
       }
     }
-    pass += 1
-    if max_delta < iter.max_change {
+    if pass >= 1 && max_delta < iter.max_change {
       break
     }
+    pass += 1
   }
   let out : Map[String, EvalOutput] = Map::new()
   for key, cell in grid.cells {

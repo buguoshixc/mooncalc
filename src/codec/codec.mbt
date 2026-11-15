@@ -47,10 +47,30 @@ fn jnum(j : Json) -> Double raise CodecError {
 }
 
 /// 值 → JSON（`{type, value}`，区域另带 `rows`/`cols`/`values`），见 corpus/schema.md。
+// Display-only sanitization: lone UTF-16 surrogates (e.g. REPLACE splitting an
+// emoji pair) cannot be UTF-8 encoded and would panic report writing. Raw
+// value comparison in bench is unaffected.
+fn normalize_surrogates(s : String) -> String {
+  let mut out = ""
+  for c in s.iter() {
+    let cp = c.to_int()
+    if cp >= 0xD800 && cp <= 0xDFFF {
+      out = out + "\u{FFFD}"
+    } else {
+      out = out + c.to_string()
+    }
+  }
+  out
+}
+
+fn json_safe_text(s : String) -> String {
+  normalize_surrogates(s)
+}
+
 pub fn value_to_json(v : Value) -> Json {
   match v {
     Num(d) => obj([("type", Json::string("number")), ("value", Json::number(d))])
-    Text(s) => obj([("type", Json::string("text")), ("value", Json::string(s))])
+    Text(s) => obj([("type", Json::string("text")), ("value", Json::string(json_safe_text(s)))])
     Bool(b) => obj([("type", Json::string("bool")), ("value", Json::boolean(b))])
     Err(e) =>
       obj([

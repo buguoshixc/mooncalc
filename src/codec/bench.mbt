@@ -117,7 +117,17 @@ fn compare_case(rec : CaseRecord, tol : Double, clock_tol : Double) -> CaseResul
         (false, "value-mismatch", "")
       }
     (Text(a), Text(b)) =>
-      if a == b { (true, "match", "") } else { (false, "value-mismatch", "") }
+      if a == b {
+        (true, "match", "")
+      } else if normalize_surrogates(a) == normalize_surrogates(b) {
+        (
+          true,
+          "surrogate-representation",
+          "lone surrogate serialized as U+FFFD by the VBA answer key",
+        )
+      } else {
+        (false, "value-mismatch", "")
+      }
     (Bool(a), Bool(b)) =>
       if a == b { (true, "match", "") } else { (false, "value-mismatch", "") }
     (Err(a), Err(b)) =>

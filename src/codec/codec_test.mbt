@@ -165,3 +165,20 @@ test "strip_utf8_bom accepts Excel BOM and plain text" {
   assert_eq(strip_utf8_bom(plain), plain)
   assert_eq(strip_utf8_bom(""), "")
 }
+
+test "corpus: iter field decode" {
+  let text = "{\"schema\":\"mooncalc-corpus/1\",\"records\":[{\"id\":\"x\",\"formula\":\"=A1\",\"grid\":{},\"expected\":{\"type\":\"number\",\"value\":1},\"tags\":[],\"source\":\"excel-desktop\",\"notes\":\"\",\"iter\":{\"max_iterations\":100,\"max_change\":0.001}}]}"
+  let j = jparse(text)
+  match corpus_from_json(j) {
+    Ok(rs) => {
+      match rs[0].iter {
+        Some(it) => {
+          assert_eq(it.max_iterations, 100)
+          assert_eq(it.max_change, 0.001)
+        }
+        None => panic()
+      }
+    }
+    Err(_) => panic()
+  }
+}
