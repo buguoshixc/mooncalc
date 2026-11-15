@@ -34,6 +34,14 @@ pub fn recalc_init(
   (state, out)
 }
 
+/// 增量重算元数据：本次实际重算了哪些公式格、是否回退全量。
+pub(all) struct RecalcReport {
+  /// 本次重新求值的公式格（地址升序）；全量回退时为全部公式格。
+  recomputed : Array[String]
+  /// 是否回退全量重算（状态带环 / 新引入环 / 解析错误 / 超大区域）。
+  full_fallback : Bool
+} derive(Show, Debug)
+
 /// 增量重算：只重算 `changed` 的下游闭包，输出与 `recalc(grid, options)` 逐字段一致。
 ///
 /// `changed` 必须列出相对上次调用网格内容发生变化的全部地址（含 Literal↔Formula
@@ -44,8 +52,18 @@ pub fn recalc_update(
   changed : Array[String],
   options : EvalOptions
 ) -> RecalcOutput {
+  recalc_update_report(state, grid, changed, options).0
+}
+
+/// 同 `recalc_update`，另返回重算元数据（交互式场景展示「本次重算 N/M 格」用）。
+pub fn recalc_update_report(
+  state : RecalcState,
+  grid : Grid,
+  changed : Array[String],
+  options : EvalOptions
+) -> (RecalcOutput, RecalcReport) {
   if state.has_cycle || state.range_fallback {
-    return full_rebuild(state, grid, options)
+    return full_with_report(state, grid, options)
   }
   for key in changed {
     remove_edges(state, key)
@@ -55,7 +73,7 @@ pub fn recalc_update(
     }
   }
   if state.range_fallback {
-    return full_rebuild(state, grid, options)
+    return full_with_report(state, grid, options)
   }
   let dirty : Map[String, Bool] = Map::new()
   let queue : Array[String] = []
@@ -97,13 +115,13 @@ pub fn recalc_update(
     }
   }
   if ctx.circular.length() > 0 {
-    return full_rebuild(state, grid, options)
+    return full_with_report(state, grid, options)
   }
   for _, cell in grid.cells {
     match cell {
       Formula(src) =>
         match state.cache.entries.get(src) {
-          Some(Bad(_)) => return full_rebuild(state, grid, options)
+          Some(Bad(_)) => return full_with_report(state, grid, options)
           _ => ()
         }
       Literal(_) => ()
@@ -121,7 +139,32 @@ pub fn recalc_update(
       Literal(_) => ()
     }
   }
-  { cells: out, parse_errors: [] }
+  let recomputed : Array[String] = []
+  for key, _ in dirty {
+    match grid.cells.get(key) {
+      Some(Formula(_)) => recomputed.push(key)
+      _ => ()
+    }
+  }
+  recomputed.sort()
+  ({ cells: out, parse_errors: [] }, { recomputed, full_fallback: false })
+}
+
+fn full_with_report(
+  state : RecalcState,
+  grid : Grid,
+  options : EvalOptions
+) -> (RecalcOutput, RecalcReport) {
+  let out = full_rebuild(state, grid, options)
+  let keys : Array[String] = []
+  for key, cell in grid.cells {
+    match cell {
+      Formula(_) => keys.push(key)
+      Literal(_) => ()
+    }
+  }
+  keys.sort()
+  (out, { recomputed: keys, full_fallback: true })
 }
 
 fn full_rebuild(

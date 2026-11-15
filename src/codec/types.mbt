@@ -9,3 +9,5 @@ type Cell = @facade.Cell
 type EvalOptions = @facade.EvalOptions
 
 type EvalOutput = @facade.EvalOutput
+
+type RecalcOutput = @facade.RecalcOutput

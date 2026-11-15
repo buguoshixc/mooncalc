@@ -42,6 +42,8 @@ pub fn recalc_iterative(Grid, EvalOptions, IterOptions) -> RecalcOutput
 
 pub fn recalc_update(RecalcState, Grid, Array[String], EvalOptions) -> RecalcOutput
 
+pub fn recalc_update_report(RecalcState, Grid, Array[String], EvalOptions) -> (RecalcOutput, RecalcReport)
+
 pub fn round_excel(Double, Int32, Int32) -> Double
 
 pub fn scalarize(@value.Value) -> @value.Value
@@ -138,6 +140,12 @@ pub fn ParseCache::clear(Self) -> Unit
 pub(all) struct RecalcOutput {
   cells : Map[String, EvalOutput]
   parse_errors : Array[(String, String)]
+}
+
+#derive(Show, @debug.Debug)
+pub(all) struct RecalcReport {
+  recomputed : Array[String]
+  full_fallback : Bool
 }
 
 pub struct RecalcState {

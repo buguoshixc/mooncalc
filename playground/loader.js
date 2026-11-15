@@ -56,5 +56,6 @@ export async function loadEngine(wasmUrl = 'web.wasm') {
   return {
     evaluate: (request) => JSON.parse(instance.exports.evaluate_json(JSON.stringify(request))),
     explain: (request) => JSON.parse(instance.exports.explain_json(JSON.stringify(request))),
+    recalcIncremental: (request) => JSON.parse(instance.exports.recalc_incremental_json(JSON.stringify(request))),
   };
 }

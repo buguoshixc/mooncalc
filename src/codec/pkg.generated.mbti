@@ -17,6 +17,8 @@ pub fn explain_json(String) -> String
 
 pub fn grid_from_json(@json.Json) -> Result[@engine.Grid, String]
 
+pub fn recalc_incremental_json(String, @engine.RecalcState?) -> (String, @engine.RecalcState?)
+
 pub fn record_from_json(@json.Json) -> Result[CaseRecord, String]
 
 pub fn report_to_json(BenchReport) -> @json.Json

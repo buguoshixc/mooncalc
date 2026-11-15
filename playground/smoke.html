@@ -31,7 +31,7 @@ function check(name, resp, target, expected, circular) {
 }
 
 try {
-  const { evaluate, explain } = await loadEngine();
+  const { evaluate, explain, recalcIncremental } = await loadEngine();
   check('arithmetic', evaluate({ grid: {}, formula: '=1+1' }), 'formula', { type: 'number', value: 2 });
   check('coercion', evaluate({ grid: {}, formula: '=SUM("3",4)' }), 'formula', { type: 'number', value: 7 });
   check('lazy IF', evaluate({ grid: {}, formula: '=IF(TRUE,1,1/0)' }), 'formula', { type: 'number', value: 1 });
@@ -69,6 +69,35 @@ try {
   let unterminatedRejected = false;
   try { parseCsv('a,"b'); } catch { unterminatedRejected = true; }
   report('csv unterminated quote rejected', unterminatedRejected, '');
+  // Iterative calculation (Excel "Enable iterative calculation") via iter option.
+  const itGrid = { A1: { formula: '=B1+10' }, B1: { formula: '=A1/2' }, C1: { formula: '=A1+B1' } };
+  const itOff = evaluate({ grid: itGrid });
+  check('iterative off: cycle = 0', itOff, 'A1', { type: 'number', value: 0 }, true);
+  const itOn = evaluate({ grid: itGrid, iter: { max_iterations: 100, max_change: 0.001 } });
+  const itA1 = itOn.ok ? itOn.results.find(x => x.target === 'A1') : null;
+  report('iterative on: converges to 20', !!itA1 && itA1.circular === true && Math.abs(itA1.value.value - 20) < 0.01, JSON.stringify(itA1));
+  const itC1 = itOn.ok ? itOn.results.find(x => x.target === 'C1') : null;
+  report('iterative on: downstream non-circular', !!itC1 && itC1.circular === false && Math.abs(itC1.value.value - 30) < 0.02, JSON.stringify(itC1));
+  // Incremental recalc: stateful export, dirty closure and honest fallbacks.
+  const incG1 = { A1: 1, B1: { formula: '=A1*2' }, C1: { formula: '=B1+1' }, E1: { formula: '=7*7' } };
+  const inc1 = recalcIncremental({ grid: incG1, reset: true });
+  report('incremental init: full', inc1.ok && inc1.incremental.full === true && inc1.incremental.recomputed.length === 3, JSON.stringify(inc1.incremental));
+  const incG2 = { ...incG1, A1: 5 };
+  const inc2 = recalcIncremental({ grid: incG2, changed: ['A1'] });
+  report('incremental edit: dirty closure only', inc2.ok && inc2.incremental.full === false && JSON.stringify(inc2.incremental.recomputed) === '["B1","C1"]', JSON.stringify(inc2.incremental));
+  const incFull = evaluate({ grid: incG2 });
+  report('incremental equals full', inc2.ok && incFull.ok && JSON.stringify(inc2.results) === JSON.stringify(incFull.results), '');
+  const incG3 = { ...incG2, B1: { formula: '=C1' } };
+  const inc3 = recalcIncremental({ grid: incG3, changed: ['B1'] });
+  report('incremental cycle: full fallback', inc3.ok && inc3.incremental.full === true && inc3.results.find(x => x.target === 'B1').circular === true, JSON.stringify(inc3.incremental));
+  const inc4 = recalcIncremental({ grid: { ...incG3, A1: 9 }, changed: ['A1'] });
+  report('incremental sticky cycle: stays full', inc4.ok && inc4.incremental.full === true, JSON.stringify(inc4.incremental));
+  const inc5 = recalcIncremental({ grid: incG2, reset: true });
+  const inc6 = recalcIncremental({ grid: { ...incG2, A1: 6 }, changed: ['A1'] });
+  report('incremental reset: recovers', inc5.ok && inc6.ok && inc6.incremental.full === false && JSON.stringify(inc6.incremental.recomputed) === '["B1","C1"]', JSON.stringify(inc6.incremental));
+  const incG7 = { ...incG2, B1: { formula: '=1+' } };
+  const inc7 = recalcIncremental({ grid: incG7, changed: ['B1'] });
+  report('incremental parse error: full fallback', inc7.ok && inc7.incremental.full === true && inc7.parse_errors.length === 1, JSON.stringify(inc7.incremental));
   done.textContent = failures === 0 ? 'SMOKE PASS' : 'SMOKE FAIL';
 } catch (err) {
   report('engine load', false, err.message);

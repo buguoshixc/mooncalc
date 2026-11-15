@@ -182,3 +182,66 @@ test "corpus: iter field decode" {
     Err(_) => panic()
   }
 }
+
+test "recalc_incremental_json: init, dirty closure, reset" {
+  let init_req = "{\"grid\":{\"A1\":1,\"B1\":{\"formula\":\"=A1*2\"},\"C1\":{\"formula\":\"=B1+1\"},\"E1\":{\"formula\":\"=7*7\"}},\"reset\":true}"
+  let (resp1, state1) = recalc_incremental_json(init_req, None)
+  assert_true(ok(resp1))
+  let inc1 = jparse(resp1).value("incremental").unwrap()
+  assert_eq(inc1.value("full").unwrap().as_bool().unwrap(), true)
+  assert_eq(inc1.value("recomputed").unwrap().as_array().unwrap().length(), 3)
+  let edit_req = "{\"grid\":{\"A1\":5,\"B1\":{\"formula\":\"=A1*2\"},\"C1\":{\"formula\":\"=B1+1\"},\"E1\":{\"formula\":\"=7*7\"}},\"changed\":[\"A1\"]}"
+  let (resp2, state2) = recalc_incremental_json(edit_req, state1)
+  assert_true(ok(resp2))
+  let inc2 = jparse(resp2).value("incremental").unwrap()
+  assert_eq(inc2.value("full").unwrap().as_bool().unwrap(), false)
+  let rec2 = inc2.value("recomputed").unwrap().as_array().unwrap()
+  assert_eq(rec2.length(), 2)
+  assert_eq(rec2[0].as_string().unwrap(), "B1")
+  assert_eq(rec2[1].as_string().unwrap(), "C1")
+  let full = evaluate_json(
+    "{\"grid\":{\"A1\":5,\"B1\":{\"formula\":\"=A1*2\"},\"C1\":{\"formula\":\"=B1+1\"},\"E1\":{\"formula\":\"=7*7\"}}}",
+  )
+  assert_eq(
+    jparse(resp2).value("results").unwrap().stringify(),
+    jparse(full).value("results").unwrap().stringify(),
+  )
+  let (resp3, _) = recalc_incremental_json(init_req, state2)
+  assert_eq(
+    jparse(resp3).value("incremental").unwrap().value("full").unwrap().as_bool().unwrap(),
+    true,
+  )
+  let (resp4, _) = recalc_incremental_json(
+    "{\"grid\":{\"A1\":1,\"B1\":{\"formula\":\"=A1\"}}}",
+    None,
+  )
+  assert_true(ok(resp4))
+  assert_eq(
+    jparse(resp4).value("incremental").unwrap().value("full").unwrap().as_bool().unwrap(),
+    true,
+  )
+}
+
+test "recalc_incremental_json: cycle fallback and bad input" {
+  let (_, state) = recalc_incremental_json(
+    "{\"grid\":{\"A1\":1,\"B1\":{\"formula\":\"=A1\"}},\"reset\":true}",
+    None,
+  )
+  let (resp, state2) = recalc_incremental_json(
+    "{\"grid\":{\"A1\":1,\"B1\":{\"formula\":\"=B1\"}},\"changed\":[\"B1\"]}",
+    state,
+  )
+  assert_true(ok(resp))
+  assert_eq(
+    jparse(resp).value("incremental").unwrap().value("full").unwrap().as_bool().unwrap(),
+    true,
+  )
+  let (bad, state3) = recalc_incremental_json("not json", state2)
+  assert_false(ok(bad))
+  assert_true(state3 is Some(_))
+  let (bad2, _) = recalc_incremental_json(
+    "{\"grid\":{\"A1\":1},\"changed\":[\"A0\"]}",
+    state3,
+  )
+  assert_false(ok(bad2))
+}

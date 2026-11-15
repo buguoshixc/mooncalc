@@ -67,7 +67,7 @@ pub fn evaluate_json(input : String) -> String {
   }
   let results : Array[Json] = []
   let parse_errors : Array[Json] = []
-  let mut graph : Json = Json::null()
+  let graph : Json = Json::null()
   if j.value("formula") is Some(fj) {
     let formula = match fj.as_string() {
       Some(s) => s
@@ -104,40 +104,7 @@ pub fn evaluate_json(input : String) -> String {
       Some(it) => @facade.recalc_iterative(grid, options, it)
       None => @facade.recalc(grid, options)
     }
-    let keys : Array[String] = []
-    for k, _ in out.cells {
-      keys.push(k)
-    }
-    keys.sort()
-    for k in keys {
-      match out.cells.get(k) {
-        Some(o) => results.push(result_json(k, o))
-        None => ()
-      }
-    }
-    for pe in out.parse_errors {
-      parse_errors.push(obj([
-        ("addr", Json::string(pe.0)),
-        ("message", Json::string(pe.1)),
-      ]))
-    }
-    match @facade.dependency_graph(grid) {
-      Some(dg) => {
-        let prec : Map[String, Json] = Map::new()
-        for k, rs in dg.precedents {
-          prec[k] = Json::array(rs.map(Json::string))
-        }
-        let deps : Map[String, Json] = Map::new()
-        for k, rs in dg.dependents {
-          deps[k] = Json::array(rs.map(Json::string))
-        }
-        graph = obj([
-          ("precedents", Json::object(prec)),
-          ("dependents", Json::object(deps)),
-        ])
-      }
-      None => ()
-    }
+    return Json::stringify(obj(recalc_response_fields(out, grid)))
   }
   Json::stringify(obj([
     ("ok", Json::boolean(true)),
@@ -145,4 +112,54 @@ pub fn evaluate_json(input : String) -> String {
     ("parse_errors", Json::array(parse_errors)),
     ("graph", graph),
   ]))
+}
+
+// Full-grid response fields shared by evaluate_json and the incremental entry.
+fn recalc_response_fields(
+  out : RecalcOutput,
+  grid : Grid
+) -> Array[(String, Json)] {
+  let results : Array[Json] = []
+  let parse_errors : Array[Json] = []
+  let keys : Array[String] = []
+  for k, _ in out.cells {
+    keys.push(k)
+  }
+  keys.sort()
+  for k in keys {
+    match out.cells.get(k) {
+      Some(o) => results.push(result_json(k, o))
+      None => ()
+    }
+  }
+  for pe in out.parse_errors {
+    parse_errors.push(obj([
+      ("addr", Json::string(pe.0)),
+      ("message", Json::string(pe.1)),
+    ]))
+  }
+  let mut graph : Json = Json::null()
+  match @facade.dependency_graph(grid) {
+    Some(dg) => {
+      let prec : Map[String, Json] = Map::new()
+      for k, rs in dg.precedents {
+        prec[k] = Json::array(rs.map(Json::string))
+      }
+      let deps : Map[String, Json] = Map::new()
+      for k, rs in dg.dependents {
+        deps[k] = Json::array(rs.map(Json::string))
+      }
+      graph = obj([
+        ("precedents", Json::object(prec)),
+        ("dependents", Json::object(deps)),
+      ])
+    }
+    None => ()
+  }
+  [
+    ("ok", Json::boolean(true)),
+    ("results", Json::array(results)),
+    ("parse_errors", Json::array(parse_errors)),
+    ("graph", graph),
+  ]
 }

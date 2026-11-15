@@ -29,6 +29,31 @@ test "incremental: chain edit" {
   assert_num(out.cells["A3"].value, 12.0)
 }
 
+test "incremental report: dirty closure, literal edit, cycle fallback" {
+  let g = grid([
+    ("A1", lit(1.0)),
+    ("B1", f("=A1*2")),
+    ("C1", f("=B1+1")),
+    ("D1", lit(0.0)),
+    ("E1", f("=7*7")),
+  ])
+  let (state, _) = recalc_init(g, { now: None })
+  g.cells["A1"] = lit(5.0)
+  let (out, rep) = recalc_update_report(state, g, ["A1"], { now: None })
+  assert_recalc_eq(out, recalc(g, { now: None }))
+  assert_eq(rep.full_fallback, false)
+  assert_eq(rep.recomputed, ["B1", "C1"])
+  g.cells["D1"] = lit(9.0)
+  let (_, rep2) = recalc_update_report(state, g, ["D1"], { now: None })
+  assert_eq(rep2.full_fallback, false)
+  assert_eq(rep2.recomputed, [])
+  g.cells["B1"] = f("=C1")
+  let (out3, rep3) = recalc_update_report(state, g, ["B1"], { now: None })
+  assert_recalc_eq(out3, recalc(g, { now: None }))
+  assert_eq(rep3.full_fallback, true)
+  assert_eq(rep3.recomputed, ["B1", "C1", "E1"])
+}
+
 test "incremental: diamond and shared range" {
   let g = grid([
     ("A1", lit(1.0)),

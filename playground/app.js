@@ -5,7 +5,13 @@ const COLS = 8, ROWS = 8;
 const cells = new Map();
 let selected = 'A1';
 let evaluate = null;
+let recalcIncremental = null;
 let lastResults = new Map();
+// Incremental recalc: the wasm shell holds the engine state; the page tracks
+// edited addresses since the last recalc and forces a reset on bulk loads
+// (preset / CSV / iterative toggle), where per-cell change tracking is moot.
+let incReset = true;
+const pendingChanges = new Set();
 // Dependency graph provided by the engine (AST-level, ranges expanded, quoted
 // strings ignored) via the evaluate_json response's `graph` field.
 let graph = { precedents: new Map(), dependents: new Map() };
@@ -16,6 +22,8 @@ const barEl = document.getElementById('formula-bar');
 const detailEl = document.getElementById('detail');
 const errorsEl = document.getElementById('errors');
 const selAddrEl = document.getElementById('sel-addr');
+const iterEl = document.getElementById('iterative');
+const recalcInfoEl = document.getElementById('recalc-info');
 
 function addr(c, r) { return String.fromCharCode(65 + c) + (r + 1); }
 
@@ -100,6 +108,7 @@ function buildGrid() {
       input.addEventListener('focus', () => select(a));
       input.addEventListener('input', () => {
         cells.set(a, input.value);
+        pendingChanges.add(a);
         if (a === selected) barEl.value = input.value;
         scheduleRecalc();
       });
@@ -147,6 +156,7 @@ function select(a) {
 
 barEl.addEventListener('input', () => {
   cells.set(selected, barEl.value);
+  pendingChanges.add(selected);
   inputFor(selected).value = barEl.value;
   scheduleRecalc();
 });
@@ -170,7 +180,20 @@ function scheduleRecalc() {
 
 function recalc() {
   if (!evaluate) return;
-  const resp = evaluate({ grid: currentGrid() });
+  const grid = currentGrid();
+  const iterative = iterEl.checked;
+  let resp;
+  if (iterative) {
+    resp = evaluate({ grid, iter: { max_iterations: 100, max_change: 0.001 } });
+    incReset = true;
+  } else {
+    const req = { grid };
+    if (incReset) req.reset = true;
+    else req.changed = [...pendingChanges];
+    resp = recalcIncremental(req);
+    incReset = !resp.ok;
+  }
+  pendingChanges.clear();
   errorsEl.textContent = '';
   lastResults = new Map();
   document.querySelectorAll('td .val').forEach(v => {
@@ -179,6 +202,7 @@ function recalc() {
   });
   if (!resp.ok) {
     errorsEl.textContent = resp.error;
+    recalcInfoEl.textContent = '';
     renderHighlights();
     renderDetail();
     return;
@@ -197,6 +221,16 @@ function recalc() {
   }
   if (resp.parse_errors.length) {
     errorsEl.textContent = resp.parse_errors.map(p => `${p.addr}: ${p.message}`).join('\n');
+  }
+  const total = resp.results.length;
+  if (total === 0) {
+    recalcInfoEl.textContent = '';
+  } else if (iterative) {
+    recalcInfoEl.textContent = `recalc: ${total}/${total} formula cells · iterative (≤100 passes, max change 0.001)`;
+  } else if (resp.incremental.full) {
+    recalcInfoEl.textContent = `recalc: ${total}/${total} formula cells · full rebuild`;
+  } else {
+    recalcInfoEl.textContent = `recalc: ${resp.incremental.recomputed.length}/${total} formula cells · incremental`;
   }
   renderHighlights();
   renderDetail();
@@ -220,7 +254,11 @@ function renderDetail() {
   let text = `${selected}  raw: ${raw === '' ? '(blank)' : raw}`;
   if (r) {
     text += `\nvalue: ${JSON.stringify(r.value)}`;
-    if (r.circular) text += '\n⚠ circular reference: cycle cells evaluate to 0 (Excel default, iterative calc off)';
+    if (r.circular) {
+      text += iterEl.checked
+        ? '\n⚠ circular reference: iterated toward convergence (iterative calc on: ≤100 passes, max change 0.001)'
+        : '\n⚠ circular reference: cycle cells evaluate to 0 (Excel default, iterative calc off)';
+    }
   } else if (raw.trim().startsWith('=')) {
     text += '\n(not evaluated yet)';
   }
@@ -251,6 +289,7 @@ const PRESETS = {
   textnum: { A1: "'3", A2: '4', B1: '=SUM(A1,4)', B2: '=SUM("3",4)', C1: '=A1=A2' },
   blank: { B1: '=A1+1', B2: '=A1=0', A2: '=""', B3: '=COUNTA(A1:A2)' },
   circular: { A1: '=A1+1', B1: '=A1+5' },
+  iterative: { A1: '=B1+10', B1: '=A1/2', C1: '=A1+B1' },
   xlookup: {
     A1: 'apple', A2: 'banana', A3: 'cherry',
     B1: '10', B2: '20', B3: '30',
@@ -296,6 +335,8 @@ const PRESETS = {
 
 document.getElementById('presets').addEventListener('change', (e) => {
   cells.clear();
+  incReset = true;
+  pendingChanges.clear();
   gridEl.querySelectorAll('input').forEach(i => { i.value = ''; });
   gridEl.querySelectorAll('td .val').forEach(v => { v.textContent = ''; v.className = 'val'; });
   const preset = PRESETS[e.target.value] ?? {};
@@ -322,6 +363,8 @@ function importCsvText(text) {
   }
   let overflow = false;
   cells.clear();
+  incReset = true;
+  pendingChanges.clear();
   gridEl.querySelectorAll('input').forEach(i => { i.value = ''; });
   for (let r = 0; r < rows.length; r++) {
     for (let c = 0; c < rows[r].length; c++) {
@@ -352,10 +395,17 @@ csvFileEl.addEventListener('change', () => {
   csvFileEl.value = '';
 });
 
+iterEl.addEventListener('change', () => {
+  incReset = true;
+  pendingChanges.clear();
+  recalc();
+});
+
 try {
   const eng = await loadEngine();
   evaluate = eng.evaluate;
   explain = eng.explain;
+  recalcIncremental = eng.recalcIncremental;
   recalc();
 } catch (err) {
   detailEl.textContent = 'failed to load engine: ' + err.message;

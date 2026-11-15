@@ -38,6 +38,8 @@ pub fn recalc_iterative(@engine.Grid, @engine.EvalOptions, @engine.IterOptions) 
 
 pub fn recalc_update(@engine.RecalcState, @engine.Grid, Array[String], @engine.EvalOptions) -> @engine.RecalcOutput
 
+pub fn recalc_update_report(@engine.RecalcState, @engine.Grid, Array[String], @engine.EvalOptions) -> (@engine.RecalcOutput, @engine.RecalcReport)
+
 // Errors
 
 // Types and methods
@@ -68,6 +70,8 @@ pub using @syntax {type ParseError}
 pub using @value {type RangeValue}
 
 pub using @engine {type RecalcOutput}
+
+pub using @engine {type RecalcReport}
 
 pub using @engine {type RecalcState}
 

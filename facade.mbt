@@ -120,6 +120,20 @@ pub fn recalc_update(
   @engine.recalc_update(state, grid, changed, options)
 }
 
+/// 增量重算元数据：`recomputed` 为本次实际重新求值的公式格（地址升序），
+/// `full_fallback` 表示是否回退全量重算（环 / 解析错误 / 超大区域）。
+pub type RecalcReport = @engine.RecalcReport
+
+/// 同 `recalc_update`，另返回重算元数据（交互式场景展示「本次重算 N/M 格」用）。
+pub fn recalc_update_report(
+  state : RecalcState,
+  grid : Grid,
+  changed : Array[String],
+  options : EvalOptions
+) -> (RecalcOutput, RecalcReport) {
+  @engine.recalc_update_report(state, grid, changed, options)
+}
+
 /// 迭代计算选项（对应 Excel「启用迭代计算」）：`max_iterations` 默认 100，
 /// `max_change` 默认 0.001。用 `new_iter_options()` 缺省构造。
 pub type IterOptions = @engine.IterOptions
