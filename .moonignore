@@ -1,0 +1,26 @@
+# MoonCalc 发布包清单：只保留库本体（src/ + web/ + facade.mbt + 清单 + README/LICENSE）。
+# `.moonignore` 覆盖同目录的 `.gitignore`，因此构建产物与本地缓存在这里显式排除。
+# 语法同 .gitignore；不导出任何非库文件。
+
+# 构建输出 / 依赖缓存 / 本地草稿
+_build/
+.mooncakes/
+target/
+_scratch/
+playground/web.wasm
+
+# 语料与生成器（含真实 Excel 答案键，不属于库）
+corpus/
+
+# 验证与演示壳（依赖 core 的 IO 壳，不随库发布）
+cmd/
+playground/
+scripts/
+tests/
+examples/
+.github/
+
+# 文档与项目材料
+docs/
+CONTEXT.md
+项目申报书.md

@@ -320,7 +320,9 @@ test "errors inside single-cell references propagate and are catchable" {
   assert_err(evg("=LEFT(A1,2)", e), @value.XlError::NA)
   assert_num(evg("=COUNTIF(A1,1)", e), 0.0)
   assert_num(evg("=SUMIF(A1,\">0\")", e), 0.0)
-  assert_err(evg("=COUNTIF(A1,A1)", e), @value.XlError::NA)
+  // An error criterion matches an error cell of the same value (verified by
+  // probes against Excel 2024; corpus stat-countif-0121 covers the no-match case).
+  assert_num(evg("=COUNTIF(A1,A1)", e), 1.0)
 }
 
 test "AND/OR reference channel: only logicals count" {

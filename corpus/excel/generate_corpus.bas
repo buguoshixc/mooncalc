@@ -235,6 +235,9 @@ Private Function ErrName(e As Variant) As String
         Case 2036: ErrName = "#NUM!"
         Case 2023: ErrName = "#REF!"
         Case 2015: ErrName = "#VALUE!"
+        ' #CALC! is the Excel 365 dynamic-array calculation error (VBA 2050),
+        ' e.g. TEXTJOIN producing more than 32767 characters.
+        Case 2050: ErrName = "#CALC!"
         Case Else: ErrName = "#UNKNOWN(" & CLng(e) & ")"
     End Select
 End Function

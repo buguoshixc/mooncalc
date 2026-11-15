@@ -6,6 +6,10 @@ pub(all) enum XlError {
   Num
   Ref
   Value
+  // Excel 365 dynamic-array calculation error, e.g. TEXTJOIN producing a
+  // string longer than 32767 characters. Adjudicated by the real-Excel corpus
+  // (text-textjoin-0021).
+  Calc
 } derive(Show, Debug, Eq)
 
 pub fn XlError::to_string(self : XlError) -> String {
@@ -17,6 +21,7 @@ pub fn XlError::to_string(self : XlError) -> String {
     Num => "#NUM!"
     Ref => "#REF!"
     Value => "#VALUE!"
+    Calc => "#CALC!"
   }
 }
 
@@ -29,6 +34,7 @@ pub fn XlError::parse(s : String) -> XlError? {
     "#NUM!" => Some(Num)
     "#REF!" => Some(Ref)
     "#VALUE!" => Some(Value)
+    "#CALC!" => Some(Calc)
     _ => None
   }
 }

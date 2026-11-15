@@ -90,3 +90,25 @@ date-day-0010	=DAY(DATE(2026,11,14))			date,day,composed
 date-day-0011	=DAY(A1)	A1=t:abc		date,day,coercion,error
 date-day-0012	=DAY(A1)	A1=blank		date,day,blank
 date-day-0013	=DAY(36526)			date,day
+date-eomonth-0001	=EOMONTH(DATE(2026,11,15),0)			date,eomonth
+date-eomonth-0002	=DAY(EOMONTH(DATE(2026,11,15),0))			date,eomonth,day
+date-eomonth-0003	=EOMONTH(DATE(2026,11,15),0)=DATE(2026,11,30)			date,eomonth,equal
+date-eomonth-0004	=EOMONTH(DATE(2024,2,10),0)=DATE(2024,2,29)			date,eomonth,leap
+date-eomonth-0005	=DAY(EOMONTH(DATE(2023,2,10),0))			date,eomonth,non-leap
+date-eomonth-0006	=EOMONTH(DATE(2026,1,31),1)=DATE(2026,2,28)			date,eomonth,overflow-day
+date-eomonth-0007	=EOMONTH(DATE(2026,1,15),-1)=DATE(2025,12,31)			date,eomonth,negative-months
+date-eomonth-0008	=EOMONTH(DATE(2026,11,15),14)=DATE(2028,1,31)			date,eomonth,months-overflow
+date-eomonth-0009	=EOMONTH(DATE(2026,11,15),12)=DATE(2027,11,30)			date,eomonth,year-overflow
+date-eomonth-0010	=EOMONTH(DATE(2026,11,30),0)=DATE(2026,11,30)			date,eomonth,month-end
+date-eomonth-0011	=EOMONTH(DATE(2026,11,15)+0.9,0)=DATE(2026,11,30)			date,eomonth,trunc-start
+date-eomonth-0012	=EOMONTH(DATE(2026,11,15),1.9)=DATE(2026,12,31)			date,eomonth,trunc-months
+date-eomonth-0013	=EOMONTH(-1,0)			date,eomonth,error,negative-serial
+date-eomonth-0014	=EOMONTH(1,10000001)			date,eomonth,error,months-bound
+date-eomonth-0015	=EOMONTH(DATE(1900,1,15),0)=DATE(1900,1,31)			date,eomonth,lotus
+date-eomonth-0016	=EOMONTH(1,-1)			date,eomonth,probe,before-epoch
+date-eomonth-0017	=EOMONTH(60,0)			date,eomonth,probe,serial-60
+date-eomonth-0018	=EOMONTH(60,1)			date,eomonth,probe,serial-60
+date-eomonth-0019	=EOMONTH(61,0)			date,eomonth,probe,serial-61
+date-eomonth-0020	=EOMONTH(DATE(9999,12,1),0)			date,eomonth,probe,year-9999
+date-eomonth-0021	=EOMONTH(0,0)			date,eomonth,probe,serial-0
+date-eomonth-0022	=EOMONTH(DATE(2026,11,15),-11)=DATE(2025,12,31)			date,eomonth,months-negative-11

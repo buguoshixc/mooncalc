@@ -15,6 +15,8 @@
   td .val { font-size: 11px; color: #2b6cb0; padding: 0 4px 3px; min-height: 14px; font-family: monospace; }
   td .val.err { color: #c53030; }
   td .val.circ { color: #b7791f; }
+  td.prec { background: #e6f2ff; }
+  td.dep { background: #e9f7ec; }
   th { font-size: 11px; color: #666; padding: 2px 4px; }
   #detail { margin-top: 14px; padding: 10px; background: #fff; border: 1px solid #ddd; font-family: monospace; font-size: 13px; white-space: pre-wrap; }
   #errors { margin-top: 10px; color: #c53030; font-family: monospace; font-size: 12px; white-space: pre-wrap; }
@@ -30,8 +32,14 @@
     <option value="textnum">text-typed numbers</option>
     <option value="blank">blank vs zero</option>
     <option value="circular">circular reference → 0</option>
+    <option value="xlookup">XLOOKUP exact / wildcard</option>
+    <option value="ifs">IFS lazy conditions</option>
+    <option value="switch">SWITCH values</option>
+    <option value="textjoin">TEXTJOIN with blanks</option>
+    <option value="eomonth">EOMONTH month ends</option>
+    <option value="textfmt">TEXT scientific / elapsed / conditional</option>
   </select></label>
-  <span class="hint">=formula · number · TRUE/FALSE · 'text (leading quote forces text) · empty = blank</span>
+  <span class="hint">=formula · number · TRUE/FALSE · 'text (leading quote forces text) · empty = blank · blue = precedents · green = dependents</span>
 </div>
 <div class="bar">
   <span id="sel-addr">A1</span>

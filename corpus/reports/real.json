@@ -1,20 +1,20 @@
 {
-  "total": 752,
-  "passed": 752,
+  "total": 1001,
+  "passed": 1001,
   "rate": 1,
   "tol": 1e-9,
   "clock_tol": 0.000001,
   "by_source": {
     "excel-desktop": {
-      "total": 752,
-      "passed": 752,
+      "total": 1001,
+      "passed": 1001,
       "rate": 1
     }
   },
   "by_tag": {
     "date": {
-      "total": 118,
-      "passed": 118,
+      "total": 144,
+      "passed": 144,
       "rate": 1
     },
     "normalize-month": {
@@ -33,8 +33,8 @@
       "rate": 1
     },
     "lotus": {
-      "total": 11,
-      "passed": 11,
+      "total": 13,
+      "passed": 13,
       "rate": 1
     },
     "year-offset": {
@@ -43,8 +43,8 @@
       "rate": 1
     },
     "boundary": {
-      "total": 36,
-      "passed": 36,
+      "total": 40,
+      "passed": 40,
       "rate": 1
     },
     "boundary.year": {
@@ -53,13 +53,13 @@
       "rate": 1
     },
     "non-leap": {
-      "total": 1,
-      "passed": 1,
+      "total": 2,
+      "passed": 2,
       "rate": 1
     },
     "leap": {
-      "total": 1,
-      "passed": 1,
+      "total": 2,
+      "passed": 2,
       "rate": 1
     },
     "truncation": {
@@ -68,8 +68,8 @@
       "rate": 1
     },
     "error": {
-      "total": 85,
-      "passed": 85,
+      "total": 93,
+      "passed": 93,
       "rate": 1
     },
     "boundary.max": {
@@ -98,13 +98,13 @@
       "rate": 1
     },
     "bool": {
-      "total": 39,
-      "passed": 39,
+      "total": 42,
+      "passed": 42,
       "rate": 1
     },
     "blank": {
-      "total": 58,
-      "passed": 58,
+      "total": 67,
+      "passed": 67,
       "rate": 1
     },
     "composed": {
@@ -123,8 +123,8 @@
       "rate": 1
     },
     "day": {
-      "total": 14,
-      "passed": 14,
+      "total": 15,
+      "passed": 15,
       "rate": 1
     },
     "boundary.negative": {
@@ -133,8 +133,8 @@
       "rate": 1
     },
     "fraction": {
-      "total": 3,
-      "passed": 3,
+      "total": 4,
+      "passed": 4,
       "rate": 1
     },
     "today": {
@@ -158,18 +158,108 @@
       "rate": 1
     },
     "text": {
-      "total": 171,
-      "passed": 171,
+      "total": 318,
+      "passed": 318,
       "rate": 1
     },
     "coercion": {
-      "total": 85,
-      "passed": 85,
+      "total": 89,
+      "passed": 89,
+      "rate": 1
+    },
+    "eomonth": {
+      "total": 22,
+      "passed": 22,
+      "rate": 1
+    },
+    "equal": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "overflow-day": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "negative-months": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "months-overflow": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "year-overflow": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "month-end": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "trunc-start": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "trunc-months": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "negative-serial": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "months-bound": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "probe": {
+      "total": 77,
+      "passed": 77,
+      "rate": 1
+    },
+    "before-epoch": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "serial-60": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "serial-61": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "year-9999": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "serial-0": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "months-negative-11": {
+      "total": 1,
+      "passed": 1,
       "rate": 1
     },
     "math": {
-      "total": 110,
-      "passed": 110,
+      "total": 138,
+      "passed": 138,
       "rate": 1
     },
     "round": {
@@ -223,8 +313,8 @@
       "rate": 1
     },
     "sign": {
-      "total": 3,
-      "passed": 3,
+      "total": 5,
+      "passed": 5,
       "rate": 1
     },
     "power": {
@@ -243,8 +333,8 @@
       "rate": 1
     },
     "range": {
-      "total": 21,
-      "passed": 21,
+      "total": 22,
+      "passed": 22,
       "rate": 1
     },
     "ignore": {
@@ -258,23 +348,23 @@
       "rate": 1
     },
     "sumif": {
-      "total": 15,
-      "passed": 15,
+      "total": 43,
+      "passed": 43,
       "rate": 1
     },
     "criteria": {
-      "total": 11,
-      "passed": 11,
+      "total": 45,
+      "passed": 45,
       "rate": 1
     },
     "case": {
-      "total": 4,
-      "passed": 4,
+      "total": 10,
+      "passed": 10,
       "rate": 1
     },
     "wildcard": {
-      "total": 10,
-      "passed": 10,
+      "total": 37,
+      "passed": 37,
       "rate": 1
     },
     "omitted-range": {
@@ -288,8 +378,8 @@
       "rate": 1
     },
     "shape": {
-      "total": 1,
-      "passed": 1,
+      "total": 2,
+      "passed": 2,
       "rate": 1
     },
     "nonnumeric": {
@@ -308,18 +398,18 @@
       "rate": 1
     },
     "percent": {
-      "total": 11,
-      "passed": 11,
+      "total": 12,
+      "passed": 12,
       "rate": 1
     },
     "concat": {
-      "total": 22,
-      "passed": 22,
+      "total": 24,
+      "passed": 24,
       "rate": 1
     },
     "float": {
-      "total": 1,
-      "passed": 1,
+      "total": 2,
+      "passed": 2,
       "rate": 1
     },
     "compare": {
@@ -328,13 +418,13 @@
       "rate": 1
     },
     "types": {
-      "total": 2,
-      "passed": 2,
+      "total": 3,
+      "passed": 3,
       "rate": 1
     },
     "scientific": {
-      "total": 3,
-      "passed": 3,
+      "total": 15,
+      "passed": 15,
       "rate": 1
     },
     "precision": {
@@ -348,8 +438,8 @@
       "rate": 1
     },
     "nested": {
-      "total": 9,
-      "passed": 9,
+      "total": 10,
+      "passed": 10,
       "rate": 1
     },
     "floor": {
@@ -373,13 +463,108 @@
       "rate": 1
     },
     "escape": {
+      "total": 6,
+      "passed": 6,
+      "rate": 1
+    },
+    "gt": {
       "total": 2,
       "passed": 2,
       "rate": 1
     },
+    "ge": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "lt": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "le": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "ne": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "number": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "text-number": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "escape-star": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "escape-question": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "escape-double-star": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "mixed": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "ne-case": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "sum-range": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "error-in-range": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "error-in-sum-range": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "cell": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "text-gt-wildcard": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-criteria": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "adjudicated": {
+      "total": 37,
+      "passed": 37,
+      "rate": 1
+    },
     "stat": {
-      "total": 61,
-      "passed": 61,
+      "total": 86,
+      "passed": 86,
       "rate": 1
     },
     "average": {
@@ -398,18 +583,13 @@
       "rate": 1
     },
     "empty-text": {
-      "total": 2,
-      "passed": 2,
+      "total": 4,
+      "passed": 4,
       "rate": 1
     },
     "countif": {
-      "total": 15,
-      "passed": 15,
-      "rate": 1
-    },
-    "text-number": {
-      "total": 2,
-      "passed": 2,
+      "total": 40,
+      "passed": 40,
       "rate": 1
     },
     "min": {
@@ -458,18 +638,18 @@
       "rate": 1
     },
     "zero": {
-      "total": 1,
-      "passed": 1,
+      "total": 5,
+      "passed": 5,
       "rate": 1
     },
     "literal": {
-      "total": 3,
-      "passed": 3,
+      "total": 5,
+      "passed": 5,
       "rate": 1
     },
     "negative": {
-      "total": 5,
-      "passed": 5,
+      "total": 10,
+      "passed": 10,
       "rate": 1
     },
     "tie": {
@@ -478,6 +658,46 @@
       "rate": 1
     },
     "unsorted": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "equal-empty": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "star": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "question": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "escape-tilde": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "decimal": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "bool-text": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-arg": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "infix": {
       "total": 1,
       "passed": 1,
       "rate": 1
@@ -488,8 +708,8 @@
       "rate": 1
     },
     "default": {
-      "total": 5,
-      "passed": 5,
+      "total": 11,
+      "passed": 11,
       "rate": 1
     },
     "boundary.clamp": {
@@ -552,11 +772,6 @@
       "passed": 1,
       "rate": 1
     },
-    "number": {
-      "total": 1,
-      "passed": 1,
-      "rate": 1
-    },
     "find": {
       "total": 15,
       "passed": 15,
@@ -578,8 +793,8 @@
       "rate": 1
     },
     "not-found": {
-      "total": 5,
-      "passed": 5,
+      "total": 7,
+      "passed": 7,
       "rate": 1
     },
     "substitute": {
@@ -608,23 +823,23 @@
       "rate": 1
     },
     "no-match": {
-      "total": 1,
-      "passed": 1,
+      "total": 3,
+      "passed": 3,
       "rate": 1
     },
     "grouping": {
-      "total": 1,
-      "passed": 1,
+      "total": 3,
+      "passed": 3,
       "rate": 1
     },
     "rounding": {
-      "total": 1,
-      "passed": 1,
+      "total": 4,
+      "passed": 4,
       "rate": 1
     },
     "sections": {
-      "total": 2,
-      "passed": 2,
+      "total": 7,
+      "passed": 7,
       "rate": 1
     },
     "question-pad": {
@@ -667,11 +882,6 @@
       "passed": 1,
       "rate": 1
     },
-    "mixed": {
-      "total": 1,
-      "passed": 1,
-      "rate": 1
-    },
     "multiple": {
       "total": 1,
       "passed": 1,
@@ -687,9 +897,204 @@
       "passed": 1,
       "rate": 1
     },
+    "textjoin": {
+      "total": 21,
+      "passed": 21,
+      "rate": 1
+    },
+    "ignore-empty": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "keep-empty": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "empty-delimiter": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "literals": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "formula-empty": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "error-delimiter": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "ignore-coercion": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "ignore-text-true": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "ignore-text-false": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "all-blank": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "multi-range": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "row-range": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "multi-char-delimiter": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.length": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "32767": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "exceed": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "e-plus": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "e-minus": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "rounding-carry": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "width": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "e-minus-positive": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "large": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "small": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "bare-e": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "elapsed": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "hours": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "minutes": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "seconds": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "pad": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "conditional": {
+      "total": 29,
+      "passed": 29,
+      "rate": 1
+    },
+    "first-match": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "no-default": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "auto-sign": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "three-sections": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "mixed-elapsed": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "color": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "regression": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "general-fallback": {
+      "total": 8,
+      "passed": 8,
+      "rate": 1
+    },
     "logic": {
-      "total": 55,
-      "passed": 55,
+      "total": 86,
+      "passed": 86,
       "rate": 1
     },
     "if": {
@@ -698,8 +1103,8 @@
       "rate": 1
     },
     "lazy": {
-      "total": 4,
-      "passed": 4,
+      "total": 7,
+      "passed": 7,
       "rate": 1
     },
     "and": {
@@ -737,9 +1142,59 @@
       "passed": 1,
       "rate": 1
     },
+    "ifs": {
+      "total": 14,
+      "passed": 14,
+      "rate": 1
+    },
+    "error-condition": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-value": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "nested-and": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "switch": {
+      "total": 17,
+      "passed": 17,
+      "rate": 1
+    },
+    "no-wildcard": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "lazy-default": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-expression": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-candidate": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "lazy-default-unused": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
     "lookup": {
-      "total": 59,
-      "passed": 59,
+      "total": 120,
+      "passed": 120,
       "rate": 1
     },
     "vlookup": {
@@ -748,18 +1203,18 @@
       "rate": 1
     },
     "exact": {
-      "total": 3,
-      "passed": 3,
+      "total": 6,
+      "passed": 6,
       "rate": 1
     },
     "approx": {
-      "total": 5,
-      "passed": 5,
+      "total": 10,
+      "passed": 10,
       "rate": 1
     },
     "below-min": {
-      "total": 3,
-      "passed": 3,
+      "total": 4,
+      "passed": 4,
       "rate": 1
     },
     "boundary.index-zero": {
@@ -783,18 +1238,13 @@
       "rate": 1
     },
     "blank-result": {
-      "total": 1,
-      "passed": 1,
+      "total": 2,
+      "passed": 2,
       "rate": 1
     },
     "error-result": {
-      "total": 1,
-      "passed": 1,
-      "rate": 1
-    },
-    "error-arg": {
-      "total": 1,
-      "passed": 1,
+      "total": 2,
+      "passed": 2,
       "rate": 1
     },
     "at-max": {
@@ -863,8 +1313,8 @@
       "rate": 1
     },
     "match": {
-      "total": 19,
-      "passed": 19,
+      "total": 31,
+      "passed": 31,
       "rate": 1
     },
     "ascending": {
@@ -883,8 +1333,8 @@
       "rate": 1
     },
     "above-max": {
-      "total": 1,
-      "passed": 1,
+      "total": 2,
+      "passed": 2,
       "rate": 1
     },
     "boundary.2d": {
@@ -917,6 +1367,101 @@
       "passed": 1,
       "rate": 1
     },
+    "xlookup": {
+      "total": 49,
+      "passed": 49,
+      "rate": 1
+    },
+    "if-not-found": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "next-smaller": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "next-larger": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "search-first": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "duplicate": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "search-last": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "2d": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "match-mode": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "search-mode": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "row-vector": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "binary-search": {
+      "total": 16,
+      "passed": 16,
+      "rate": 1
+    },
+    "odd-size": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "even-size": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-in-array": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "error-lookup": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "approx-text": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "match-mode-trunc": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "empty-lookup": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
     "generic": {
       "total": 237,
       "passed": 237,
@@ -937,17 +1482,7 @@
       "passed": 28,
       "rate": 1
     },
-    "sum-range": {
-      "total": 1,
-      "passed": 1,
-      "rate": 1
-    },
     "boundary.shape": {
-      "total": 1,
-      "passed": 1,
-      "rate": 1
-    },
-    "formula-empty": {
       "total": 1,
       "passed": 1,
       "rate": 1
@@ -984,8 +1519,8 @@
     }
   },
   "buckets": {
-    "match": 748,
-    "clock-tolerance": 3,
+    "match": 996,
+    "clock-tolerance": 4,
     "excel-precision": 1
   },
   "failures": []

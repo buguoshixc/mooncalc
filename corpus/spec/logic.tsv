@@ -54,3 +54,36 @@ logic-and-0011	=AND(A1:A2)	A1=b:1|A2=b:1		logic,and,range,bool
 logic-iferror-0007	=IFERROR(1/0,#N/A)			logic,iferror,error-fallback
 logic-iferror-0008	=IFERROR("ok",1/0)			logic,iferror,lazy
 logic-iferror-0009	=IFERROR(SQRT(-1),"neg")			logic,iferror,num
+logic-ifs-0001	=IFS(A1>5,"big",A1>2,"mid",TRUE,"small")	A1=3		logic,ifs
+logic-ifs-0002	=IFS(A1>5,"big",A1>2,"mid",TRUE,"small")	A1=7		logic,ifs,first-match
+logic-ifs-0003	=IFS(A1>5,"big",A1>2,"mid",TRUE,"small")	A1=1		logic,ifs,default
+logic-ifs-0004	=IFS(A1>5,"big")	A1=3		logic,ifs,no-match
+logic-ifs-0005	=IFS(TRUE,1,FALSE)			logic,ifs,odd-args,error,subset-out
+logic-ifs-0006	=IFS(TRUE,1,TRUE,1/0)			logic,ifs,lazy
+logic-ifs-0007	=IFS(A1,1)	A1=e:#DIV/0!		logic,ifs,error-condition
+logic-ifs-0008	=IFS(TRUE,1/0)			logic,ifs,error-value
+logic-ifs-0009	=IFS(1,"yes")			logic,ifs,coercion
+logic-ifs-0010	=IFS("TRUE",1)			logic,ifs,coercion,text
+logic-ifs-0011	=IFS("yes",1)			logic,ifs,coercion,text,error
+logic-ifs-0012	=IFS(A1,1,TRUE,2)	A1=b:1		logic,ifs,bool
+logic-ifs-0013	=IFS(A1,1,TRUE,2)	A1=blank		logic,ifs,blank
+logic-ifs-0014	=IFS(AND(A1>0,B1>0),"both",TRUE,"no")	A1=1|B1=2		logic,ifs,nested-and
+logic-ifs-0015	=IFS(A1>0,IFS(A1>5,"big","mid"),TRUE,"neg")	A1=7		logic,ifs,nested,subset-out
+logic-ifs-0016	=IFS(A1>5,"big",A1>2,"mid")	A1=1		logic,ifs,probe,no-default
+logic-switch-0001	=SWITCH(2,1,"one",2,"two","other")			logic,switch
+logic-switch-0002	=SWITCH(9,1,"one",2,"two","other")			logic,switch,default
+logic-switch-0003	=SWITCH(9,1,"one",2,"two")			logic,switch,no-match
+logic-switch-0004	=SWITCH("B","b","hit","miss")			logic,switch,case
+logic-switch-0005	=SWITCH("abc","a*","hit","miss")			logic,switch,no-wildcard
+logic-switch-0006	=SWITCH(1,1,1,1,1/0)			logic,switch,lazy
+logic-switch-0007	=SWITCH(9,1,"a",1/0)			logic,switch,lazy-default
+logic-switch-0008	=SWITCH(A1,1,"a")	A1=e:#REF!		logic,switch,error-expression
+logic-switch-0009	=SWITCH(1,A1,"a","b")	A1=e:#N/A		logic,switch,probe,error-candidate
+logic-switch-0010	=SWITCH(1,"1","text","num")			logic,switch,types
+logic-switch-0011	=SWITCH(TRUE,TRUE,"yes","no")			logic,switch,bool
+logic-switch-0012	=SWITCH(3,1,"a")			logic,switch,no-default
+logic-switch-0013	=SWITCH("","","empty","nonempty")			logic,switch,empty-text
+logic-switch-0014	=SWITCH(1,1,SWITCH(2,2,"inner","x"),"outer")			logic,switch,nested
+logic-switch-0015	=SWITCH(1,1,"hit",1/0)			logic,switch,lazy-default-unused
+logic-switch-0016	=SWITCH(2.5,2.5,"frac","other")			logic,switch,float
+logic-switch-0017	=SWITCH(A1,1,"one","other")	A1=blank		logic,switch,blank,probe

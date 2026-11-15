@@ -66,6 +66,7 @@ pub(all) enum XlError {
   Num
   Ref
   Value
+  Calc
 }
 pub fn XlError::parse(String) -> Self?
 pub fn XlError::to_string(Self) -> String

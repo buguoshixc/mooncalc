@@ -94,3 +94,63 @@ fn fn_iferror(_ctx : Ctx, args : Array[Thunk]) -> Value {
     _ => v
   }
 }
+// IFS(cond1, value1, cond2, value2, ...) — lazy: conditions are evaluated in
+// order and only the winning value is evaluated; no match -> #N/A; an odd
+// argument count is a shape error (#VALUE!).
+fn fn_ifs(_ctx : Ctx, args : Array[Thunk]) -> Value {
+  if args.length() % 2 != 0 {
+    return Value::Err(XlError::Value)
+  }
+  let mut i = 0
+  while i + 1 < args.length() {
+    let cond = match args[i]() {
+      Err(e) => return Value::Err(e)
+      v => scalarize(v)
+    }
+    match to_bool(cond) {
+      Err(e) => return Value::Err(e)
+      Ok(true) => return args[i + 1]()
+      Ok(false) => ()
+    }
+    i += 2
+  }
+  Value::Err(XlError::NA)
+}
+
+// SWITCH(expr, value1, result1, [value2, result2, ...], [default]) — expr is
+// evaluated once; comparison uses Excel "=" semantics (cell_eq, no wildcards);
+// the matching result (or the trailing default) is evaluated lazily.
+fn fn_switch(_ctx : Ctx, args : Array[Thunk]) -> Value {
+  let expr = match args[0]() {
+    Err(e) => return Value::Err(e)
+    v => scalarize(v)
+  }
+  match expr {
+    // Real Excel propagates an error expression / candidate immediately
+    // (corpus logic-switch-0008 / 0009), it is not treated as a no-match.
+    Err(e) => return Value::Err(e)
+    Range(_) => return Value::Err(XlError::Value)
+    _ => ()
+  }
+  let mut i = 1
+  while i + 1 < args.length() {
+    let candidate = match args[i]() {
+      Err(e) => return Value::Err(e)
+      v => scalarize(v)
+    }
+    match candidate {
+      Err(e) => return Value::Err(e)
+      Range(_) => return Value::Err(XlError::Value)
+      _ => ()
+    }
+    if cell_eq(expr, candidate) {
+      return args[i + 1]()
+    }
+    i += 2
+  }
+  // A trailing unpaired argument is the default value.
+  if i < args.length() {
+    return args[i]()
+  }
+  Value::Err(XlError::NA)
+}

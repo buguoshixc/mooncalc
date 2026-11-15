@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 工具链版本（与 docs/toolchain.md 一致）同时作为 ~/.moon 缓存 key。
+env:
+  MOONBIT_VERSION: "0.1.20261104"
+
+jobs:
+  # 核心门禁：双目标构建 + 单测 + 零 IO 守卫 + 真实 Excel 语料 bench（fail-under 默认 1.0）。
+  core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache MoonBit toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.moon
+          key: moonbit-${{ env.MOONBIT_VERSION }}-${{ runner.os }}
+
+      - name: Install MoonBit CLI
+        run: |
+          if [ ! -x "$HOME/.moon/bin/moon" ]; then
+            curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          fi
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: Verify toolchain
+        run: moon version && gcc --version | head -1
+
+      - name: Core checks (build native + wasm-gc, tests, zero-IO guard)
+        run: bash scripts/check.sh
+
+      - name: Real Excel answer-key bench (exit 0 = pass, 1 = below fail-under, 2 = error)
+        run: bash scripts/run-bench.sh
+
+  # 浏览器冒烟单独成 job：不阻塞核心门禁（core 不 needs smoke）。
+  # 仅本 job 在 CI 内临时使用 npx Playwright，项目本体保持零 npm 依赖。
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache MoonBit toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.moon
+          key: moonbit-${{ env.MOONBIT_VERSION }}-${{ runner.os }}
+
+      - name: Install MoonBit CLI
+        run: |
+          if [ ! -x "$HOME/.moon/bin/moon" ]; then
+            curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          fi
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: Cache Playwright Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ms-playwright-${{ runner.os }}-chromium
+
+      - name: Install headless Chromium (CI-only, system deps included)
+        run: npx --yes playwright install --with-deps chromium
+
+      - name: Resolve Chromium executable
+        run: |
+          CHROME="$(find "$HOME/.cache/ms-playwright" -maxdepth 4 -type f -name chrome | head -n 1)"
+          if [ -z "$CHROME" ]; then
+            echo "chromium executable not found under ~/.cache/ms-playwright" >&2
+            exit 1
+          fi
+          echo "PLAYWRIGHT_CHROMIUM=$CHROME" >> "$GITHUB_ENV"
+
+      - name: Build wasm-gc playground
+        run: bash scripts/build-playground.sh
+
+      - name: Headless smoke
+        run: node scripts/smoke.mjs

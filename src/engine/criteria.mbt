@@ -102,6 +102,45 @@ fn wildcard_match(pattern : String, text : String) -> Bool {
 fn criteria_match(cell : Value, crit : Criteria) -> Bool {
   let cell = scalarize(cell)
   match crit.operand {
+    Text(t) => {
+      if t == "" {
+        // Empty criteria "" / "=" / "<>": real Excel 2024 treats a blank cell
+        // as matching "" (SUMIF/COUNTIF probe rows math-sumif-0116/0117,
+        // stat-countif-0118), while "<>" matches every non-blank cell
+        // (probe stat-countif-0119 and the formula-empty "<>" check).
+        return match crit.op {
+          "=" =>
+            match cell {
+              Blank => true
+              Text(s) => s == ""
+              _ => false
+            }
+          "<>" =>
+            match cell {
+              Blank => false
+              Err(_) => false
+              _ => true
+            }
+          _ => false
+        }
+      }
+      match cell {
+        Text(s) => {
+          let lt = @value.ascii_lower(s)
+          let lp = @value.ascii_lower(t)
+          match crit.op {
+            "=" => wildcard_match(t, s)
+            "<>" => !wildcard_match(t, s)
+            ">" => lex_compare(lt, lp) > 0
+            "<" => lex_compare(lt, lp) < 0
+            ">=" => lex_compare(lt, lp) >= 0
+            "<=" => lex_compare(lt, lp) <= 0
+            _ => false
+          }
+        }
+        _ => false
+      }
+    }
     Num(target) => {
       let cn = match cell {
         Num(d) => Some(d)
@@ -126,26 +165,18 @@ fn criteria_match(cell : Value, crit : Criteria) -> Bool {
           }
       }
     }
-    Text(t) =>
-      match cell {
-        Text(s) => {
-          let lt = @value.ascii_lower(s)
-          let lp = @value.ascii_lower(t)
-          match crit.op {
-            "=" => wildcard_match(t, s)
-            "<>" => !wildcard_match(t, s)
-            ">" => lex_compare(lt, lp) > 0
-            "<" => lex_compare(lt, lp) < 0
-            ">=" => lex_compare(lt, lp) >= 0
-            "<=" => lex_compare(lt, lp) <= 0
-            _ => false
-          }
-        }
-        _ => false
-      }
     Bool(b) =>
       match cell {
         Bool(c) => if crit.op == "<>" { b != c } else { b == c }
+        _ => false
+      }
+    Err(ce) =>
+      // An error criterion matches error cells of the same error value and
+      // nothing else (probes: COUNTIF(range with #N/A, #N/A) = 1 and SUMIF
+      // then propagates the error from the summed cell; corpus
+      // gen-sumif-0002 / stat-countif-0121).
+      match cell {
+        Err(cell_err) => cell_err == ce
         _ => false
       }
     _ => false

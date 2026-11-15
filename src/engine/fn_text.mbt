@@ -308,3 +308,68 @@ fn fn_text(_ctx : Ctx, args : Array[Thunk]) -> Value {
     Err(e) => Value::Err(e)
   }
 }
+// One TEXTJOIN piece: Blank -> empty text (skipped when ignore_empty is TRUE);
+// text conversion errors propagate. `None` means "do not contribute a part".
+fn textjoin_piece(v : Value, ignore_empty : Bool) -> Result[String?, XlError] {
+  match v {
+    Blank => Ok(if ignore_empty { None } else { Some("") })
+    _ =>
+      match to_text(v) {
+        Err(e) => Err(e)
+        Ok(s) => if ignore_empty && s == "" { Ok(None) } else { Ok(Some(s)) }
+      }
+  }
+}
+
+// TEXTJOIN(delimiter, ignore_empty, text1, [text2], ...): joins text pieces in
+// argument/row-major order; errors propagate; result > 32767 chars -> #CALC!
+// (adjudicated by corpus text-textjoin-0021 against Excel 2024).
+fn fn_textjoin(_ctx : Ctx, args : Array[Thunk]) -> Value {
+  let delim = match text_arg(args[0]()) {
+    Ok(s) => s
+    Err(e) => return Value::Err(e)
+  }
+  let ignore_empty = match to_bool(scalarize(args[1]())) {
+    Ok(b) => b
+    Err(e) => return Value::Err(e)
+  }
+  let mut out = ""
+  let mut first = true
+  let mut i = 2
+  while i < args.length() {
+    let v = args[i]()
+    match v {
+      Range(r) =>
+        for c in r.cells {
+          match textjoin_piece(c, ignore_empty) {
+            Err(e) => return Value::Err(e)
+            Ok(None) => ()
+            Ok(Some(s)) => {
+              if !first {
+                out = out + delim
+              }
+              out = out + s
+              first = false
+            }
+          }
+        }
+      _ =>
+        match textjoin_piece(scalarize(v), ignore_empty) {
+          Err(e) => return Value::Err(e)
+          Ok(None) => ()
+          Ok(Some(s)) => {
+            if !first {
+              out = out + delim
+            }
+            out = out + s
+            first = false
+          }
+        }
+    }
+    i += 1
+  }
+  if out.length() > 32767 {
+    return Value::Err(XlError::Calc)
+  }
+  Value::Text(out)
+}

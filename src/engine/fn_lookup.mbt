@@ -5,6 +5,26 @@ fn cell_eq(a : Value, b : Value) -> Bool {
   }
 }
 
+// Exact-match lookup comparison for MATCH/XLOOKUP. Excel's general comparison
+// coerces a blank to "" (so A1="" is TRUE for a blank A1), but exact lookup
+// does not select blank cells for an empty-text lookup value: MATCH("",
+// {"abc", blank, ""}, 0) returns 3, not 2 (corpus lookup-match-0107; the
+// XLOOKUP("", ...) probes agree).
+fn lookup_value_matches(cell : Value, lookup : Value) -> Bool {
+  match lookup {
+    Text(s) =>
+      if s == "" {
+        match cell {
+          Blank => false
+          _ => cell_eq(cell, lookup)
+        }
+      } else {
+        cell_eq(cell, lookup)
+      }
+    _ => cell_eq(cell, lookup)
+  }
+}
+
 fn vlookup_generic(vals : Array[Value], horizontal : Bool) -> Value {
   let lookup = scalarize(vals[0])
   let table = match vals[1] {
@@ -176,7 +196,7 @@ fn fn_match(_ctx : Ctx, args : Array[Thunk]) -> Value {
             Text(s) => wildcard_match(p, s)
             _ => false
           }
-        None => cell_eq(cells[i], lookup)
+        None => lookup_value_matches(cells[i], lookup)
       }
       if hit {
         return Value::Num((i + 1).to_double())

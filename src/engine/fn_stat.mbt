@@ -30,11 +30,8 @@ fn fn_counta(_ctx : Ctx, args : Array[Thunk]) -> Value {
 
 fn fn_countif(_ctx : Ctx, args : Array[Thunk]) -> Value {
   let vals = eager(args)
-  // Range errors never match and do not propagate; criteria errors do.
-  match scalarize(vals[1]) {
-    Err(e) => return Value::Err(e)
-    _ => ()
-  }
+  // Range errors never match and do not propagate; an error criterion matches
+  // error cells of the same value (see criteria_match).
   let range = as_range(vals[0])
   let crit = parse_criteria(vals[1])
   let mut n = 0

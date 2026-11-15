@@ -74,3 +74,22 @@ pub fn date_serial(y0 : Int, m0 : Int, d0 : Int) -> Result[Int, XlError] {
   }
   Ok(serial)
 }
+
+// Last day of a proleptic-Gregorian month. Note 1900 is NOT a leap year here:
+// real Excel's EOMONTH(60,0) returns 59, i.e. it computes February 1900 as
+// 28 days even though the display layer keeps the Lotus phantom serial 60.
+pub fn days_in_month(y : Int, m : Int) -> Int {
+  if m == 2 {
+    if (y % 4 == 0 && y % 100 != 0) || y % 400 == 0 {
+      29
+    } else {
+      28
+    }
+  } else if m == 4 || m == 6 || m == 9 || m == 11 {
+    30
+  } else if m >= 1 && m <= 12 {
+    31
+  } else {
+    0
+  }
+}

@@ -1,0 +1,18 @@
+// xlsx-demo：mbtexcel 读 → MoonCalc 算 → mbtexcel 写，进程内直调（不走子进程）。
+// 引擎本体零改动：文件 IO 全部发生在本示例壳层。
+//
+//   moon run examples/xlsx-demo --target native -- gen   # 生成 fixture _build/xlsx-demo/input.xlsx
+//   moon run examples/xlsx-demo --target native -- run   # 读→算→写 _build/xlsx-demo/output.xlsx 并读回校验
+import {
+  "moonbitlang/core/env" @env,
+  "moonbitlang/core/json" @json,
+  "moonbitlang/x/fs" @fs,
+  "moonbitlang/mbtexcel" @mbtexcel,
+  "moonbitlang/mbtexcel/xlsx" @xlsx,
+  "buguoshixc/mooncalc" @facade,
+  "buguoshixc/mooncalc/src/codec" @codec,
+}
+
+supported_targets = "native"
+
+pkgtype(kind: "executable")

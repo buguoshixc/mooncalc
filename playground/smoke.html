@@ -38,7 +38,15 @@ try {
   check('leftmost error', evaluate({ grid: { A1: { error: '#N/A' } }, formula: '=1/0+A1' }), 'formula', { type: 'error', value: '#DIV/0!' });
   check('TEXT format', evaluate({ grid: {}, formula: '=TEXT(1234.567,"#,##0.00")' }), 'formula', { type: 'text', value: '1,234.57' });
   check('VLOOKUP', evaluate({ grid: { A1: 1, B1: 10, A2: 2, B2: 20 }, formula: '=VLOOKUP(2,A1:B2,2,FALSE)' }), 'formula', { type: 'number', value: 20 });
-  check('Lotus DATE', evaluate({ grid: {}, formula: '=DATE(1900,2,29)' }), 'formula', { type: 'number', value: 61 });
+  check('XLOOKUP exact', evaluate({ grid: { A1: 'a', A2: 'b', B1: 1, B2: 2 }, formula: '=XLOOKUP("b",A1:A2,B1:B2)' }), 'formula', { type: 'number', value: 2 });
+  check('IFS lazy', evaluate({ grid: {}, formula: '=IFS(FALSE,1,TRUE,2)' }), 'formula', { type: 'number', value: 2 });
+  check('SWITCH match', evaluate({ grid: {}, formula: '=SWITCH(2,1,"one",2,"two")' }), 'formula', { type: 'text', value: 'two' });
+  check('TEXTJOIN', evaluate({ grid: {}, formula: '=TEXTJOIN("-",TRUE,"a","b")' }), 'formula', { type: 'text', value: 'a-b' });
+  check('EOMONTH', evaluate({ grid: {}, formula: '=DAY(EOMONTH(DATE(2026,11,15),0))' }), 'formula', { type: 'number', value: 30 });
+  check('TEXT scientific', evaluate({ grid: {}, formula: '=TEXT(12345,"0.00E+00")' }), 'formula', { type: 'text', value: '1.23E+04' });
+  check('TEXT elapsed', evaluate({ grid: {}, formula: '=TEXT(1.5,"[h]:mm")' }), 'formula', { type: 'text', value: '36:00' });
+  check('TEXT conditional', evaluate({ grid: {}, formula: '=TEXT(50,"[>100]""big"";""small""")' }), 'formula', { type: 'text', value: 'small' });
+  check('Lotus DATE', evaluate({ grid: {}, formula: '=DATE(1900,2,29)' }), 'formula', { type: 'number', value: 60 });
   check('clock injection', evaluate({ grid: {}, formula: '=TODAY()', now: 46340 }), 'formula', { type: 'number', value: 46340 });
   const circ = evaluate({ grid: { D1: { formula: '=D1+1' }, D2: { formula: '=D1+5' } } });
   check('circular cell = 0', circ, 'D1', { type: 'number', value: 0 }, true);
