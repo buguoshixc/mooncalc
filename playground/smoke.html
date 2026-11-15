@@ -65,6 +65,10 @@ try {
   report('csv quotes/escapes', JSON.stringify(parseCsv('a,"b""c",d')) === '[["a","b\\"c","d"]]', JSON.stringify(parseCsv('a,"b""c",d')));
   report('csv crlf', JSON.stringify(parseCsv('a,b\r\nc,d\r\n')) === '[["a","b"],["c","d"]]', JSON.stringify(parseCsv('a,b\r\nc,d\r\n')));
   report('csv empty fields', JSON.stringify(parseCsv(',a\nb,')) === '[["","a"],["b",""]]', JSON.stringify(parseCsv(',a\nb,')));
+  report('csv bom stripped', JSON.stringify(parseCsv('\uFEFFa,b')) === '[["a","b"]]', JSON.stringify(parseCsv('\uFEFFa,b')));
+  let unterminatedRejected = false;
+  try { parseCsv('a,"b'); } catch { unterminatedRejected = true; }
+  report('csv unterminated quote rejected', unterminatedRejected, '');
   done.textContent = failures === 0 ? 'SMOKE PASS' : 'SMOKE FAIL';
 } catch (err) {
   report('engine load', false, err.message);

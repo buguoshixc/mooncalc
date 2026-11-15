@@ -1,6 +1,8 @@
-// Minimal RFC-4180-ish CSV parser: quoted fields, "" escapes, CRLF tolerant.
+// Minimal RFC-4180-ish CSV parser: quoted fields, "" escapes, CRLF tolerant,
+// leading BOM stripped, unterminated quoted fields rejected.
 // Zero dependencies; imported by app.js (drag-drop import) and smoke.html.
 export function parseCsv(text) {
+  if (text[0] === '\uFEFF') text = text.slice(1);
   const rows = [];
   let row = [];
   let field = '';
@@ -23,6 +25,7 @@ export function parseCsv(text) {
     if (ch === '\n') { pushRow(); i++; continue; }
     field += ch; i++;
   }
+  if (inQuotes) throw new Error('unterminated quoted field');
   if (field !== '' || row.length) pushRow();
   if (rows.length && rows[rows.length - 1].length === 1 && rows[rows.length - 1][0] === '') rows.pop();
   return rows;

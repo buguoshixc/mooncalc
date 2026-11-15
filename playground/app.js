@@ -313,7 +313,13 @@ select('A1');
 // CSV import: drag-drop onto the page or the Import CSV button. Row-major into
 // the 8×8 grid; cellSpec typing applies (=formula cells are the demo point).
 function importCsvText(text) {
-  const rows = parseCsv(text);
+  let rows;
+  try {
+    rows = parseCsv(text);
+  } catch (err) {
+    errorsEl.textContent = 'CSV import failed: ' + err.message;
+    return;
+  }
   let overflow = false;
   cells.clear();
   gridEl.querySelectorAll('input').forEach(i => { i.value = ''; });
