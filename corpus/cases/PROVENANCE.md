@@ -37,7 +37,7 @@
 
 ## 基准结果
 
-- `corpus/reports/real.json` 仍是上一版 1,001 条基准（1,001/1,001），**本版未覆盖**。
+- `corpus/reports/real.json` 仍是上一版 1,001 条基准（1,001/1,001），**本版未覆盖**。（2026-11-15 更新：裁定修正后已重跑并覆盖为 1,169/1,169，见提交 390eb26、dc14323。）
 - 本版首次 bench 预览（`scripts/run-bench.sh corpus/cases`，只读、未写报告）：**1,153/1,169（98.6%）**；桶计数 match 1,135、clock-tolerance 3、excel-precision 15、type-mismatch 2、value-mismatch 13、numeric-tolerance 1。
 - 16 条失败均来自本轮新增答案键对临时语义的裁定点（见下节），尚无引擎修正；裁定并修正后重跑 bench、更新 `real.json` 与 `docs/`。
 

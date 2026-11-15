@@ -192,7 +192,7 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 
 ## 语料裁定结果（M5，Excel 2024 已裁决）
 
-以下条目由 `corpus/spec/` 埋点、真实 Excel 2024（16.0.20527.20196, zh-CN）回答；引擎已按裁定修正，当前语料（1,001 条）全部通过。
+以下条目由 `corpus/spec/` 埋点、真实 Excel 2024（16.0.20527.20196, zh-CN）回答；引擎已按裁定修正，当前语料（1,169 条）全部通过。
 
 1. **COUNT/COUNTA 的错误参数**：COUNT 忽略一切错误参数（`COUNT(#N/A)=0`、`COUNT(1/0)=0`），COUNTA 把错误参数计为非空（`COUNTA(#N/A)=1`）——直接错误参数也如此（原实现错误地传播）。
 2. **AND/OR 的引用通道**：数字格按 ≠0 参与（`AND(1,1)=TRUE`、`AND(1,0)=FALSE`）；文本格忽略；全无逻辑值 → `#VALUE!`；字面文本仅 `TRUE/FALSE` 参与，其余忽略（`AND("0",TRUE)=TRUE`）。

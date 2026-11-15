@@ -15,7 +15,7 @@ MoonCalc 接收一组单元格——每个单元格承载字面值或公式—�
 ```bash
 export PATH="$HOME/.moon/bin:$PATH"
 
-# 全量验证：双目标构建 + 88 项单测 + 零 IO 守卫
+# 全量验证：双目标构建 + 135 项单测 + 零 IO 守卫
 bash scripts/check.sh
 
 # CLI：求值一个含引用链/错误传播/循环引用的网格
@@ -33,7 +33,7 @@ _build/native/release/build/buguoshixc/mooncalc/cmd/main/main.exe perf --cells 1
 bash scripts/build-playground.sh
 (cd playground && python3 -m http.server 8080)   # 打开 http://localhost:8080/
 
-# headless Chromium 冒烟（20 断言，零 npm 依赖）
+# headless Chromium 冒烟（29 断言，零 npm 依赖）
 node scripts/smoke.mjs
 ```
 
@@ -136,7 +136,7 @@ fn main {
 - [x] 公式解析与求值核心（Pratt 解析器、Excel 优先级、记忆化重算、环检测）
 - [x] 首批 45 函数实现（含十进制舍入修正、双通道强制转换、时钟注入）
 - [x] 答案键语料 schema + VBA 生成器 + 1,003 条用例规格 + 对照 CLI（eval/bench）
-- [x] wasm-gc playground（8×8 网格、语义预设、引擎级依赖图/错误上溯（explain API）、CSV 拖拽导入、headless 冒烟 27 断言 PASS）
+- [x] wasm-gc playground（8×8 网格、语义预设、引擎级依赖图/错误上溯（explain API）、CSV 拖拽导入、headless 冒烟 29 断言 PASS）
 - [x] 文档与支持矩阵（semantics / support-matrix / demo / toolchain）
 - [x] 真实 Excel 语料接入与 M5 对照修复（Excel 2024 生成 752 条、0 跳过；M5 基线 752/752 通过，见 [corpus/cases/PROVENANCE.md](corpus/cases/PROVENANCE.md)）
 - [x] M5 修复循环完成：36 条差异逐条归因/修复（11 条时钟、24 条语义、1 条 15 位表征），
@@ -160,7 +160,7 @@ fn main {
 
 ## 语料生成（用户侧动作）
 
-权威语料已由桌面 Excel 2024 生成并放入 `corpus/cases/`（1,001 条；2 条奇数参数 IFS 被 Excel 拒绝录入，见 `corpus/cases/logic.skipped.txt`；来源与环境见 [corpus/cases/PROVENANCE.md](corpus/cases/PROVENANCE.md)）。重新生成时在桌面 Excel 运行 [corpus/excel/generate_corpus.bas](corpus/excel/generate_corpus.bas)（说明见 [corpus/excel/README.md](corpus/excel/README.md)），把导出的 JSON 放入 `corpus/cases/`，然后：
+权威语料已由桌面 Excel 2024 生成并放入 `corpus/cases/`（1,169 条；2 条奇数参数 IFS 被 Excel 拒绝录入，见 `corpus/cases/logic.skipped.txt`；来源与环境见 [corpus/cases/PROVENANCE.md](corpus/cases/PROVENANCE.md)）。重新生成时在桌面 Excel 运行 [corpus/excel/generate_corpus.bas](corpus/excel/generate_corpus.bas)（说明见 [corpus/excel/README.md](corpus/excel/README.md)），把导出的 JSON 放入 `corpus/cases/`，然后：
 
 ```bash
 _build/native/debug/build/buguoshixc/mooncalc/cmd/main/main.exe bench --corpus corpus/cases --report corpus/reports/real.json

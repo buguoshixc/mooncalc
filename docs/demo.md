@@ -6,11 +6,11 @@
 
 ```bash
 bash scripts/check.sh        # wasm-gc check/build + native build + moon test + 零 IO 守卫
-bash scripts/run-bench.sh    # 过渡语料跑分（真实语料到达后改为 corpus/cases）
-node scripts/smoke.mjs       # headless Chromium 冒烟（20 断言）
+bash scripts/run-bench.sh    # 权威语料跑分（默认 corpus/cases）
+node scripts/smoke.mjs       # headless Chromium 冒烟（29 断言）
 ```
 
-预期：`ALL CHECKS PASS`；`1001/1001 passed (100%)`（真实 Excel 语料）；`SMOKE PASS`。
+预期：`ALL CHECKS PASS`；`1169/1169 passed (100%)`（真实 Excel 语料）；`SMOKE PASS`。
 
 ## 1. CLI：互引 + 错误 + 循环的网格
 
@@ -37,12 +37,12 @@ fixture 看点（对应输出）：
 ## 2. bench：N/X% 与逐条归因
 
 ```bash
-... bench --corpus corpus/cases --report corpus/reports/real.json          # 1001/1001（100%）
+... bench --corpus corpus/cases --report corpus/reports/real.json          # 1169/1169（100%）
 ... bench --corpus corpus/provisional                                    # 过渡语料，34/34
 ... bench --corpus tests/fixtures/badcorpus --fail-under 0.95; echo "exit=$?"   # 1（有差异）
 ```
 
-看点：按 source 分栏、buckets（match / excel-precision / clock-tolerance / numeric-tolerance / value-mismatch / …）、逐条 FAIL 的 expected/actual。权威语料为 Excel 2024 导出的 1,001 条，当前 100% 通过（996 match + 4 clock-tolerance + 1 excel-precision，后两个桶为可披露的表征/时钟容差；2 条奇数参数 IFS 被 Excel 拒绝录入，显式标为子集外）。
+看点：按 source 分栏、buckets（match / excel-precision / clock-tolerance / numeric-tolerance / value-mismatch / …）、逐条 FAIL 的 expected/actual。权威语料为 Excel 2024 导出的 1,169 条，当前 100% 通过（1,149 match + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，后三个桶为可披露的表征/时钟容差；2 条奇数参数 IFS 被 Excel 拒绝录入，显式标为子集外）。
 
 ## 3. playground：现场改格
 

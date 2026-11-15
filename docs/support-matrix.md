@@ -3,8 +3,8 @@
 状态截至 2026-11-15（M7 完成）。**权威语料（真实 Excel 导出）**：`corpus/cases/` 1,169 条由 Excel 2024（16.0.20527.20196, zh-CN）生成（含 M7 新增 150 条函数 + 18 条迭代）；2 条奇数参数 IFS 被 Excel 拒绝录入（`logic.skipped.txt`，spec 标 `subset-out`，不进入分母）。权威跑分 **1,169/1,169（100%）**（报告 `corpus/reports/real.json`）：1,149 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，无未归因失败。
 
 - 规格用例：`corpus/spec/*.tsv` 共 **1,171 条**（另 8 行表头）；逐函数计数按「公式中出现该函数调用」统计（含嵌套，一条用例可计入多个函数）。
-- 权威语料列：**1,001 条已生成语料**中该函数的通过数；括号外的分子/分母均来自实际生成记录。
-- 跑分口径：精确相等为主；15 位有效数字表征差（相对差 ≤1e-14）单列 `excel-precision` 桶并通过，`clock` 用例用绝对天数容差单列 `clock-tolerance` 桶并通过——两桶都在报告中披露（本版：match 996 + clock-tolerance 4 + excel-precision 1）。
+- 权威语料列：**1,169 条已生成语料**中该函数的通过数；括号外的分子/分母均来自实际生成记录。
+- 跑分口径：精确相等为主；15 位有效数字表征差（相对差 ≤1e-14）单列 `excel-precision` 桶并通过，`clock` 用例用绝对天数容差单列 `clock-tolerance` 桶并通过，孤代理对表征差单列 `surrogate-representation` 桶并通过——三桶都在报告中披露（本版：match 1,149 + clock-tolerance 3 + excel-precision 16 + surrogate-representation 1）。
 - 过渡跑分（source: manual）：`corpus/provisional/` 34/34；语义细节见 [semantics.md](semantics.md)。
 
 ## 逻辑（8）
