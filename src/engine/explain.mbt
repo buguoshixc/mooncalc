@@ -32,19 +32,24 @@ pub(all) struct ExplainOutput {
   parse_error : String?
 } derive(Show, Debug)
 
+/// 前驱提取结果；`ok=false` 表示依赖集合无法枚举（超大区域、整列/整行、
+/// 递归名称），explain 据此降级为 oversized 模式。
+struct PrecResult {
+  refs : Array[String]
+  ok : Bool
+}
+
 fn cell_precedents(
   grid : Grid,
   key : String,
   cache : ParseCache
-) -> Array[String] {
+) -> PrecResult {
   match grid.cells.get(key) {
     Some(Formula(src)) => {
       let refs : Array[String] = []
-      match cache.parse(src) {
-        Some(e) => {
-          let _ = expr_refs(e, refs, 65536)
-        }
-        None => ()
+      let ok = match cache.parse(src) {
+        Some(e) => expr_refs(grid, @value.split_key(key).0, e, refs, 65536)
+        None => true
       }
       let seen : Map[String, Bool] = Map::new()
       let uniq : Array[String] = []
@@ -54,9 +59,9 @@ fn cell_precedents(
           uniq.push(r)
         }
       }
-      uniq
+      { refs: uniq, ok }
     }
-    _ => []
+    _ => { refs: [], ok: true }
   }
 }
 
@@ -74,6 +79,7 @@ fn probe_contributes(
 ) -> Bool {
   let original = scalar_output(raw[c_key])
   let ctx = new_ctx(grid, options, Some(cache.entries))
+  ctx.current_sheet = @value.split_key(c_key).0
   for k, v in raw {
     ctx.cache[k] = v
   }
@@ -98,7 +104,20 @@ pub fn explain(
   grid : Grid,
   options : EvalOptions
 ) -> ExplainOutput {
-  let key = addr.key()
+  explain_at_key(addr.key(), grid, options)
+}
+
+/// 解释限定地址（`A1` 或 `SHEET!A1`）的错误来源；语义同 `explain`。
+pub fn explain_at_key(
+  key_in : String,
+  grid : Grid,
+  options : EvalOptions
+) -> ExplainOutput {
+  let (sheet, text) = @value.split_key(key_in)
+  let key = match @value.parse_addr(text) {
+    Some(a) => @value.sheet_key(sheet, a)
+    None => key_in
+  }
   let cache = new_parse_cache()
   let (out, raw) = recalc_impl(grid, options, Some(cache.entries))
   let target_out = match out.cells.get(key) {
@@ -144,7 +163,11 @@ pub fn explain(
   let mut oversized = false
   while i < queue.length() && !oversized {
     let k = queue[i]
-    let refs = cell_precedents(grid, k, cache)
+    let pr = cell_precedents(grid, k, cache)
+    if !pr.ok {
+      oversized = true
+    }
+    let refs = pr.refs
     prec[k] = refs
     for r in refs {
       if !closure.contains(r) {
@@ -202,7 +225,7 @@ pub fn explain(
       stack.push((k, true))
       let refs = match prec.get(k) {
         Some(rs) => rs
-        None => cell_precedents(grid, k, cache)
+        None => cell_precedents(grid, k, cache).refs
       }
       let err_pre : Array[String] = []
       for p in refs {

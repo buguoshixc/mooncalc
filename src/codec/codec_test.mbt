@@ -245,3 +245,57 @@ test "recalc_incremental_json: cycle fallback and bad input" {
   )
   assert_false(ok(bad2))
 }
+
+test "m8: qualified grid keys, cross-sheet addr and record names" {
+  let resp = evaluate_json(
+    "{\"grid\":{\"DATA!A1\":5,\"DATA!B1\":{\"formula\":\"=A1*2\"}},\"addr\":\"Data!B1\"}",
+  )
+  assert_true(ok(resp))
+  assert_eq(first_value(resp).value("value").unwrap().as_number().unwrap(), 10.0)
+  let named = evaluate_json(
+    "{\"grid\":{\"DATA!A1\":0.07,\"names\":{\"Rate\":\"Data!$A$1\"}},\"formula\":\"=Rate\"}",
+  )
+  assert_true(ok(named))
+  assert_eq(first_value(named).value("value").unwrap().as_number().unwrap(), 0.07)
+  let rec = record_from_json(jparse(
+    "{\"id\":\"refs-names-0001\",\"formula\":\"=Rate\",\"grid\":{\"DATA!A1\":0.07},\"names\":{\"Rate\":\"Data!$A$1\"},\"expected\":{\"type\":\"number\",\"value\":0.07},\"tags\":[\"names\"],\"source\":\"excel-desktop\"}",
+  ))
+  match rec {
+    Ok(r) => {
+      assert_eq(r.names["RATE"], "Data!$A$1")
+      assert_eq(r.grid.names["RATE"], "Data!$A$1")
+      inspect(r.grid.cells["DATA!A1"], content="Literal(Num(0.07))")
+    }
+    Err(_) => panic()
+  }
+}
+
+test "m8: explain and incremental accept qualified addresses" {
+  let ex = explain_json(
+    "{\"grid\":{\"DATA!A1\":{\"formula\":\"=1/0\"},\"B1\":{\"formula\":\"=Data!A1+1\"}},\"addr\":\"B1\"}",
+  )
+  assert_true(ok(ex))
+  assert_true(jparse(ex).value("sources").unwrap().as_array().unwrap().length() > 0)
+  let (inc, _) = recalc_incremental_json(
+    "{\"grid\":{\"DATA!A1\":2,\"B1\":{\"formula\":\"=Data!A1+1\"}}}",
+    None,
+  )
+  assert_true(ok(inc))
+  let (inc2, st) = recalc_incremental_json(
+    "{\"grid\":{\"DATA!A1\":3,\"B1\":{\"formula\":\"=Data!A1+1\"}},\"changed\":[\"data!a1\"]}",
+    None,
+  )
+  assert_true(ok(inc2))
+  let (inc3, _) = recalc_incremental_json(
+    "{\"grid\":{\"DATA!A1\":4,\"B1\":{\"formula\":\"=Data!A1+1\"}},\"changed\":[\"DATA!A1\"]}",
+    st,
+  )
+  assert_true(ok(inc3))
+  assert_eq(
+    jparse(inc3).value("incremental").unwrap().value("full").unwrap().as_bool().unwrap(),
+    false,
+  )
+  assert_false(ok(explain_json(
+    "{\"grid\":{},\"addr\":\"Data!SUM(A1)\"}",
+  )))
+}

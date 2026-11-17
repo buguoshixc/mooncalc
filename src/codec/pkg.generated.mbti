@@ -59,6 +59,7 @@ pub(all) struct CaseRecord {
   source : String
   notes : String
   iter : @engine.IterOptions?
+  names : Map[String, String]
 }
 
 #derive(Show, @debug.Debug)

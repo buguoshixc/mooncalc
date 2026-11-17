@@ -45,8 +45,8 @@ pub fn recalc_incremental_json(
           for item in arr {
             match item.as_string() {
               Some(s) =>
-                match @facade.parse_addr(s) {
-                  Some(a) => keys.push(a.key())
+                match @value.parse_qualified_addr(s) {
+                  Some((sheet, a)) => keys.push(@value.sheet_key(sheet, a))
                   None =>
                     return (error_response("invalid changed addr: " + s), state)
                 }

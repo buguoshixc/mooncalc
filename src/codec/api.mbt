@@ -94,11 +94,12 @@ pub fn evaluate_json(input : String) -> String {
       Some(s) => s
       None => return error_response("addr must be a string")
     }
-    let addr = match @facade.parse_addr(addr_text) {
-      Some(a) => a
+    let (sheet, a) = match @value.parse_qualified_addr(addr_text) {
+      Some(x) => x
       None => return error_response("invalid addr: " + addr_text)
     }
-    results.push(result_json(addr.key(), @facade.eval_at(addr, grid, options)))
+    let key = @value.sheet_key(sheet, a)
+    results.push(result_json(key, @facade.eval_at_key(key, grid, options)))
   } else {
     let out = match iter {
       Some(it) => @facade.recalc_iterative(grid, options, it)

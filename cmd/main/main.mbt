@@ -56,12 +56,33 @@ fn parse_iter_or_die(s : String) -> Json {
   Json::object(m)
 }
 
+/// 把 `--names` 指向的 JSON 对象（名称 → 引用文本）并入 grid 对象的保留键 `names`。
+fn inject_names(grid_json : Json, names_path : String?) -> Json {
+  match names_path {
+    None => grid_json
+    Some(path) => {
+      let names = parse_json_or_die(read_text(path), path)
+      match grid_json.as_object() {
+        Some(m) => {
+          let m2 = m.copy()
+          m2["names"] = names
+          Json::object(m2)
+        }
+        None => die("grid must be a JSON object")
+      }
+    }
+  }
+}
+
 fn run_eval(a : Args) -> Unit {
   let grid_path = match a.grid {
     Some(p) => p
     None => die("eval requires --grid\n" + usage())
   }
-  let grid_json = parse_json_or_die(read_text(grid_path), grid_path)
+  let grid_json = inject_names(
+    parse_json_or_die(read_text(grid_path), grid_path),
+    a.names,
+  )
   let req : Map[String, Json] = Map::new()
   req["grid"] = grid_json
   if a.formula is Some(f) {
@@ -100,7 +121,10 @@ fn run_explain(a : Args) -> Unit {
     Some(s) => s
     None => die("explain requires --addr\n" + usage())
   }
-  let grid_json = parse_json_or_die(read_text(grid_path), grid_path)
+  let grid_json = inject_names(
+    parse_json_or_die(read_text(grid_path), grid_path),
+    a.names,
+  )
   let req : Map[String, Json] = Map::new()
   req["grid"] = grid_json
   req["addr"] = Json::string(addr)

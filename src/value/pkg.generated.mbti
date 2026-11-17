@@ -22,9 +22,23 @@ pub let max_row : Int32
 
 pub fn parse_addr(String) -> CellAddr?
 
+pub fn parse_column(String) -> Int32?
+
+pub fn parse_qualified_addr(String) -> (String, CellAddr)?
+
+pub fn parse_row(String) -> Int32?
+
+pub fn sheet_key(String, CellAddr) -> String
+
+pub fn split_key(String) -> (String, String)
+
 pub fn unicode_lower(String) -> String
 
 pub fn unicode_upper(String) -> String
+
+pub fn valid_name_token(String) -> Bool
+
+pub fn valid_sheet_name(String) -> Bool
 
 // Errors
 

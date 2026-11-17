@@ -14,6 +14,8 @@ pub struct RecalcState {
   priv cache : ParseCache
   priv mut has_cycle : Bool
   priv mut range_fallback : Bool
+  /// 上次重算时的工作簿名称表快照；名称变化无法增量传播，直接全量回退。
+  priv mut names : Map[String, String]
 }
 
 /// 全量重算并建立增量状态；输出与 `recalc` 完全一致。
@@ -29,6 +31,7 @@ pub fn recalc_init(
     cache: new_parse_cache(),
     has_cycle: false,
     range_fallback: false,
+    names: Map::new(),
   }
   let out = full_rebuild(state, grid, options)
   (state, out)
@@ -62,13 +65,16 @@ pub fn recalc_update_report(
   changed : Array[String],
   options : EvalOptions
 ) -> (RecalcOutput, RecalcReport) {
+  if !same_names(state.names, grid.names) {
+    return full_with_report(state, grid, options)
+  }
   if state.has_cycle || state.range_fallback {
     return full_with_report(state, grid, options)
   }
   for key in changed {
     remove_edges(state, key)
     match grid.cells.get(key) {
-      Some(cell) => add_edges(state, key, cell)
+      Some(cell) => add_edges(state, grid, key, cell)
       None => ()
     }
   }
@@ -174,6 +180,7 @@ fn full_rebuild(
 ) -> RecalcOutput {
   let (out, raw) = recalc_impl(grid, options, Some(state.cache.entries))
   state.raw = raw
+  state.names = grid.names.copy()
   state.circular.clear()
   state.has_cycle = false
   for key, o in out.cells {
@@ -186,18 +193,39 @@ fn full_rebuild(
   state.dependents.clear()
   state.range_fallback = false
   for key, cell in grid.cells {
-    add_edges(state, key, cell)
+    add_edges(state, grid, key, cell)
   }
   out
 }
 
-fn add_edges(state : RecalcState, key : String, cell : Cell) -> Unit {
+/// 名称表是否与上次重算时一致（名称变化会让依赖图失效）。
+fn same_names(a : Map[String, String], b : Map[String, String]) -> Bool {
+  if a.length() != b.length() {
+    return false
+  }
+  for k, v in a {
+    match b.get(k) {
+      Some(v2) => if v2 != v {
+        return false
+      }
+      None => return false
+    }
+  }
+  true
+}
+
+fn add_edges(
+  state : RecalcState,
+  grid : Grid,
+  key : String,
+  cell : Cell
+) -> Unit {
   match cell {
     Literal(_) => ()
     Formula(src) => {
       let refs : Array[String] = []
       let ok = match state.cache.parse(src) {
-        Some(e) => expr_refs(e, refs, 65536)
+        Some(e) => expr_refs(grid, @value.split_key(key).0, e, refs, 65536)
         None => true
       }
       if !ok {
@@ -241,19 +269,40 @@ fn remove_edges(state : RecalcState, key : String) -> Unit {
 }
 
 // Collect referenced cell keys from an AST (ranges expanded row-major).
-// Returns false when the cap is exceeded; shared with iterative/explain.
-fn expr_refs(e : @syntax.Expr, out : Array[String], cap : Int) -> Bool {
+// Returns false when the dependency set cannot be bounded (cap exceeded,
+// whole-column/row ranges, recursive or cyclic defined names): callers then
+// fall back to a full recalculation rather than risk a stale incremental graph.
+// `host_sheet` is the sheet of the enclosing formula; bare refs resolve there.
+fn expr_refs(
+  grid : Grid,
+  host_sheet : String,
+  e : @syntax.Expr,
+  out : Array[String],
+  cap : Int
+) -> Bool {
+  expr_refs_at(grid, host_sheet, e, out, cap, Map::new(), 0)
+}
+
+fn expr_refs_at(
+  grid : Grid,
+  host_sheet : String,
+  e : @syntax.Expr,
+  out : Array[String],
+  cap : Int,
+  names_on_path : Map[String, Bool],
+  name_depth : Int
+) -> Bool {
   match e {
     Lit(_) => true
     Ref(addr) => {
-      out.push(addr.key())
+      out.push(@value.sheet_key(host_sheet, addr))
       out.length() <= cap
     }
     Range(lo, hi) => {
       for r in lo.row..=hi.row {
         for c in lo.col..=hi.col {
           let a : CellAddr = { row: r, col: c, abs_row: false, abs_col: false }
-          out.push(a.key())
+          out.push(@value.sheet_key(host_sheet, a))
           if out.length() > cap {
             return false
           }
@@ -261,11 +310,39 @@ fn expr_refs(e : @syntax.Expr, out : Array[String], cap : Int) -> Bool {
       }
       true
     }
-    Unary(_, sub) => expr_refs(sub, out, cap)
-    Binary(_, l, r) => expr_refs(l, out, cap) && expr_refs(r, out, cap)
+    Sheet(sheet, inner) =>
+      if sheet != "" && !grid_sheet_exists(grid, sheet) {
+        // 缺表求值为 #REF!，没有前驱（也不产生依赖边）。
+        true
+      } else {
+        expr_refs_at(grid, sheet, inner, out, cap, names_on_path, name_depth)
+      }
+    WholeCols(_, _) => false
+    WholeRows(_, _) => false
+    Name(n) => {
+      let text = match grid.names.get(n) {
+        Some(t) => t
+        None => return true
+      }
+      if names_on_path.contains(n) || name_depth >= max_name_depth {
+        return false
+      }
+      let body = match parse_name_body(text) {
+        Some(b) => b
+        None => return true
+      }
+      names_on_path[n] = true
+      let ok = expr_refs_at(grid, "", body, out, cap, names_on_path, name_depth + 1)
+      let _ = names_on_path.remove(n)
+      ok
+    }
+    Unary(_, sub) => expr_refs_at(grid, host_sheet, sub, out, cap, names_on_path, name_depth)
+    Binary(_, l, r) =>
+      expr_refs_at(grid, host_sheet, l, out, cap, names_on_path, name_depth) &&
+      expr_refs_at(grid, host_sheet, r, out, cap, names_on_path, name_depth)
     Call(_, args) => {
       for a in args {
-        if !expr_refs(a, out, cap) {
+        if !expr_refs_at(grid, host_sheet, a, out, cap, names_on_path, name_depth) {
           return false
         }
       }
@@ -291,7 +368,7 @@ pub fn dependency_graph(grid : Grid) -> DepGraph? {
       Formula(src) => {
         let refs : Array[String] = []
         let ok = match cache.parse(src) {
-          Some(e) => expr_refs(e, refs, 65536)
+          Some(e) => expr_refs(grid, @value.split_key(key).0, e, refs, 65536)
           None => true
         }
         if !ok {

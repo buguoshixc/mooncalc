@@ -84,10 +84,51 @@ test "parse errors" {
   ))
   inspect(err_of("A1:B2:C3"), content=(#|range endpoints must be cell references
   ))
-  inspect(err_of("MyName"), content=(#|defined names are not supported: MyName
-  ))
   inspect(err_of(""), content=(#|empty formula
   ))
   inspect(err_of("1 2"), content=(#|unexpected trailing tokens in formula
+  ))
+}
+
+test "defined names parse as Name (case-normalized)" {
+  inspect(@syntax.parse("MyName"), content=(#|Name(MYNAME)
+  ))
+  inspect(@syntax.parse("_x1+Rate"), content=(#|Binary(Add, Name(_X1), Name(RATE))
+  ))
+}
+
+test "sheet-qualified references" {
+  inspect(@syntax.parse("Data!A1"), content=(#|Sheet(DATA, Ref({row: 1, col: 1, abs_row: false, abs_col: false}))
+  ))
+  inspect(
+    @syntax.parse("'My Sheet'!$B$2:C3"),
+    content=(#|Sheet(MY SHEET, Range({row: 2, col: 2, abs_row: false, abs_col: false}, {row: 3, col: 3, abs_row: false, abs_col: false}))
+  ),
+  )
+  inspect(@syntax.parse("'O''Brien'!A1"), content=(#|Sheet(O'BRIEN, Ref({row: 1, col: 1, abs_row: false, abs_col: false}))
+  ))
+}
+
+test "whole column and whole row ranges" {
+  inspect(@syntax.parse("A:B"), content=(#|WholeCols(1, 2)
+  ))
+  inspect(@syntax.parse("B:A"), content=(#|WholeCols(1, 2)
+  ))
+  inspect(@syntax.parse("2:3"), content=(#|WholeRows(2, 3)
+  ))
+  inspect(@syntax.parse("Data!A:B"), content=(#|Sheet(DATA, WholeCols(1, 2))
+  ))
+  inspect(@syntax.parse("Data!3:2"), content=(#|Sheet(DATA, WholeRows(2, 3))
+  ))
+  inspect(err_of("Data!SUM(A1)"), content=(#|expected ':' after sheet-qualified reference
+  ))
+  inspect(err_of("Data!1"), content=(#|expected ':' after sheet-qualified reference
+  ))
+}
+
+test "3D and cross-sheet ranges are rejected" {
+  inspect(err_of("Sheet1:Sheet3!A1"), content=(#|range endpoints must be cell references
+  ))
+  inspect(err_of("Data!A1:Other!B2"), content=(#|3D references are not supported: DATA:OTHER
   ))
 }

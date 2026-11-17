@@ -66,10 +66,13 @@ pub fn recalc_iterative(
       match cell {
         Formula(src) => {
           let old = work[key]
+          let saved_sheet = ctx.current_sheet
+          ctx.current_sheet = @value.split_key(key).0
           let new_v = match parse_formula(ctx, key, src) {
             None => Value::Err(XlError::Value)
             Some(e) => eval_expr(ctx, e)
           }
+          ctx.current_sheet = saved_sheet
           let d = value_delta(old, new_v)
           if d > max_delta {
             max_delta = d
@@ -115,7 +118,7 @@ pub fn eval_formula_iterative(
     n += 1
     key = "ZZ" + n.to_string()
   }
-  let g2 : Grid = { cells: grid.cells.copy() }
+  let g2 : Grid = { cells: grid.cells.copy(), names: grid.names.copy() }
   g2.cells[key] = Formula(formula)
   let out = recalc_iterative(g2, options, iter)
   let any_cycle = {

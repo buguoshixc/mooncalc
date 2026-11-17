@@ -1003,3 +1003,168 @@ pub fn excel_precision(d : Double) -> Double {
   repr = repr + "e" + exp.to_string()
   @string.parse_double(repr[:]) catch { _ => d }
 }
+
+/// 工作表名合法性（Excel 规则的子集）：1..31 个字符，且不含 `: \ / ? * [ ] !`。
+pub fn valid_sheet_name(name : String) -> Bool {
+  let chars : Array[Char] = Array::from_iter(name.iter())
+  let n = chars.length()
+  if n < 1 || n > 31 {
+    return false
+  }
+  let mut i = 0
+  while i < n {
+    let c = chars[i]
+    if c == ':' ||
+      c == '\\' ||
+      c == '/' ||
+      c == '?' ||
+      c == '*' ||
+      c == '[' ||
+      c == ']' ||
+      c == '!' {
+      return false
+    }
+    i += 1
+  }
+  true
+}
+
+/// 定义名称字符集：`[A-Za-z_][A-Za-z0-9_]*`（Excel 工作簿级名称规则）。
+pub fn valid_name_token(name : String) -> Bool {
+  let chars : Array[Char] = Array::from_iter(name.iter())
+  let n = chars.length()
+  if n == 0 {
+    return false
+  }
+  let c0 = chars[0]
+  if !(is_ascii_letter(c0) || c0 == '_') {
+    return false
+  }
+  let mut i = 1
+  while i < n {
+    let c = chars[i]
+    if !(is_ascii_letter(c) || is_ascii_digit(c) || c == '_') {
+      return false
+    }
+    i += 1
+  }
+  true
+}
+
+// 限定键里的表名：去掉两端单引号并解出 `''` 转义，再做 ASCII 大写归一。
+fn unquote_sheet_name(raw : String) -> String {
+  let chars : Array[Char] = Array::from_iter(raw.iter())
+  let n = chars.length()
+  if n >= 2 && chars[0] == '\'' && chars[n - 1] == '\'' {
+    let buf : Array[Char] = []
+    let mut i = 1
+    while i < n - 1 {
+      if chars[i] == '\'' && i + 1 < n - 1 && chars[i + 1] == '\'' {
+        buf.push('\'')
+        i += 2
+      } else {
+        buf.push(chars[i])
+        i += 1
+      }
+    }
+    ascii_upper(String::from_array(buf[:]))
+  } else {
+    ascii_upper(raw)
+  }
+}
+
+/// 把限定键拆成 `(工作表名, 地址文本)`：以最后一个 `!` 为界；无 `!` 时表名为空串
+/// （默认工作表）。表名按 ASCII 大写归一（与 `sheet_key` 对称），单引号包裹会被去掉。
+pub fn split_key(key : String) -> (String, String) {
+  let chars : Array[Char] = Array::from_iter(key.iter())
+  let n = chars.length()
+  let mut bang = -1
+  let mut i = 0
+  while i < n {
+    if chars[i] == '!' {
+      bang = i
+    }
+    i += 1
+  }
+  if bang < 0 {
+    ("", key)
+  } else {
+    (
+      unquote_sheet_name(String::from_array(chars[0:bang])),
+      String::from_array(chars[bang + 1:n]),
+    )
+  }
+}
+
+/// 限定键：`sheet_key("Data", a1)` → `"DATA!A1"`；默认工作表（空串）返回裸键 `"A1"`。
+pub fn sheet_key(sheet : String, addr : CellAddr) -> String {
+  if sheet == "" {
+    addr.key()
+  } else {
+    ascii_upper(sheet) + "!" + addr.key()
+  }
+}
+
+/// 解析限定键（`SHEET!A1` 或裸 `A1`；表名可带单引号、大小写不敏感）。
+/// 表名非法（见 `valid_sheet_name`）或地址非法返回 `None`。默认工作表名为空串。
+pub fn parse_qualified_addr(key : String) -> (String, CellAddr)? {
+  let (sheet, addr_text) = split_key(key)
+  if sheet != "" && !valid_sheet_name(sheet) {
+    return None
+  }
+  match parse_addr(addr_text) {
+    Some(a) => Some((sheet, a))
+    None => None
+  }
+}
+
+/// 解析列字母（1..3 个 ASCII 字母，大小写不敏感）为 1 基列号；非法返回 `None`。
+pub fn parse_column(s : String) -> Int? {
+  let chars : Array[Char] = Array::from_iter(s.iter())
+  let n = chars.length()
+  if n < 1 || n > 3 {
+    return None
+  }
+  let mut col = 0
+  let mut i = 0
+  while i < n {
+    let c = chars[i]
+    if !is_ascii_letter(c) {
+      return None
+    }
+    let v = c.to_int()
+    let upper = if v >= 97 { v - 32 } else { v }
+    col = col * 26 + (upper - 64)
+    i += 1
+  }
+  if col < 1 || col > max_col {
+    return None
+  }
+  Some(col)
+}
+
+/// 解析行号文本（纯 ASCII 数字）为 1 基行号；非法返回 `None`。
+pub fn parse_row(s : String) -> Int? {
+  let chars : Array[Char] = Array::from_iter(s.iter())
+  let n = chars.length()
+  if n < 1 || n > 7 {
+    return None
+  }
+  let mut row = 0
+  let mut i = 0
+  while i < n {
+    if !is_ascii_digit(chars[i]) {
+      return None
+    }
+    row = row * 10 + (chars[i].to_int() - 48)
+    if row > max_row {
+      return None
+    }
+    i += 1
+  }
+  if row < 1 {
+    None
+  } else {
+    Some(row)
+  }
+}

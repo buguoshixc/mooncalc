@@ -20,12 +20,21 @@ pub(all) struct CaseRecord {
   notes : String
   /// 迭代计算设置（spec 可选第 6 列 `iter`）；`None` = 迭代关闭（Excel 默认）。
   iter : @facade.IterOptions?
+  /// 工作簿级定义名称（spec 可选第 7 列 `names`；已并入 `grid.names` 供求值使用）。
+  names : Map[String, String]
 } derive(Show, Debug)
 
 fn decode_record(j : Json) -> CaseRecord raise CodecError {
   let id = jstr(jfield(j, "id"))
   let formula = jstr(jfield(j, "formula"))
   let grid = decode_grid(jfield(j, "grid"))
+  let names = match j.value("names") {
+    Some(nj) => decode_names(nj)
+    None => Map::new()
+  }
+  for name, ref in names {
+    grid.names[name] = ref
+  }
   let now = match j.value("now") {
     Some(nj) => Some(jnum(nj))
     None => None
@@ -65,7 +74,7 @@ fn decode_record(j : Json) -> CaseRecord raise CodecError {
     }
     None => None
   }
-  { id, formula, grid, now, expected, tags, source, notes, iter }
+  { id, formula, grid, now, expected, tags, source, notes, iter, names }
 }
 
 /// JSON → 单条语料用例；字段缺失/类型不符返回 `Err(消息)`。

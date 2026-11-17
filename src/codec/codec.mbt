@@ -116,6 +116,23 @@ pub fn value_from_json(j : Json) -> Result[Value, String] {
   }
 }
 
+/// 名称表解码：`{"Rate":"Data!$A$1"}` → ASCII 大写名称 → 引用文本。
+fn decode_names(j : Json) -> Map[String, String] raise CodecError {
+  let m = match j.as_object() {
+    Some(m) => m
+    None => raise CodecError("names must be a JSON object")
+  }
+  let out : Map[String, String] = Map::new()
+  for name, nj in m {
+    let key = @value.ascii_upper(name)
+    if !@value.valid_name_token(key) {
+      raise CodecError("invalid defined name: " + name)
+    }
+    out[key] = jstr(nj)
+  }
+  out
+}
+
 fn decode_grid(j : Json) -> Grid raise CodecError {
   let m = match j.as_object() {
     Some(m) => m
@@ -123,8 +140,15 @@ fn decode_grid(j : Json) -> Grid raise CodecError {
   }
   let g = @facade.new_grid()
   for addr, cj in m {
-    let a = match @facade.parse_addr(addr) {
-      Some(a) => a
+    // 保留键 `names`（不是合法地址）：工作簿级定义名称表，与 worksheet 键同层。
+    if addr == "names" {
+      for name, ref in decode_names(cj) {
+        g.names[name] = ref
+      }
+      continue
+    }
+    let (sheet, a) = match @value.parse_qualified_addr(addr) {
+      Some(x) => x
       None => raise CodecError("invalid cell address: " + addr)
     }
     let cell = match cj {
@@ -149,7 +173,7 @@ fn decode_grid(j : Json) -> Grid raise CodecError {
           None => raise CodecError("unsupported grid cell encoding: " + addr)
         }
     }
-    g.cells[a.key()] = cell
+    g.cells[@value.sheet_key(sheet, a)] = cell
   }
   g
 }

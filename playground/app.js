@@ -34,6 +34,8 @@ function addrRC(a) {
 }
 
 function addrSort(a, b) {
+  // M8 起键可能是限定地址（`SHEET!A1`）：非 A1 形态回退字符串比较（不做多表 UI）。
+  if (a.includes('!') || b.includes('!')) return a < b ? -1 : a > b ? 1 : 0;
   const [ca, ra] = addrRC(a);
   const [cb, rb] = addrRC(b);
   return ra - rb || ca - cb;

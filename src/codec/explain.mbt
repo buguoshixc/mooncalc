@@ -31,8 +31,8 @@ pub fn explain_json(input : String) -> String {
       }
     None => return explain_error("missing addr")
   }
-  let addr = match @facade.parse_addr(addr_text) {
-    Some(a) => a
+  let (sheet, addr) = match @value.parse_qualified_addr(addr_text) {
+    Some(x) => x
     None => return explain_error("invalid addr: " + addr_text)
   }
   let now : Double? = match j.value("now") {
@@ -43,7 +43,7 @@ pub fn explain_json(input : String) -> String {
       }
     None => None
   }
-  let out = @facade.explain(addr, grid, { now })
+  let out = @facade.explain_at_key(@value.sheet_key(sheet, addr), grid, { now })
   let steps : Array[Json] = []
   for s in out.steps {
     steps.push(obj([

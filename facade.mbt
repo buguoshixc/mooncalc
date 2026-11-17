@@ -44,6 +44,41 @@ pub fn parse_addr(s : String) -> CellAddr? {
   @value.parse_addr(s)
 }
 
+/// 解析列字母（1..3 个 ASCII 字母）为 1 基列号；非法返回 `None`。
+pub fn parse_column(s : String) -> Int? {
+  @value.parse_column(s)
+}
+
+/// 解析行号文本（纯 ASCII 数字）为 1 基行号；非法返回 `None`。
+pub fn parse_row(s : String) -> Int? {
+  @value.parse_row(s)
+}
+
+/// 工作表名合法性：1..31 字符且不含 `: \ / ? * [ ] !`。
+pub fn valid_sheet_name(name : String) -> Bool {
+  @value.valid_sheet_name(name)
+}
+
+/// 定义名称字符集：`[A-Za-z_][A-Za-z0-9_]*`。
+pub fn valid_name_token(name : String) -> Bool {
+  @value.valid_name_token(name)
+}
+
+/// 限定键拆成 `(工作表名, 地址文本)`；无 `!` 时为默认工作表（空串）。
+pub fn split_key(key : String) -> (String, String) {
+  @value.split_key(key)
+}
+
+/// 限定键：默认工作表（空串）返回裸地址，否则 `SHEET!A1`（表名 ASCII 大写）。
+pub fn sheet_key(sheet : String, addr : CellAddr) -> String {
+  @value.sheet_key(sheet, addr)
+}
+
+/// 解析限定地址：`SHEET!A1` / 裸 `A1`；表名可带单引号。返回 `(工作表名, 地址)`。
+pub fn parse_qualified_addr(key : String) -> (String, CellAddr)? {
+  @value.parse_qualified_addr(key)
+}
+
 /// 解析并求值单条公式（不写入网格）。
 ///
 /// - `formula`：公式源码，前导 `=` 可有可无。
@@ -65,6 +100,17 @@ pub fn eval_formula(
 /// 这是 `eval_formula("=<addr>", ...)` 的便捷形式，循环引用语义与 `recalc` 一致。
 pub fn eval_at(addr : CellAddr, grid : Grid, options : EvalOptions) -> EvalOutput {
   @engine.eval_at(addr, grid, options)
+}
+
+/// 求值限定键对应的单元格（`"A1"` 或 `"SHEET!A1"`，表名大小写不敏感）。
+///
+/// 缺失的工作表按下标语义返回 `#REF!`；空白格返回 `Blank`。
+pub fn eval_at_key(
+  key : String,
+  grid : Grid,
+  options : EvalOptions
+) -> EvalOutput {
+  @engine.eval_at_key(key, grid, options)
 }
 
 /// 按依赖关系重算整个网格（DFS + 记忆化 + 环检测）。
@@ -181,6 +227,15 @@ pub fn explain(
   options : EvalOptions
 ) -> ExplainOutput {
   @engine.explain(addr, grid, options)
+}
+
+/// 解释限定键对应单元格的错误来源（`"A1"` 或 `"SHEET!A1"`）。
+pub fn explain_at_key(
+  key : String,
+  grid : Grid,
+  options : EvalOptions
+) -> ExplainOutput {
+  @engine.explain_at_key(key, grid, options)
 }
 
 /// 网格依赖图：公式格 → 直接前驱 / 格 → 直接下游（AST 级，区域展开）。

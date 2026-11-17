@@ -18,11 +18,15 @@ pub fn dependency_graph(Grid) -> DepGraph?
 
 pub fn eval_at(@value.CellAddr, Grid, EvalOptions) -> EvalOutput
 
+pub fn eval_at_key(String, Grid, EvalOptions) -> EvalOutput
+
 pub fn eval_formula(String, Grid, EvalOptions) -> Result[EvalOutput, @syntax.ParseError]
 
 pub fn eval_formula_iterative(String, Grid, EvalOptions, IterOptions) -> Result[EvalOutput, @syntax.ParseError]
 
 pub fn explain(@value.CellAddr, Grid, EvalOptions) -> ExplainOutput
+
+pub fn explain_at_key(String, Grid, EvalOptions) -> ExplainOutput
 
 pub fn new_grid() -> Grid
 
@@ -124,6 +128,7 @@ type FnSpec
 #derive(Show, @debug.Debug)
 pub(all) struct Grid {
   cells : Map[String, Cell]
+  names : Map[String, String]
 }
 
 #derive(Show, @debug.Debug)
@@ -136,6 +141,8 @@ pub struct ParseCache {
   // private fields
 }
 pub fn ParseCache::clear(Self) -> Unit
+
+type PrecResult
 
 pub(all) struct RecalcOutput {
   cells : Map[String, EvalOutput]

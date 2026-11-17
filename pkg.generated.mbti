@@ -14,11 +14,15 @@ pub fn dependency_graph(@engine.Grid) -> @engine.DepGraph?
 
 pub fn eval_at(@value.CellAddr, @engine.Grid, @engine.EvalOptions) -> @engine.EvalOutput
 
+pub fn eval_at_key(String, @engine.Grid, @engine.EvalOptions) -> @engine.EvalOutput
+
 pub fn eval_formula(String, @engine.Grid, @engine.EvalOptions) -> Result[@engine.EvalOutput, @syntax.ParseError]
 
 pub fn eval_formula_iterative(String, @engine.Grid, @engine.EvalOptions, @engine.IterOptions) -> Result[@engine.EvalOutput, @syntax.ParseError]
 
 pub fn explain(@value.CellAddr, @engine.Grid, @engine.EvalOptions) -> @engine.ExplainOutput
+
+pub fn explain_at_key(String, @engine.Grid, @engine.EvalOptions) -> @engine.ExplainOutput
 
 pub fn new_grid() -> @engine.Grid
 
@@ -27,6 +31,12 @@ pub fn new_iter_options(max_iterations? : Int32, max_change? : Double) -> @engin
 pub fn new_parse_cache() -> @engine.ParseCache
 
 pub fn parse_addr(String) -> @value.CellAddr?
+
+pub fn parse_column(String) -> Int32?
+
+pub fn parse_qualified_addr(String) -> (String, @value.CellAddr)?
+
+pub fn parse_row(String) -> Int32?
 
 pub fn recalc(@engine.Grid, @engine.EvalOptions) -> @engine.RecalcOutput
 
@@ -39,6 +49,14 @@ pub fn recalc_iterative(@engine.Grid, @engine.EvalOptions, @engine.IterOptions) 
 pub fn recalc_update(@engine.RecalcState, @engine.Grid, Array[String], @engine.EvalOptions) -> @engine.RecalcOutput
 
 pub fn recalc_update_report(@engine.RecalcState, @engine.Grid, Array[String], @engine.EvalOptions) -> (@engine.RecalcOutput, @engine.RecalcReport)
+
+pub fn sheet_key(String, @value.CellAddr) -> String
+
+pub fn split_key(String) -> (String, String)
+
+pub fn valid_name_token(String) -> Bool
+
+pub fn valid_sheet_name(String) -> Bool
 
 // Errors
 

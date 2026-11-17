@@ -22,6 +22,10 @@ pub enum Token {
   Colon
   /// `%`（后缀）
   Percent
+  /// `!`（工作表限定符）
+  Bang
+  /// 单引号工作表名（`''` 转义已解出）：`'My Sheet'!A1`。
+  SheetName(String)
 } derive(Show, Debug, Eq)
 
 fn is_ident_start(c : Char) -> Bool {
@@ -111,6 +115,33 @@ pub fn lex(input : String) -> Array[Token] raise ParseError {
       toks.push(Str(String::from_array(buf[:])))
       continue
     }
+    if c == '\'' {
+      // 单引号工作表名：Excel 用 `''` 表示一个字面单引号，如 `'O''Brien'!A1`。
+      i += 1
+      let buf : Array[Char] = []
+      let mut closed = false
+      while i < n {
+        let ch = chars[i]
+        if ch == '\'' {
+          if i + 1 < n && chars[i + 1] == '\'' {
+            buf.push('\'')
+            i += 2
+          } else {
+            i += 1
+            closed = true
+            break
+          }
+        } else {
+          buf.push(ch)
+          i += 1
+        }
+      }
+      if !closed {
+        raise ParseError("unterminated sheet name")
+      }
+      toks.push(SheetName(String::from_array(buf[:])))
+      continue
+    }
     if c == '#' {
       let start = i
       i += 1
@@ -181,6 +212,7 @@ pub fn lex(input : String) -> Array[Token] raise ParseError {
       ',' => toks.push(Comma)
       ':' => toks.push(Colon)
       '%' => toks.push(Percent)
+      '!' => toks.push(Bang)
       _ => raise ParseError("unexpected character: " + c.to_string())
     }
     i += 1

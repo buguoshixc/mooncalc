@@ -44,6 +44,15 @@ pub(all) enum Expr {
   Ref(@value.CellAddr)
   /// 区域引用（已归一化为左上/右下角）。
   Range(@value.CellAddr, @value.CellAddr)
+  /// 限定工作表引用（表名已 ASCII 大写归一）：`Sheet("DATA", Ref(addr))`。
+  /// 内层只能是 `Ref`/`Range`/`WholeCols`/`WholeRows`；裸表名必须紧跟 `!`。
+  Sheet(String, Expr)
+  /// 整列引用（首末列号均含，1 基）：`A:C` → `WholeCols(1, 3)`。
+  WholeCols(Int, Int)
+  /// 整行引用（首末行号均含，1 基）：`2:3` → `WholeRows(2, 3)`。
+  WholeRows(Int, Int)
+  /// 工作簿级定义名称（名称已 ASCII 大写归一，字符集 `[A-Za-z_][A-Za-z0-9_]*`）。
+  Name(String)
   /// 一元运算。
   Unary(UnOp, Expr)
   /// 二元运算。

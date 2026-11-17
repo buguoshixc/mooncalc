@@ -42,12 +42,18 @@ pub(all) enum Expr {
   Lit(@value.Value)
   Ref(@value.CellAddr)
   Range(@value.CellAddr, @value.CellAddr)
+  Sheet(String, Expr)
+  WholeCols(Int32, Int32)
+  WholeRows(Int32, Int32)
+  Name(String)
   Unary(UnOp, Expr)
   Binary(BinOp, Expr, Expr)
   Call(String, Array[Expr])
 }
 
 type Parser
+
+type RngEnd
 
 #derive(Eq, Show, @debug.Debug)
 pub enum Token {
@@ -62,6 +68,8 @@ pub enum Token {
   Comma
   Colon
   Percent
+  Bang
+  SheetName(String)
 }
 
 #derive(Eq, Show, @debug.Debug)

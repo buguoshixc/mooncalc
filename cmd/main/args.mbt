@@ -6,6 +6,7 @@ struct Args {
   mut now : String?
   mut iter : String?
   mut out : String?
+  mut names : String?
   mut corpus : String?
   mut report : String?
   mut tol : Double
@@ -18,10 +19,10 @@ struct Args {
 
 fn usage() -> String {
   "usage:\n" +
-  "  mooncalc eval --grid <grid.json> [--formula \"=...\" | --addr B1] [--now <serial|ISO>] [--iter N:C] [--out result.json]\n" +
+  "  mooncalc eval --grid <grid.json> [--formula \"=...\" | --addr B1] [--now <serial|ISO>] [--iter N:C] [--names names.json] [--out result.json]\n" +
   "  mooncalc bench --corpus <dir> [--report report.json] [--tol 1e-9] [--clock-tol 1e-6] [--filter <tag>] [--fail-under 1.0]\n" +
   "  mooncalc perf [--cells 10000] [--repeat 3]\n" +
-  "  mooncalc explain --grid <grid.json> --addr B1 [--now <serial|ISO>] [--out result.json]\n" +
+  "  mooncalc explain --grid <grid.json> --addr B1 [--now <serial|ISO>] [--names names.json] [--out result.json]\n" +
   "exit codes: 0 = gate met, 1 = diffs below gate, 2 = usage/IO/parse error"
 }
 
@@ -45,6 +46,7 @@ fn parse_args(argv : Array[String]) -> Result[Args, String] {
     now: None,
     iter: None,
     out: None,
+    names: None,
     corpus: None,
     report: None,
     tol: 1.0e-9,
@@ -68,6 +70,7 @@ fn parse_args(argv : Array[String]) -> Result[Args, String] {
       "--now" => a.now = Some(val)
       "--iter" => a.iter = Some(val)
       "--out" => a.out = Some(val)
+      "--names" => a.names = Some(val)
       "--corpus" => a.corpus = Some(val)
       "--report" => a.report = Some(val)
       "--filter" => a.filter = Some(val)
