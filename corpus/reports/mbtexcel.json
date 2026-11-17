@@ -5,7 +5,7 @@
     "moon": "0.1.20261104 (940aa18 2026-11-04)"
   },
   "corpus": {
-    "total": 1169,
+    "total": 1267,
     "files": [
       {
         "name": "date.json",
@@ -18,6 +18,10 @@
       {
         "name": "math.json",
         "records": 168
+      },
+      {
+        "name": "refs.json",
+        "records": 98
       },
       {
         "name": "stat.json",
@@ -41,10 +45,10 @@
       }
     ]
   },
-  "total": 1169,
-  "passed": 938,
-  "failed": 231,
-  "rate": 0.8023952095808383,
+  "total": 1267,
+  "passed": 1023,
+  "failed": 244,
+  "rate": 0.8074191002367798,
   "tol": 1e-9,
   "clock_tol": 0.000001,
   "tolerances": {
@@ -69,21 +73,22 @@
     }
   },
   "buckets": {
-    "match": 934,
+    "match": 1019,
     "excel-precision": 3,
     "clock-tolerance": 0,
     "numeric-tolerance": 0,
-    "value-mismatch": 105,
-    "type-mismatch": 89,
+    "value-mismatch": 106,
+    "type-mismatch": 99,
     "surrogate-representation": 1,
     "parse-error": 4,
+    "engine-crash": 2,
     "clock-no-injection": 33
   },
   "by_source": {
     "excel-desktop": {
-      "total": 1169,
-      "passed": 938,
-      "rate": 0.8023952095808383
+      "total": 1267,
+      "passed": 1023,
+      "rate": 0.8074191002367798
     }
   },
   "by_tag": {
@@ -357,6 +362,11 @@
       "passed": 57,
       "rate": 0.8382352941176471
     },
+    "chain": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
     "clock": {
       "total": 33,
       "passed": 0,
@@ -371,6 +381,11 @@
       "total": 14,
       "passed": 2,
       "rate": 0.14285714285714285
+    },
+    "cycle": {
+      "total": 2,
+      "passed": 0,
+      "rate": 0
     },
     "eager": {
       "total": 3,
@@ -472,15 +487,20 @@
       "passed": 13,
       "rate": 0.8666666666666667
     },
+    "names": {
+      "total": 24,
+      "passed": 15,
+      "rate": 0.625
+    },
     "power": {
       "total": 16,
       "passed": 11,
       "rate": 0.6875
     },
     "probe": {
-      "total": 77,
-      "passed": 49,
-      "rate": 0.6363636363636364
+      "total": 83,
+      "passed": 52,
+      "rate": 0.6265060240963856
     },
     "range": {
       "total": 26,
@@ -672,6 +692,11 @@
       "passed": 13,
       "rate": 0.8666666666666667
     },
+    "quoted": {
+      "total": 13,
+      "passed": 13,
+      "rate": 1
+    },
     "scalar": {
       "total": 1,
       "passed": 1,
@@ -696,6 +721,11 @@
       "total": 17,
       "passed": 15,
       "rate": 0.8823529411764706
+    },
+    "xsheet": {
+      "total": 26,
+      "passed": 24,
+      "rate": 0.9230769230769231
     },
     "average": {
       "total": 13,
@@ -842,6 +872,11 @@
       "passed": 0,
       "rate": 0
     },
+    "unknown": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
     "vlookup": {
       "total": 17,
       "passed": 16,
@@ -907,6 +942,11 @@
       "passed": 0,
       "rate": 0
     },
+    "missheet": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
     "multiple": {
       "total": 1,
       "passed": 1,
@@ -967,6 +1007,16 @@
       "passed": 3,
       "rate": 1
     },
+    "wholecol": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "wholerow": {
+      "total": 11,
+      "passed": 11,
+      "rate": 1
+    },
     "wildcard": {
       "total": 42,
       "passed": 22,
@@ -981,6 +1031,11 @@
       "total": 2,
       "passed": 2,
       "rate": 1
+    },
+    "aggregate": {
+      "total": 2,
+      "passed": 1,
+      "rate": 0.5
     },
     "all-blank": {
       "total": 1,
@@ -1113,9 +1168,9 @@
       "rate": 0
     },
     "whole-row": {
-      "total": 1,
-      "passed": 0,
-      "rate": 0
+      "total": 12,
+      "passed": 11,
+      "rate": 0.9166666666666666
     },
     "year-9999": {
       "total": 1,
@@ -1322,6 +1377,11 @@
       "passed": 17,
       "rate": 0.5862068965517241
     },
+    "cross-sheet": {
+      "total": 24,
+      "passed": 23,
+      "rate": 0.9583333333333334
+    },
     "equal-empty": {
       "total": 1,
       "passed": 1,
@@ -1397,6 +1457,11 @@
       "passed": 2,
       "rate": 1
     },
+    "quoted-name": {
+      "total": 13,
+      "passed": 13,
+      "rate": 1
+    },
     "scale-comma": {
       "total": 1,
       "passed": 0,
@@ -1461,6 +1526,11 @@
       "total": 1,
       "passed": 0,
       "rate": 0
+    },
+    "defined-name": {
+      "total": 24,
+      "passed": 15,
+      "rate": 0.625
     },
     "empty-lookup": {
       "total": 4,
@@ -1562,10 +1632,20 @@
       "passed": 1,
       "rate": 1
     },
+    "whole-column": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
     "binary-search": {
       "total": 16,
       "passed": 16,
       "rate": 1
+    },
+    "blank-compare": {
+      "total": 3,
+      "passed": 2,
+      "rate": 0.6666666666666666
     },
     "both-negative": {
       "total": 4,
@@ -1605,6 +1685,11 @@
     "interpolation": {
       "total": 3,
       "passed": 3,
+      "rate": 1
+    },
+    "missing-sheet": {
+      "total": 5,
+      "passed": 5,
       "rate": 1
     },
     "mixed-elapsed": {
@@ -2153,10 +2238,10 @@
       },
       "actual": {
         "type": "number",
-        "value": 46343.58731449074
+        "value": 46343.59831596065
       },
       "bucket": "clock-no-injection",
-      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.714971875 ignored; actual=number(46343.58731449074)"
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.714971875 ignored; actual=number(46343.59831596065)"
     },
     {
       "id": "date-now-0002",
@@ -2172,10 +2257,10 @@
       },
       "actual": {
         "type": "number",
-        "value": 0.5873144907382084
+        "value": 0.5983159606475965
       },
       "bucket": "clock-no-injection",
-      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149719907 ignored; actual=number(0.5873144907382084)"
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149719907 ignored; actual=number(0.5983159606475965)"
     },
     {
       "id": "date-now-0003",
@@ -2477,10 +2562,10 @@
       },
       "actual": {
         "type": "number",
-        "value": 46343.58731449074
+        "value": 46343.598315972224
       },
       "bucket": "clock-no-injection",
-      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343.58731449074)"
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343.598315972224)"
     },
     {
       "id": "date-now-0006",
@@ -2497,10 +2582,10 @@
       },
       "actual": {
         "type": "number",
-        "value": 0.5873144907382084
+        "value": 0.5983159722236451
       },
       "bucket": "clock-no-injection",
-      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(0.5873144907382084)"
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(0.5983159722236451)"
     },
     {
       "id": "date-now-0007",
@@ -2516,10 +2601,10 @@
       },
       "actual": {
         "type": "number",
-        "value": 46343.58731449074
+        "value": 46343.598315972224
       },
       "bucket": "clock-no-injection",
-      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343.58731449074)"
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343.598315972224)"
     },
     {
       "id": "date-now-0008",
@@ -2535,10 +2620,10 @@
       },
       "actual": {
         "type": "number",
-        "value": 46343.58731449074
+        "value": 46343.598315972224
       },
       "bucket": "clock-no-injection",
-      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343.58731449074)"
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343.598315972224)"
     },
     {
       "id": "date-now-0009",
@@ -2592,10 +2677,10 @@
       },
       "actual": {
         "type": "number",
-        "value": 46343.58731449074
+        "value": 46343.598315972224
       },
       "bucket": "clock-no-injection",
-      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343.58731449074)"
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343.598315972224)"
     },
     {
       "id": "date-now-0012",
@@ -2611,10 +2696,10 @@
       },
       "actual": {
         "type": "number",
-        "value": 46344.58731449074
+        "value": 46344.598315972224
       },
       "bucket": "clock-no-injection",
-      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46344.58731449074)"
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46344.598315972224)"
     },
     {
       "id": "date-now-0013",
@@ -2649,10 +2734,10 @@
       },
       "actual": {
         "type": "number",
-        "value": 3.5873144907382084
+        "value": 3.598315972223645
       },
       "bucket": "clock-no-injection",
-      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(3.5873144907382084)"
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(3.598315972223645)"
     },
     {
       "id": "date-now-0015",
@@ -2668,10 +2753,10 @@
       },
       "actual": {
         "type": "number",
-        "value": 92687.17462898148
+        "value": 92687.19663194445
       },
       "bucket": "clock-no-injection",
-      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149722222 ignored; actual=number(92687.17462898148)"
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149722222 ignored; actual=number(92687.19663194445)"
     },
     {
       "id": "date-now-0016",
@@ -2687,10 +2772,10 @@
       },
       "actual": {
         "type": "number",
-        "value": 46343.58731449074
+        "value": 46343.598315972224
       },
       "bucket": "clock-no-injection",
-      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149722222 ignored; actual=number(46343.58731449074)"
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149722222 ignored; actual=number(46343.598315972224)"
     },
     {
       "id": "date-month-0011",
@@ -3618,6 +3703,237 @@
       },
       "bucket": "type-mismatch",
       "detail": "expected error, got number"
+    },
+    {
+      "id": "refs-xsheet-021",
+      "formula": "=Data!A1",
+      "tags": [
+        "xsheet",
+        "cross-sheet"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "refs-names-001",
+      "formula": "=Rate",
+      "tags": [
+        "names",
+        "defined-name"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0.07
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "refs-names-002",
+      "formula": "=Rate*1000",
+      "tags": [
+        "names",
+        "defined-name"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 70
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "refs-names-011",
+      "formula": "=LoopA",
+      "tags": [
+        "names",
+        "defined-name",
+        "cycle"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#NAME?"
+      },
+      "actual": null,
+      "bucket": "engine-crash",
+      "detail": "engine-crash: circular defined name: mbtexcel 0.3.2 segfaults (SIGSEGV) before returning an error; record attributed without invoking the engine (bisected on refs-names-011/012, 2026-11-17)"
+    },
+    {
+      "id": "refs-names-012",
+      "formula": "=SelfLoop",
+      "tags": [
+        "names",
+        "defined-name",
+        "cycle"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#NAME?"
+      },
+      "actual": null,
+      "bucket": "engine-crash",
+      "detail": "engine-crash: circular defined name: mbtexcel 0.3.2 segfaults (SIGSEGV) before returning an error; record attributed without invoking the engine (bisected on refs-names-011/012, 2026-11-17)"
+    },
+    {
+      "id": "refs-names-016",
+      "formula": "=A1",
+      "tags": [
+        "names",
+        "defined-name"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 6
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "refs-names-019",
+      "formula": "=Rate+Tax",
+      "tags": [
+        "names",
+        "defined-name"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2.5
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "refs-names-020",
+      "formula": "=N",
+      "tags": [
+        "names",
+        "defined-name"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 99
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "refs-names-023",
+      "formula": "=Rate*Data!A2",
+      "tags": [
+        "names",
+        "defined-name"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 6
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "refs-names-024",
+      "formula": "=Tax+Rate",
+      "tags": [
+        "names",
+        "defined-name"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 3
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "refs-probe-001",
+      "formula": "=A1=5",
+      "tags": [
+        "probe",
+        "blank-compare"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": false
+      },
+      "actual": {
+        "type": "bool",
+        "value": true
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "refs-probe-002",
+      "formula": "=SUM(\"abc\",2)",
+      "tags": [
+        "probe",
+        "aggregate"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "refs-probe-008",
+      "formula": "=H5",
+      "tags": [
+        "probe",
+        "chain",
+        "xsheet"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 200
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
     },
     {
       "id": "stat-count-0001",

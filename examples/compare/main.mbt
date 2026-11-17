@@ -438,10 +438,59 @@ fn map_actual(v : @xlsx.CellValue?) -> Actual {
   }
 }
 
+/// mbtexcel 0.3.2 recurses through circular defined names without a visiting
+/// guard and dies with SIGSEGV (bisected 2026-11-17 on refs-names-011/012).
+/// Detect the cycle ourselves and attribute it without invoking the engine, so
+/// one hostile record cannot take down a whole corpus run.
+fn names_have_cycle(names : Map[String, String]) -> Bool {
+  let edges : Map[String, String] = Map::new()
+  for name, ref in names {
+    let mut text = ref.trim()
+    if text.has_prefix("=") {
+      text = text[1:].trim()
+    }
+    let key = ascii_upper(text[:].to_string())
+    if names.contains(key) {
+      edges[ascii_upper(name)] = key
+    }
+  }
+  let state : Map[String, Int] = Map::new() // 1 = on path, 2 = done
+  fn visit(node : String, edges : Map[String, String], state : Map[String, Int]) -> Bool {
+    match state.get(node) {
+      Some(1) => return true
+      Some(2) => return false
+      _ => ()
+    }
+    state[node] = 1
+    let cyclic = match edges.get(node) {
+      Some(next) => visit(next, edges, state)
+      None => false
+    }
+    if cyclic {
+      return true
+    }
+    state[node] = 2
+    false
+  }
+  for name, _ in edges {
+    if visit(name, edges, state) {
+      return true
+    }
+  }
+  false
+}
+
 /// Build a fresh workbook, write the grid, evaluate the candidate formula at
 /// ZZ1 of the private main sheet, and map the typed result to four states
 /// (`None` = blank).
 fn run_record(rec : Record) -> EvalOutcome raise {
+  if rec.names.length() > 0 && names_have_cycle(rec.names) {
+    raise HarnessError(
+      stage="engine-crash",
+      msg="circular defined name: mbtexcel 0.3.2 segfaults (SIGSEGV) before returning an error; " +
+        "record attributed without invoking the engine (bisected on refs-names-011/012, 2026-11-17)",
+    )
+  }
   let wb = @xlsx.Workbook::new()
   // Explicit sheet names are case-insensitive in Excel; collect them first so
   // the private main sheet cannot collide.
@@ -474,7 +523,9 @@ fn run_record(rec : Record) -> EvalOutcome raise {
     let _ = wb.new_sheet(name)
   }
   for name, ref in rec.names {
-    wb.set_defined_name(@xlsx.DefinedName::new(name, ref))
+    // Excel workbook-level names: mbtexcel 0.3.2 encodes workbook scope as
+    // "Workbook" (scope="" would be a sheet-scoped name with an empty sheet).
+    wb.set_defined_name(@xlsx.DefinedName::new(name, ref, scope="Workbook"))
   }
   match rec.iter {
     Some(it) =>
@@ -763,6 +814,7 @@ fn bucket_names() -> Array[String] {
     "type-mismatch",
     "surrogate-representation",
     "parse-error",
+    "engine-crash",
     "clock-no-injection",
   ]
 }
@@ -798,7 +850,12 @@ fn run_bench(files : Array[CorpusFile], tol : Double, clock_tol : Double) -> Sum
       }
       let outcome = eval_record(rec)
       let (passed, bucket, detail) = match outcome.eval_error {
-        Some(msg) => (false, "parse-error", msg)
+        Some(msg) =>
+          if msg.has_prefix("engine-crash") {
+            (false, "engine-crash", msg)
+          } else {
+            (false, "parse-error", msg)
+          }
         None => {
           if is_clock && exact_equal(rec.expected, outcome.actual) {
             clock_exact += 1

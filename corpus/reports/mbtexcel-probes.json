@@ -1,0 +1,222 @@
+{
+  "engine": {
+    "name": "mbtexcel",
+    "version": "0.3.2",
+    "moon": "0.1.20261104 (940aa18 2026-11-04)"
+  },
+  "corpus": {
+    "total": 12,
+    "files": [
+      {
+        "name": "probes.json",
+        "records": 12
+      }
+    ]
+  },
+  "total": 12,
+  "passed": 6,
+  "failed": 6,
+  "rate": 0.5,
+  "tol": 1e-9,
+  "clock_tol": 0.000001,
+  "tolerances": {
+    "tol": 1e-9,
+    "clock_tol": 0.000001,
+    "excel_precision_tol": 1e-14
+  },
+  "attribution": {
+    "clock": {
+      "tagged_records": 0,
+      "bucket": "clock-no-injection",
+      "counted_as_passed": false,
+      "exact_matches_if_compared": 0,
+      "reason": "mbtexcel 0.3.2 has no clock injection: NOW/TODAY read the host clock via @env.now(). The corpus `now` serial is ignored, so clock-tagged records are attributed to their own bucket instead of being counted as matches. Recorded actual values are the live host clock and therefore differ slightly between runs; bucket counts are stable."
+    },
+    "iteration": {
+      "tagged_records": 0,
+      "records_with_iter_settings": 0,
+      "bucket": "normal comparison",
+      "status": "settings stored, evaluator single-pass",
+      "reason": "iter.max_iterations/max_change are stored with Workbook::set_calc_props, but calc_cell_typed does not consult CalcPropsOptions: evaluation is single-pass. Iteration cases are reported as observed, without any expectation of parity."
+    }
+  },
+  "buckets": {
+    "match": 6,
+    "excel-precision": 0,
+    "clock-tolerance": 0,
+    "numeric-tolerance": 0,
+    "value-mismatch": 1,
+    "type-mismatch": 5,
+    "surrogate-representation": 0,
+    "parse-error": 0,
+    "engine-crash": 0,
+    "clock-no-injection": 0
+  },
+  "by_source": {
+    "excel-semantics-pinned": {
+      "total": 12,
+      "passed": 6,
+      "rate": 0.5
+    }
+  },
+  "by_tag": {
+    "name": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "chain": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "probe": {
+      "total": 12,
+      "passed": 6,
+      "rate": 0.5
+    },
+    "xsheet": {
+      "total": 3,
+      "passed": 2,
+      "rate": 0.6666666666666666
+    },
+    "control": {
+      "total": 3,
+      "passed": 2,
+      "rate": 0.6666666666666666
+    },
+    "circular": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "wholecol": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "aggregate": {
+      "total": 4,
+      "passed": 2,
+      "rate": 0.5
+    },
+    "blank-compare": {
+      "total": 3,
+      "passed": 2,
+      "rate": 0.6666666666666666
+    }
+  },
+  "failures": [
+    {
+      "id": "probe-blank-eq5",
+      "formula": "=A1=5",
+      "tags": [
+        "probe",
+        "blank-compare"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": false
+      },
+      "actual": {
+        "type": "bool",
+        "value": true
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "probe-sum-text-arg",
+      "formula": "=SUM(\"abc\",2)",
+      "tags": [
+        "probe",
+        "aggregate"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "probe-sumsq-text-range",
+      "formula": "=SUMSQ(A1:A2)",
+      "tags": [
+        "probe",
+        "aggregate"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 9
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "probe-circular-no-iter",
+      "formula": "=A1",
+      "tags": [
+        "probe",
+        "circular"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "probe-200-chain",
+      "formula": "=H5",
+      "tags": [
+        "probe",
+        "chain",
+        "xsheet"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 200
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "probe-defined-name",
+      "formula": "=Rate*2",
+      "tags": [
+        "probe",
+        "control",
+        "name"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0.14
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    }
+  ],
+  "rerun": "cd examples/compare && moon run --target native . -- --corpus ../../corpus/cases --report ../../corpus/reports/mbtexcel.json"
+}
