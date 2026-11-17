@@ -163,7 +163,8 @@ fn parse_name_body(text : String) -> @syntax.Expr? {
 }
 
 /// 求值定义名称。名称在解析期与求值期都不做缓存（可随时被引擎以外修改），
-/// 只以 `NAME:` 前缀的栈标记做环守卫：环上按 Excel 迭代关闭语义取 0 并打标。
+/// 只以 `NAME:` 前缀的栈标记做环守卫：环上按真实 Excel 答案键返回 `#NAME?`
+/// （见 corpus/cases/refs.json refs-names-011/012）。
 fn eval_name(ctx : Ctx, name : String) -> Value {
   let text = match ctx.grid.names.get(name) {
     Some(t) => t
@@ -171,26 +172,10 @@ fn eval_name(ctx : Ctx, name : String) -> Value {
   }
   let guard_key = "NAME:" + name
   if ctx.on_stack.contains(guard_key) {
-    let mut i = 0
-    while i < ctx.stack.length() && ctx.stack[i] != guard_key {
-      i += 1
-    }
-    for j in i..<ctx.stack.length() {
-      if !ctx.stack[j].has_prefix("NAME:") {
-        ctx.circular[ctx.stack[j]] = true
-      }
-    }
-    let mut h = ctx.stack.length() - 1
-    while h >= 0 {
-      if !ctx.stack[h].has_prefix("NAME:") {
-        ctx.circular[ctx.stack[h]] = true
-        break
-      }
-      h -= 1
-    }
-    // 顶层 `=LoopA` 没有宿主格：名称守卫自身也记入环集合，供 circular 元数据使用。
-    ctx.circular[guard_key] = true
-    return Value::Num(0.0)
+    // 真实 Excel 答案键（corpus/cases/refs.json refs-names-011/012，2026-11-17 桌面
+    // Excel 2610）：循环定义名称求值为 #NAME?——Excel 把无法收敛的名称视为不可解析，
+    // 而不是迭代关闭下的 0。故环上不返回 0、也不标 circular。
+    return Value::Err(XlError::Name)
   }
   let mut depth = 0
   for k in ctx.stack {

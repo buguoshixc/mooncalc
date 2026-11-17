@@ -74,17 +74,22 @@ test "m8: defined names" {
   assert_true(is_parse_error(@engine.eval_formula("=SUM(Data!A1:RATE)", g, { now: None })))
 }
 
-test "m8: defined name cycle" {
+test "m8: defined name cycle is #NAME? (real Excel answer key)" {
+  // corpus/cases/refs.json refs-names-011/012：桌面 Excel 2610 对循环定义名称
+  // 求值为 #NAME?（名称视为不可解析），而不是迭代关闭下的 0。
   let g = grid([("A1", lit(1.0))])
   g.names["LOOPA"] = "LoopB"
   g.names["LOOPB"] = "LoopA"
   match @engine.eval_formula("=LoopA", g, { now: None }) {
     Ok(out) => {
-      assert_eq(out.value, @value.Value::Num(0.0))
-      assert_eq(out.circular, true)
+      assert_eq(out.value, @value.Value::Err(@value.XlError::Name))
+      assert_eq(out.circular, false)
     }
     Err(_) => panic()
   }
+  let g2 = grid([("A1", lit(1.0))])
+  g2.names["SELFLOOP"] = "SelfLoop"
+  assert_err(evg("=SelfLoop", g2), @value.XlError::Name)
 }
 
 test "m8: whole column and whole row" {
