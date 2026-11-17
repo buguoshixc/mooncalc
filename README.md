@@ -119,6 +119,8 @@ fn main {
 
 比较策略：默认精确相等；**15 位有效数字表征差**（相对差 ≤1e-14）单列 `excel-precision` 桶并通过（源头是 Excel/VBA 只能以 15 位十进制序列化答案）；`clock` 用例按**绝对天数**容差（`--clock-tol`，默认 1e-6 天）单列 `clock-tolerance` 桶并通过（`now` 由生成器在同一重算里经 `=NOW()` 辅助格捕获）；**孤代理对表征差**（VBA 将 REPLACE 半代理对切割产生的孤代理对序列化为 U+FFFD）单列 `surrogate-representation` 桶并通过；相对差 <1e-9 仍单列 `numeric-tolerance` 桶计失败并归因。权威报告：`corpus/reports/real.json`。
 
+这把尺子不只量 MoonCalc：schema、1,267 条答案键、生成器、桶/归因规则与适配器契约已整理成可复用验收套件（[docs/conformance-kit.md](docs/conformance-kit.md)），任何引擎都能接入；mbtexcel 0.3.2 的 1,023/1,267 就是由该套件的独立适配器（`examples/compare`，不 import mooncalc）产出的。
+
 ## 设计要点
 
 - **纯计算核心，不做任何 IO**：同一份核心同时编译到 native 和 wasm-gc；`scripts/check.sh` 机械守卫（双目标构建 + grep 禁 `@fs`/`@sys`/`println`）。native 侧跑答案键语料对照，wasm-gc 侧做浏览器 playground。
@@ -197,6 +199,7 @@ _build/native/debug/build/buguoshixc/mooncalc/cmd/main/main.exe bench --corpus c
 - [ADR 0008：M8 核心引用语义（跨表 / 定义名称 / 整列整行）](docs/adr/0008-m8-reference-semantics.md)
 - [工具链实测记录](docs/toolchain.md)
 - [重算性能基准](docs/performance.md)
+- [一致性验收套件（conformance kit）](docs/conformance-kit.md)
 
 ## 许可证
 

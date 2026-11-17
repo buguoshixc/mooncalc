@@ -15,7 +15,7 @@ re-implemented here, so the comparison is an independent second implementation.
 | `moonbitlang/mbtexcel` | `0.3.2` |
 | `moonbitlang/x` | `0.5.6` |
 | Moon toolchain | `0.1.20261104 (940aa18 2026-11-04)` |
-| Corpus schema | `mooncalc-corpus/1`, 8 files, 1,169 records |
+| Corpus schema | `mooncalc-corpus/1`, 9 files, 1,267 records |
 
 The dependency versions are pinned in `moon.mod`; the report also records
 `engine.version` and `engine.moon`.
@@ -72,11 +72,12 @@ The classification order mirrors `src/codec/bench.mbt`:
 | `type-mismatch` | different types |
 | `surrogate-representation` | text equal after surrogate normalisation (pass) |
 | `parse-error` | mbtexcel could not parse/evaluate the formula (includes `InvalidXml` from the parser) |
+| `engine-crash` | the engine process died (SIGSEGV); the adapter bisects to the single record and records it without calling the engine again |
 | `clock-no-injection` | clock-tagged record, attributed separately (see below) |
 
 `rel_diff(a, b) = |a - b| / max(|a|, |b|)`, and a zero scale counts as a match.
 `by_tag` counts one record once per tag occurrence, so tag totals can exceed the
-record count; `by_source` partitions the 1,169 records.
+record count; `by_source` partitions the 1,267 records.
 
 ## Clock records (33)
 
@@ -127,7 +128,8 @@ worked around.
 non-passed record with formula, tags, expected/actual, bucket and detail), and
 `rerun` (the exact command above).
 
-Snapshot for the pinned versions: **1,169 records, 938 passed, 231 failed
-(rate 0.8024)** — `match` 934, `excel-precision` 3,
-`surrogate-representation` 1, `value-mismatch` 105, `type-mismatch` 89,
-`parse-error` 4, `clock-no-injection` 33. Bucket sum = 1,169 = `total`.
+Snapshot for the pinned versions: **1,267 records, 1,023 passed, 244 failed
+(rate 0.8074)** — `match` 1,019, `excel-precision` 3,
+`surrogate-representation` 1, `value-mismatch` 106, `type-mismatch` 99,
+`parse-error` 4, `engine-crash` 2, `clock-no-injection` 33.
+Bucket sum = 1,267 = `total`.
