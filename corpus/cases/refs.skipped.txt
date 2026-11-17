@@ -1,0 +1,3 @@
+﻿refs-names-025	illegal defined name: A1
+refs-names-026	illegal defined name: has space
+refs-names-027	duplicate defined name: rate

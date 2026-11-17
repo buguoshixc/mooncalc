@@ -152,12 +152,12 @@ Private Function EvalCase(ws As Worksheet, id As String, formula As String, _
     Set extra = CreateObject("Scripting.Dictionary")
     Set added = CreateObject("Scripting.Dictionary")
     Dim reason As String, expected As String
-    Dim nowJson As String, namesJson As String
+    Dim nowJson As String, namesField As String
     Dim ok As Boolean
     reason = ""
     expected = ""
     nowJson = ""
-    namesJson = ""
+    namesField = ""
     ok = False
     On Error GoTo CaseFail
 
@@ -220,7 +220,7 @@ Private Function EvalCase(ws As Worksheet, id As String, formula As String, _
     Else
         expected = "{""type"":""number"",""value"":" & NumToJson(CDbl(v)) & "}"
     End If
-    namesJson = NamesJson(namesSpec)
+    namesField = NamesJson(namesSpec)
     ok = True
 
 CaseDone:
@@ -232,7 +232,7 @@ CaseDone:
         Exit Function
     End If
     EvalCase = "{""id"":""" & JsonEsc(id) & """,""formula"":""" & JsonEsc(formula) & _
-               """,""grid"":" & GridJson(ws, grid) & nowJson & iterJson & namesJson & _
+               """,""grid"":" & GridJson(ws, grid) & nowJson & iterJson & namesField & _
                ",""expected"":" & expected & _
                ",""tags"":" & TagsJson(tags) & _
                ",""source"":""excel-desktop"",""notes"":""""}"
@@ -741,7 +741,7 @@ Private Function NamesJson(namesSpec As String) As String
     Dim item As String, eq As Long
     NamesJson = ""
     If Len(namesSpec) = 0 Then Exit Function
-    out = """,""names"":{"
+    out = ",""names"":{
     first = True
     parts = Split(namesSpec, "|")
     For i = 0 To UBound(parts)

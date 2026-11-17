@@ -1,0 +1,93 @@
+{
+ "schema": "mooncalc-corpus/1",
+ "note": "M8 refs 批中超出声明子集/非稳态的 5 条，保留答案键证据但不计入验收分母；理由见 notes 与 corpus/cases/PROVENANCE.md。",
+ "records": [
+  {
+   "id": "refs-missheet-006",
+   "formula": "=INDIRECT(\"NoSheet!A1\")",
+   "grid": {},
+   "expected": {
+    "type": "error",
+    "value": "#REF!"
+   },
+   "tags": [
+    "missheet",
+    "missing-sheet"
+   ],
+   "source": "excel-desktop",
+   "notes": "excluded: INDIRECT 不在 60 函数声明子集内（缺表语义由 =NoSheet!A1 直接引用覆盖；Excel 拒绝录入直接缺表引用，故不可用答案键验证）"
+  },
+  {
+   "id": "refs-missheet-007",
+   "formula": "=INDIRECT(\"'My Ghost'!B2\")",
+   "grid": {},
+   "expected": {
+    "type": "error",
+    "value": "#REF!"
+   },
+   "tags": [
+    "missheet",
+    "missing-sheet"
+   ],
+   "source": "excel-desktop",
+   "notes": "excluded: 同上：INDIRECT 超出声明子集"
+  },
+  {
+   "id": "refs-probe-003",
+   "formula": "=SUMSQ(A1:A2)",
+   "grid": {
+    "A1": 3,
+    "A2": "x"
+   },
+   "expected": {
+    "type": "number",
+    "value": 9
+   },
+   "tags": [
+    "probe",
+    "aggregate"
+   ],
+   "source": "excel-desktop",
+   "notes": "excluded: SUMSQ 不在 60 函数声明子集内（文本忽略语义由 SUM 探针与旧语料覆盖）"
+  },
+  {
+   "id": "refs-probe-004",
+   "formula": "=A1",
+   "grid": {
+    "A1": {
+     "formula": "=A1+1"
+    }
+   },
+   "expected": {
+    "type": "number",
+    "value": 1
+   },
+   "tags": [
+    "probe",
+    "iter",
+    "circular"
+   ],
+   "source": "excel-desktop",
+   "notes": "excluded: 非稳态循环单趟值（Excel 迭代关闭下 =A1 且 A1==A1+1 得 1，依赖 Excel 内部重算顺序；声明子集按环=0 明示披露，不承诺该瞬态）"
+  },
+  {
+   "id": "refs-probe-006",
+   "formula": "=COUNTBLANK(A1:A3)",
+   "grid": {
+    "A1": null,
+    "A2": "abc",
+    "A3": null
+   },
+   "expected": {
+    "type": "number",
+    "value": 2
+   },
+   "tags": [
+    "probe",
+    "aggregate"
+   ],
+   "source": "excel-desktop",
+   "notes": "excluded: COUNTBLANK 不在 60 函数声明子集内"
+  }
+ ]
+}

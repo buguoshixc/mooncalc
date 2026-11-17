@@ -102,3 +102,78 @@ Excel 无法为「奇数参数 IFS」产生任何答案值，因此该行为不�
   瞬态 1（非稳态语义）。spec 改为非环控制（=A1*2, A1=5）后于 17:33 重新生成，通过。
 - 最终：**1,169/1,169（100%）**，1,149 match + 3 clock-tolerance + 16 excel-precision
   + 1 surrogate-representation，无未归因失败。
+
+## M8 refs 批（2026-11-17）
+
+| 项 | 值 |
+| --- | --- |
+| 生成日期 | 2026-11-17 22:15 (Asia/Shanghai；spec 于 22:14 更新后重生成) |
+| Excel 版本 | 版本 2610；Build 16.0.20527.20196（64 位；Home2024Retail；zh-CN） |
+| COM 报告 | `Application.Version` 16.0 / `Build` 20527 / `OperatingSystem` Windows (64-bit) NT 10.00 |
+| 生成器 | `corpus/excel/generate_corpus.bas`（834 行；SHA-256 `f45fc1eb4a961f6de556e28655871a7cdf99565206d680065b4acc8805eb8340`；模块 `MoonCalcCorpus` 833 行） |
+| 生成工作簿 | `corpus/excel/generator.xlsm`（61,503 bytes；SHA-256 `E2B1DCDED523380317FB57774A06DA4BC6E48DAEDA30435487A51AC47187D4D2`；旧 314 行模块已删除并导入上述 .bas） |
+| 规格输入 | `corpus/spec/refs.tsv`（106 条，7 列：id/formula/grid/now/tags/iter/names） |
+| 生成方式 | 桌面 Excel COM：打开工作簿 → 删除旧 `MoonCalcCorpus` → 导入 .bas → `Application.Run "GenerateCorpusOne"`；临时开启 VBA 工程访问，结束后还原注册表 |
+| 计算模式 | 手动计算、逐条强制重算；迭代关闭（无 `iter` 规格）；`DisplayAlerts=false`，未出现循环引用弹窗 |
+| 结果 | 导出 103/106 条；3 条被跳过（`refs.skipped.txt`） |
+| 弹窗 | 仅结束提示「Corpus generation complete: 1 spec file(s).」 |
+| 生成证据 | Windows 工作目录 `C:\mooncalc_work4\`（`run_refs.log`、`watcher_refs.log`、`vbe_check.log`、`spec/`、`cases/`、`excel/`） |
+
+### 本批输出（SHA-256）
+
+| 文件 | 条数 | SHA-256 |
+| --- | --- | --- |
+| `refs.json` | 103 | `70E5FBD7178BA6A39AEDB6A3856200E2B74240E302E6988A4D01EA1088CAB196` |
+| `refs.skipped.txt` | 3 | `F1DD7BFCF44D186F949F1DBCE2F840A43B3A28D6A79AF6D05DE4E2209B47437E` |
+
+### 跳过用例（Excel 拒绝录入）
+
+| 用例 | 原因 |
+| --- | --- |
+| `refs-names-025` | 定义名称 `A1` 是单元格引用形，非法 |
+| `refs-names-026` | 定义名称含空格，非法 |
+| `refs-names-027` | 定义名称 `Rate` 与已有 `rate` 大小写重复 |
+
+### 生成器修复（导入前修正的两处 .bas 缺陷）
+
+1. `EvalCase` 内局部变量 `namesJson` 与 `Private Function NamesJson` 同名（VBA 不区分大小写），在 `NamesJson = NamesJson(namesSpec)` 处被编译为字符串下标 → 编译错误「缺少数组」。已把局部变量改名为 `namesField`（第 155/160/223/235 行）。
+2. `NamesJson` 起始片段原为 `out = """,""names"":{`，生成 JSON 时多出一个前导 `"`，使含 `names` 的记录在 `}","names"` 处非法。已改为 `out = ",""names"":{`（第 744 行）。
+
+两处修复同时进入 `corpus/excel/generate_corpus.bas` 与工作簿内 `MoonCalcCorpus` 模块；编译检查通过后重新生成。
+
+### 边界观察（供 M8 裁定）
+
+- `refs-probe-004`（`=A1`，A1 为 `=A1+1`，迭代关闭）Excel 返回 `1`。与 M7 记录的「迭代刚关闭时单步重算对自增环返回瞬态 1」一致；原 `iter-off-control` 因该瞬态已改为非环控制，本用例再次覆盖该行为，需在 M8 裁定中明确。
+- `refs-probe-008`（`=H5`）Excel 返回 `200`：主表链自 `A1=Data!H20+1=161` 起、至 `H5=200`；`Data!H5` 为 `40`。该用例验证裸 `H5` 绑定主表而非 Data 表，spec 于 22:14 由 `=Data!H5` 改为 `=H5` 并重生成。
+- `refs-names-011/012`（成环/自环定义名称）Excel 返回 `#NAME?`，不是 `#REF!`。
+- 7 条 `missheet` 用例均返回 `#REF!`。
+- `refs-names-021` 为 `COUNT` 类聚合，返回 `3`（非 `SUM` 的 6）。
+
+### 与 W3 的关系
+
+`corpus/reports/mbtexcel.json`（2026-11-17 22:05，mbtexcel 0.3.2）覆盖的是旧 8 个文件 / 1,169 条；本批 `refs.json` 未进入该报告。若 bench 以 `corpus/cases` 目录整体为输入重跑，需注意新增 `refs.json` 会被纳入。
+
+## M8 裁定（2026-11-17，Lead）
+
+generator 已按上表产出 103 条；随后按“声明子集语义”裁定，5 条移出验收分母，最终 **98 条**进入 L1/L2 验收。
+
+| 项 | 值 |
+| --- | --- |
+| 裁定后 `refs.json` | 98 条，26,946 B；SHA-256 `1415B4DA47BA0E7F197717F9636B2760EF85B6F92A437F6678E6467D82903EB7` |
+| 移出文件 | `corpus/excluded/refs-out-of-subset.json`，5 条，2,130 B；SHA-256 `11B6B0C57CE0C5E16F789696233CCAC483FE577A586EF48364EB7B0EA67B5608` |
+
+移出理由（答案键保留，不伪造、不计分）：
+
+| 用例 | 理由 |
+| --- | --- |
+| `refs-missheet-006/007` | 公式用 `INDIRECT`，该函数不在 60 函数声明子集内；“缺表 → `#REF!`”已由 5 条直接引用答案键（`refs-missheet-001..005`）验证，无需转述路径 |
+| `refs-probe-003` | `SUMSQ` 不在声明子集内（文本忽略语义由 `SUM` 探针覆盖） |
+| `refs-probe-006` | `COUNTBLANK` 不在声明子集内 |
+| `refs-probe-004` | 迭代关闭下自增环的单趟值（Excel 得 1）属非稳态语义，声明子集按“环 = 0 + `circular`”明示披露，不承诺该瞬态 |
+
+裁定结果与代码动作：
+
+- 名称环：`=LoopA` / `=SelfLoop` → Excel 得 `#NAME?`，不是 0、不是 `#REF!`。`src/engine/eval.mbt` 的 `eval_name` 环分支据此改为返回 `Err(XlError::Name)`（不再返回 0，也不再打 `circular` 标），`src/engine/m8_test.mbt`、`docs/adr/0008-m8-reference-semantics.md`、`docs/semantics.md` 同步。
+- 缺表：`=NoSheet!A1`、`=SUM(NoSheet!A1:A3)`、混合引用均得 `#REF!`，与实现一致（`refs-missheet-001..005` 通过）。
+- `refs-probe-008`（200 格跨表链，答案 `=H5` → 200）通过，验证裸引用绑定主表。
+- 全语料（1,169 + 98 = **1,267 条**）MoonCalc 重跑：**1,267/1,267**（`match` 1,247 + `clock-tolerance` 3 + `excel-precision` 16 + `surrogate-representation` 1），无失败。

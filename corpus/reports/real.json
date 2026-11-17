@@ -1,13 +1,13 @@
 {
-  "total": 1169,
-  "passed": 1169,
+  "total": 1267,
+  "passed": 1267,
   "rate": 1,
   "tol": 1e-9,
   "clock_tol": 0.000001,
   "by_source": {
     "excel-desktop": {
-      "total": 1169,
-      "passed": 1169,
+      "total": 1267,
+      "passed": 1267,
       "rate": 1
     }
   },
@@ -223,8 +223,8 @@
       "rate": 1
     },
     "probe": {
-      "total": 77,
-      "passed": 77,
+      "total": 83,
+      "passed": 83,
       "rate": 1
     },
     "before-epoch": {
@@ -675,6 +675,91 @@
     "zero": {
       "total": 9,
       "passed": 9,
+      "rate": 1
+    },
+    "xsheet": {
+      "total": 26,
+      "passed": 26,
+      "rate": 1
+    },
+    "cross-sheet": {
+      "total": 24,
+      "passed": 24,
+      "rate": 1
+    },
+    "missheet": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "missing-sheet": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "quoted": {
+      "total": 13,
+      "passed": 13,
+      "rate": 1
+    },
+    "quoted-name": {
+      "total": 13,
+      "passed": 13,
+      "rate": 1
+    },
+    "names": {
+      "total": 24,
+      "passed": 24,
+      "rate": 1
+    },
+    "defined-name": {
+      "total": 24,
+      "passed": 24,
+      "rate": 1
+    },
+    "unknown": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "cycle": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "wholecol": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "whole-column": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "wholerow": {
+      "total": 11,
+      "passed": 11,
+      "rate": 1
+    },
+    "whole-row": {
+      "total": 12,
+      "passed": 12,
+      "rate": 1
+    },
+    "blank-compare": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "aggregate": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "chain": {
+      "total": 1,
+      "passed": 1,
       "rate": 1
     },
     "stat": {
@@ -1587,11 +1672,6 @@
       "passed": 1,
       "rate": 1
     },
-    "whole-row": {
-      "total": 1,
-      "passed": 1,
-      "rate": 1
-    },
     "whole-range": {
       "total": 1,
       "passed": 1,
@@ -1854,7 +1934,7 @@
     }
   },
   "buckets": {
-    "match": 1149,
+    "match": 1247,
     "clock-tolerance": 3,
     "excel-precision": 16,
     "surrogate-representation": 1
