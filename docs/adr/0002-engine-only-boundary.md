@@ -2,6 +2,8 @@
 
 引擎只接受单元格网格、只返回求值结果，不读写 `.xlsx`。这样与 `moonbitlang/mbtexcel`（excelize 移植，仓库内 `CalcCellValue`/`formula` 命中为 0）形成「它读写、我们算」的互补关系，而非竞争关系。
 
+> **更正（M8，2026-11）**：上句“`CalcCellValue`/`formula` 命中为 0”只描述 ADR 0001 时点的仓库状态；mbtexcel **0.3.2 已自带公式解析与求值引擎**（`xlsx/formula_eval.mbt`、`formula_builtins*.mbt`），因此边界互补关系需要重新论证为“读写库 vs 以真实 Excel 答案键验收的计算内核”，实测差分与关系定位见 [ADR 0008](0008-m8-reference-semantics.md) 与 [docs/comparison-mbtexcel.md](../comparison-mbtexcel.md)。本 ADR 其余决定（引擎不碰 `.xlsx`）不变。
+
 ## 备选方案
 
 - 引擎 + XLSX 读写集成：演示更直观，但范围翻倍，且正面撞上官方 `moonbitlang/office.mbt` 已排期的 formula calculation 与 cache refresh（其 TODO.md 将 Formula verification/cache refresh 明确列在 Deferred 段）。

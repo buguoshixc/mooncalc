@@ -10,7 +10,7 @@ bash scripts/run-bench.sh    # 权威语料跑分（默认 corpus/cases）
 node scripts/smoke.mjs       # headless Chromium 冒烟（39 断言）
 ```
 
-预期：`ALL CHECKS PASS`；`1169/1169 passed (100%)`（真实 Excel 语料）；`SMOKE PASS`。
+预期：`ALL CHECKS PASS`；`1267/1267 passed (100%)`（真实 Excel 语料，含 M8 refs 批）；`SMOKE PASS`。
 
 ## 1. CLI：互引 + 错误 + 循环的网格
 
@@ -37,12 +37,20 @@ fixture 看点（对应输出）：
 ## 2. bench：N/X% 与逐条归因
 
 ```bash
-... bench --corpus corpus/cases --report corpus/reports/real.json          # 1169/1169（100%）
+... bench --corpus corpus/cases --report corpus/reports/real.json          # 1267/1267（100%）
 ... bench --corpus corpus/provisional                                    # 过渡语料，34/34
 ... bench --corpus tests/fixtures/badcorpus --fail-under 0.95; echo "exit=$?"   # 1（有差异）
 ```
 
-看点：按 source 分栏、buckets（match / excel-precision / clock-tolerance / numeric-tolerance / value-mismatch / …）、逐条 FAIL 的 expected/actual。权威语料为 Excel 2024 导出的 1,169 条，当前 100% 通过（1,149 match + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，后三个桶为可披露的表征/时钟容差；2 条奇数参数 IFS 被 Excel 拒绝录入，显式标为子集外）。
+看点：按 source 分栏、buckets（match / excel-precision / clock-tolerance / numeric-tolerance / value-mismatch / …）、逐条 FAIL 的 expected/actual。权威语料为桌面 Excel 2024/2610 导出的 **1,267 条**（1,169 旧语料 + 98 条 M8 refs 批），当前 100% 通过（1,247 match + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，后三个桶为可披露的表征/时钟容差；2 条奇数参数 IFS 与 3 条非法/重复定义名称被 Excel 拒绝录入，显式标为子集外；5 条超出声明子集的探针另存 `corpus/excluded/`，不计入分母）。
+
+M8 引用语义的差分探针（12 条，含定义名称、跨表环、200 格链）：
+
+```bash
+... bench --corpus corpus/probes
+```
+
+MoonCalc 通过 10/12：未过的 `SUMSQ`/`COUNTBLANK` 不在 60 函数声明子集内（`#NAME?`），语义探针 10/10。
 
 ## 3. playground：现场改格
 
@@ -63,18 +71,21 @@ bash scripts/build-playground.sh
 8. 迭代计算：预设「circular → converge (iterative)」+ 勾选「Iterative calculation」→ A1/B1 从 0 收敛到 ≈20/≈10（Excel 默认 ≤100 次、最大变化 0.001），计数器显示 `3/3 · iterative`；取消勾选回到环上 = 0。
 9. 增量重算：预设「error propagation」后在 E1 加 `=7*7`，再改 A1 → 计数器 `3/4 · incremental`（只重算 B1/B2/C1，E1 不重算）；引入环或解析错误时自动回退 `full rebuild`，计数器如实报告。
 
-## 4. XLSX 读→算→写（mbtexcel 组合示例）
+## 4. XLSX 读→算→写（mbtexcel 组合示例，M8 多表版）
 
 ```bash
-moon run examples/xlsx-demo --target native -- gen   # 用 mbtexcel 生成 fixture（不提交二进制）
+moon run examples/xlsx-demo --target native -- gen   # 用 mbtexcel 生成 3 表 fixture（不提交二进制）
 moon run examples/xlsx-demo --target native -- run   # 读→算→写并读回断言
 ```
 
-看点：
-- 首个 sheet 遍历：公式格（xlsx 中不带 `=`）补前导 `=` 进网格；字面量按 number/bool/string 映射；空白跳过；错误值格按 `{"error": ...}` 映射。
-- 求值走 `@codec.evaluate_json`，与 CLI/playground 完全同一份网格 JSON 契约（进程内直调，不走子进程）。
-- 回写：14 个公式格用 `set_cell_formula`（公式无 `=`、缓存值传引擎结果文本）写回，11 个字面量不动；最后读回输出文件断言 39 项（公式 + 缓存值 + 字面量未改动）。
-- 预期输出：`xlsx-demo verification PASS: 39/39`。
+看点（L3 验收：多表工作簿读→算→写逐格对照）：
+
+- **3 个表**：`Input`（字面量/查找表/错误值）、`Calc`（跨表公式）、`My Sheet`（带空格表名，引用写作 `'My Sheet'!A1`）。
+- **遍历全部 sheet**：单元格键按 M8 契约归一为 `SHEET!A1`（ASCII 大写表名，与 CLI/playground 同一契约）；公式格（xlsx 中不带 `=`）补前导 `=` 进网格；字面量按 number/bool/string 映射；空白跳过；错误值格按 `{"error": ...}` 映射。
+- **定义名称从工作簿读出**：`wb.defined_names()` → `grid.names`（`Rate→Input!$B$1`、`Tax→Input!$B$2`、`Qty→Input!$A$2:$A$4`），与 CLI `--names` 走同一字段。
+- **公式覆盖**：跨表引用 `Input!A2:A4`、整列 `Input!A:A`、整行 `Input!2:2`、带引号跨表区域 `'My Sheet'!A1:A2`、名称 `A1*Rate` / `SUM(Qty)`、跨表查找表 `VLOOKUP(...,Input!E1:F3,...)`、跨表错误传播 `Input!H1+1 → #N/A`。
+- **回写**：16 个公式格用 `set_cell_formula`（公式无 `=`、缓存值传引擎结果文本）按宿主表写回，17 个字面量不动；读回输出文件断言 65 项（公式 + 缓存值 + 字面量未改动 + 16 个关键格的已知结果）。
+- 预期输出：`xlsx-demo verification PASS: 65/65`，前缀 `xlsx-demo: sheets=3 formulas=16 literals=17 names=3`。
 - 引擎核心零改动：IO 全部在 `examples/` 壳层，`scripts/check.sh` 的零 IO 守卫不受影响。
 
 ## 5. 矩阵与署名偏差

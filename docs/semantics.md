@@ -31,7 +31,8 @@ Excel 优先级（高→低）：
 - **数字字面量按 Excel 录入精度存储**：最多 15 位有效十进制数字，超出部分直接置零（不四舍五入），如 `123456789012345678` 存为 `123456789012345000`。
 - 形如引用但后随 `(` 的记号按函数名处理（如 `LOG10(` 不是单元格）。
 - 前导 `=` 可有可无。
-- **不支持（解析错误）**：整列/整行（A:A）、交集（空格）、联合（逗号在区域层）、R1C1、定义名称、数组字面量 `{}`、跨表引用 `Sheet1!A1`。
+- **M8 起支持**：跨表引用 `Sheet1!A1`、带引号表名 `'My Sheet'!A1`（`''` 转义单引号）、工作簿级定义名称（`=Rate*2`）、整列/整行 `A:A`、`2:2` 及其组合 `Sheet1!A:B`。
+- **仍不支持（解析错误）**：3D 引用 `Sheet1:Sheet3!A1`、外部工作簿链接 `[Book.xlsx]Sheet!A1`、R1C1、数组字面量 `{}`、交集（空格）、联合（逗号在区域层）、未加引号的数字开头表名（如 `2024Data!A1` 必须写 `'2024Data'!A1`）。
 
 ### 公式限制（复刻 Excel，超限返回 ParseError）
 
@@ -48,6 +49,20 @@ Excel 优先级（高→低）：
 上均安全；求值顺序与「最左错误优先」传播语义与递归版完全一致。回归与确定性 fuzz
 （xorshift32，随机记号汤 + 种子公式变异）见 `src/syntax/limits_test.mbt`、
 `src/engine/robustness_test.mbt`。
+
+## 核心引用语义（M8：跨表 / 定义名称 / 整列整行，src/value + src/engine/eval.mbt）
+
+**键契约**：网格键为 `SHEET!A1`。表名归一为 ASCII 大写，单引号表名解 `''` 转义；**默认表用空表名＋裸键 `A1`**（旧网格/旧语料 1,169 条零改动）。表名 1–31 字符，禁 `: \ / ? * [ ] !`。`Value` 层提供 `sheet_key / split_key / valid_sheet_name / parse_qualified_addr / parse_column / parse_row`；CLI `--names` 与 codec 的 grid 保留成员 `names` 走同一契约。
+
+**宿主表**：每个公式格在其所属表的上下文中求值——`cell_value` 按宿主键前缀设 `Ctx.current_sheet`；`Sheet(sheet, expr)` 包装器 save/set/restore；迭代计算与 explain 探针入口同样设置。因此 `Data!B1` 里的裸引用 `A1` 指 `Data!A1`，不是默认表。
+
+**工作簿级定义名称**：`Grid.names : Map[String,String]`（名称→引用文本，ASCII 大写键）。名称体用**空宿主表**解析（与 Excel 名称相对工作簿一致）；名称可指向单元格或区域文本（`Input!$A$1:$A$2`）。递归上限 32；环用 `"NAME:"+名称` 栈守卫，**环上 → `#NAME?`**（真实 Excel 答案键 `refs-names-011/012` 裁定：成环/自环名称均得 `#NAME?`，不返回 0、不标 `circular`）；未知名称 → `#NAME?`；名称体解析失败 → `#VALUE!`（不记为公式解析错误）。
+
+**整列/整行**：`A:A` / `2:2` 按**该表 used-range**（`grid.cells` 中该表键的 min/max）展开，不静默截断；默认空表按 1 行×1 列；整列可与其他区域组合（`SUM(A:B)`）。非默认表不存在（网格无任何该表键）→ `#REF!`（真实 Excel 空表引用返回 0，属书面披露偏差，见 ADR 0008）。
+
+**增量/解释联动**：`expr_refs` 解析限定引用与名称（名称递归独立 visited＋深度帽）；整列/整行、名称环等不可枚举情形返回 `false` —— 增量重算退化为全量（`RecalcReport.full_fallback=true`），`explain` 退化为纯错误前驱链并标 `oversized`，均不静默丢前驱。`RecalcState` 持名称快照，名称变化触发全量。
+
+**已披露偏差**：① 表存在性＝网格中是否有该表单元格（空表引用 → `#REF!`，Excel 返回 0）；② `INDEX` 的 base 为整列（used-range 展开）时，索引到 used-range 之外返回 `#REF!`（Excel 空白格返回 0）——这是“不静默截断”的取舍，整列聚合函数不受影响；③ 仅工作簿级名称，工作表级名称显式排除。
 
 ## 强制转换（src/engine/coerce.mbt，唯一入口）
 
@@ -150,7 +165,7 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 - **XLOOKUP**：`XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found], [match_mode], [search_mode])`。lookup_array/return_array 必须是**行向量或列向量**且长度相同（否则 `#VALUE!`）；match_mode：0 精确（默认）、-1 精确或次小、1 精确或次大、2 通配符（仅文本，大小写不敏感，`* ? ~`）；search_mode：1 从前往后（默认）、-1 从后往前、2 升序二分、-2 降序二分。命中返回对应 return 格，空白结果归一为 0；未命中时才求值 `if_not_found`，缺省 → `#N/A`。**二分模式按标准 lower_bound 实现**（排序假设；无序输入可能落到未命中，语料 `lookup-xlookup-0027`–`0048`；降序重复键取降序小端最近的一次，符合 2024 实测）；**二分 + 通配符不组合（`#VALUE!`）**；match_mode/search_mode 必须为整数，小数 → `#VALUE!`（语料 `lookup-xlookup-0036`）。可选参数中间不能省略（解析器不支持空实参），需要 search_mode 时须显式给出 if_not_found 占位值。
 - VLOOKUP/HLOOKUP：第 4 参 FALSE/0 精确（找不到 `#N/A`）；TRUE/省略近似（首列/行升序假设，取 ≤lookup 的最后一项，小于最小值 → `#N/A`）。col/row_index <1 → `#VALUE!`，超出表宽 → `#REF!`。
 - MATCH：0 精确（支持通配符）、1 升序近似、-1 降序近似；找不到 `#N/A`。精确匹配空文本时空白格不算命中（`MATCH("",{"abc",blank,""},0)=3`，语料 `lookup-match-0107/0111/0112`）；XLOOKUP 空查找同规则。
-- INDEX：row/col = 0 返回整列/整行（Range 值）；顶层标量上下文下**单列结果取第 1 行**（`=INDEX(A1:C3,0,1)` → 1）、行/二维结果 → `#VALUE!`（见值模型）；越界 → `#REF!`。
+- INDEX：row/col = 0 返回整列/整行（Range 值）；顶层标量上下文下**单列结果取第 1 行**（`=INDEX(A1:C3,0,1)` → 1）、行/二维结果 → `#VALUE!`（见值模型）；越界 → `#REF!`。**M8 披露**：base 为整列（`A:A` 按 used-range 展开）时，索引到 used-range 之外返回 `#REF!`（Excel 对空白格返回 0），属“不静默截断”的取舍，见 ADR 0008。
 
 ### 日期（7）
 - **EOMONTH**：`EOMONTH(start_date, months)` 返回 `start_date` 之后 `months` 个月那个月的最后一天序列日。两个参数都走 `date_arg`（trunc；`|d|>1e7` → `#NUM!`）；实现为 `serial_to_ymd(start)` 后按月算术得到目标年/月，再取**公历月末**（1900 年不是闰年）并映射回序列日。因此 `EOMONTH(60,0)=59`（不是幻影日 60）、`EOMONTH(1,-1)=#NUM!`、`EOMONTH(0,0)=31`、`EOMONTH(DATE(9999,12,1),0)=2958465`、`EOMONTH(2958465,1)=#NUM!`（语料 `date-eomonth-0016`–`0021`）。
@@ -180,7 +195,9 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 
 ## 不支持特性清单（显式排除）
 
-动态数组/溢出、隐式交集 `@`（顶层单列 Range 的取首行行为只模拟了宏取 ZZ1 的场景）、整列整行引用、跨表/跨簿引用、定义名称、R1C1、数组字面量、函数调用中的空实参（如 XLOOKUP 省略中间可选参数）、迭代计算（循环=0 固定）、1904 日期系统、locale 相关解析与格式（货币、非 ISO 日期顺序、locale 文本函数）、非 BMP 大小写映射、locale 星期名/月份名、TEXT 颜色/locale 前缀/分数段、`TEXT` General 回退且 `|x|>=1e11`、XLOOKUP 二分+通配符组合、IFS 奇数参数（Excel 拒绝录入，spec 标 `subset-out`）。
+动态数组/溢出、隐式交集 `@`（顶层单列 Range 的取首行行为只模拟了宏取 ZZ1 的场景）、3D 引用 `Sheet1:Sheet3!A1`、外部工作簿链接、工作表级（sheet-scoped）定义名称、未加引号的数字开头表名、R1C1、数组字面量、交集（空格）与联合、函数调用中的空实参（如 XLOOKUP 省略中间可选参数）、1904 日期系统、locale 相关解析与格式（货币、非 ISO 日期顺序、locale 文本函数）、非 BMP 大小写映射、locale 星期名/月份名、TEXT 颜色/locale 前缀/分数段、`TEXT` General 回退且 `|x|>=1e11`、XLOOKUP 二分+通配符组合、IFS 奇数参数（Excel 拒绝录入，spec 标 `subset-out`）。
+
+默认重算（迭代关闭，Excel 默认）下环上单元格 = 0 并标 `circular:true`；启用迭代计算走 opt-in API（见「迭代计算」一节）。跨表/名称/整列整行的增量与解释为“不可枚举即回退全量/降级披露”，不改变结果语义。
 
 ## 数值对照策略（bench）
 
