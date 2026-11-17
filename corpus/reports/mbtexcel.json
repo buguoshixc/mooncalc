@@ -1,0 +1,6422 @@
+{
+  "engine": {
+    "name": "mbtexcel",
+    "version": "0.3.2",
+    "moon": "0.1.20261104 (940aa18 2026-11-04)"
+  },
+  "corpus": {
+    "total": 1169,
+    "files": [
+      {
+        "name": "date.json",
+        "records": 113
+      },
+      {
+        "name": "iter.json",
+        "records": 18
+      },
+      {
+        "name": "math.json",
+        "records": 168
+      },
+      {
+        "name": "stat.json",
+        "records": 131
+      },
+      {
+        "name": "text.json",
+        "records": 266
+      },
+      {
+        "name": "logic.json",
+        "records": 101
+      },
+      {
+        "name": "lookup.json",
+        "records": 135
+      },
+      {
+        "name": "generic.json",
+        "records": 237
+      }
+    ]
+  },
+  "total": 1169,
+  "passed": 938,
+  "failed": 231,
+  "rate": 0.8023952095808383,
+  "tol": 1e-9,
+  "clock_tol": 0.000001,
+  "tolerances": {
+    "tol": 1e-9,
+    "clock_tol": 0.000001,
+    "excel_precision_tol": 1e-14
+  },
+  "attribution": {
+    "clock": {
+      "tagged_records": 33,
+      "bucket": "clock-no-injection",
+      "counted_as_passed": false,
+      "exact_matches_if_compared": 9,
+      "reason": "mbtexcel 0.3.2 has no clock injection: NOW/TODAY read the host clock via @env.now(). The corpus `now` serial is ignored, so clock-tagged records are attributed to their own bucket instead of being counted as matches. Recorded actual values are the live host clock and therefore differ slightly between runs; bucket counts are stable."
+    },
+    "iteration": {
+      "tagged_records": 18,
+      "records_with_iter_settings": 17,
+      "bucket": "normal comparison",
+      "status": "settings stored, evaluator single-pass",
+      "reason": "iter.max_iterations/max_change are stored with Workbook::set_calc_props, but calc_cell_typed does not consult CalcPropsOptions: evaluation is single-pass. Iteration cases are reported as observed, without any expectation of parity."
+    }
+  },
+  "buckets": {
+    "match": 934,
+    "excel-precision": 3,
+    "clock-tolerance": 0,
+    "numeric-tolerance": 0,
+    "value-mismatch": 105,
+    "type-mismatch": 89,
+    "surrogate-representation": 1,
+    "parse-error": 4,
+    "clock-no-injection": 33
+  },
+  "by_source": {
+    "excel-desktop": {
+      "total": 1169,
+      "passed": 938,
+      "rate": 0.8023952095808383
+    }
+  },
+  "by_tag": {
+    "2d": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "ge": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "gt": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "if": {
+      "total": 21,
+      "passed": 20,
+      "rate": 0.9523809523809523
+    },
+    "le": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "lt": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "ne": {
+      "total": 3,
+      "passed": 2,
+      "rate": 0.6666666666666666
+    },
+    "or": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "abs": {
+      "total": 15,
+      "passed": 13,
+      "rate": 0.8666666666666667
+    },
+    "and": {
+      "total": 15,
+      "passed": 11,
+      "rate": 0.7333333333333333
+    },
+    "day": {
+      "total": 15,
+      "passed": 13,
+      "rate": 0.8666666666666667
+    },
+    "ifs": {
+      "total": 14,
+      "passed": 14,
+      "rate": 1
+    },
+    "int": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "len": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "max": {
+      "total": 16,
+      "passed": 16,
+      "rate": 1
+    },
+    "mid": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "min": {
+      "total": 16,
+      "passed": 13,
+      "rate": 0.8125
+    },
+    "mix": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "mod": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "not": {
+      "total": 15,
+      "passed": 13,
+      "rate": 0.8666666666666667
+    },
+    "now": {
+      "total": 16,
+      "passed": 0,
+      "rate": 0
+    },
+    "num": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "odd": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "pad": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "ref": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "sum": {
+      "total": 15,
+      "passed": 10,
+      "rate": 0.6666666666666666
+    },
+    "tie": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "var": {
+      "total": 15,
+      "passed": 13,
+      "rate": 0.8666666666666667
+    },
+    "xor": {
+      "total": 15,
+      "passed": 13,
+      "rate": 0.8666666666666667
+    },
+    "bool": {
+      "total": 48,
+      "passed": 32,
+      "rate": 0.6666666666666666
+    },
+    "case": {
+      "total": 11,
+      "passed": 0,
+      "rate": 0
+    },
+    "cell": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "date": {
+      "total": 144,
+      "passed": 96,
+      "rate": 0.6666666666666666
+    },
+    "even": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "find": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "four": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "iter": {
+      "total": 18,
+      "passed": 4,
+      "rate": 0.2222222222222222
+    },
+    "lazy": {
+      "total": 9,
+      "passed": 9,
+      "rate": 1
+    },
+    "leap": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "left": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "math": {
+      "total": 168,
+      "passed": 138,
+      "rate": 0.8214285714285714
+    },
+    "self": {
+      "total": 2,
+      "passed": 0,
+      "rate": 0
+    },
+    "sign": {
+      "total": 13,
+      "passed": 11,
+      "rate": 0.8461538461538461
+    },
+    "sqrt": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "star": {
+      "total": 4,
+      "passed": 3,
+      "rate": 0.75
+    },
+    "stat": {
+      "total": 131,
+      "passed": 98,
+      "rate": 0.7480916030534351
+    },
+    "text": {
+      "total": 365,
+      "passed": 296,
+      "rate": 0.810958904109589
+    },
+    "trim": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "year": {
+      "total": 16,
+      "passed": 11,
+      "rate": 0.6875
+    },
+    "zero": {
+      "total": 9,
+      "passed": 9,
+      "rate": 1
+    },
+    "32767": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "arith": {
+      "total": 21,
+      "passed": 16,
+      "rate": 0.7619047619047619
+    },
+    "basic": {
+      "total": 13,
+      "passed": 13,
+      "rate": 1
+    },
+    "blank": {
+      "total": 68,
+      "passed": 57,
+      "rate": 0.8382352941176471
+    },
+    "clock": {
+      "total": 33,
+      "passed": 0,
+      "rate": 0
+    },
+    "color": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "count": {
+      "total": 14,
+      "passed": 2,
+      "rate": 0.14285714285714285
+    },
+    "eager": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "emoji": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "empty": {
+      "total": 14,
+      "passed": 13,
+      "rate": 0.9285714285714286
+    },
+    "epoch": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "equal": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error": {
+      "total": 125,
+      "passed": 108,
+      "rate": 0.864
+    },
+    "exact": {
+      "total": 6,
+      "passed": 6,
+      "rate": 1
+    },
+    "first": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "float": {
+      "total": 2,
+      "passed": 1,
+      "rate": 0.5
+    },
+    "floor": {
+      "total": 17,
+      "passed": 14,
+      "rate": 0.8235294117647058
+    },
+    "hours": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "index": {
+      "total": 18,
+      "passed": 13,
+      "rate": 0.7222222222222222
+    },
+    "infix": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "large": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "logic": {
+      "total": 101,
+      "passed": 90,
+      "rate": 0.8910891089108911
+    },
+    "lotus": {
+      "total": 13,
+      "passed": 12,
+      "rate": 0.9230769230769231
+    },
+    "lower": {
+      "total": 15,
+      "passed": 14,
+      "rate": 0.9333333333333333
+    },
+    "match": {
+      "total": 31,
+      "passed": 18,
+      "rate": 0.5806451612903226
+    },
+    "mixed": {
+      "total": 6,
+      "passed": 6,
+      "rate": 1
+    },
+    "month": {
+      "total": 15,
+      "passed": 13,
+      "rate": 0.8666666666666667
+    },
+    "power": {
+      "total": 16,
+      "passed": 11,
+      "rate": 0.6875
+    },
+    "probe": {
+      "total": 77,
+      "passed": 49,
+      "rate": 0.6363636363636364
+    },
+    "range": {
+      "total": 26,
+      "passed": 15,
+      "rate": 0.5769230769230769
+    },
+    "right": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "round": {
+      "total": 24,
+      "passed": 21,
+      "rate": 0.875
+    },
+    "shape": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "small": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "start": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "stdev": {
+      "total": 15,
+      "passed": 13,
+      "rate": 0.8666666666666667
+    },
+    "sumif": {
+      "total": 43,
+      "passed": 30,
+      "rate": 0.6976744186046512
+    },
+    "three": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "today": {
+      "total": 16,
+      "passed": 0,
+      "rate": 0
+    },
+    "trunc": {
+      "total": 3,
+      "passed": 1,
+      "rate": 0.3333333333333333
+    },
+    "types": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "unary": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "upper": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "value": {
+      "total": 15,
+      "passed": 12,
+      "rate": 0.8
+    },
+    "width": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "approx": {
+      "total": 10,
+      "passed": 10,
+      "rate": 1
+    },
+    "at-max": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "at-min": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "bare-e": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "choose": {
+      "total": 15,
+      "passed": 10,
+      "rate": 0.6666666666666666
+    },
+    "concat": {
+      "total": 24,
+      "passed": 21,
+      "rate": 0.875
+    },
+    "counta": {
+      "total": 15,
+      "passed": 6,
+      "rate": 0.4
+    },
+    "delete": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "e-plus": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error2": {
+      "total": 28,
+      "passed": 25,
+      "rate": 0.8928571428571429
+    },
+    "escape": {
+      "total": 7,
+      "passed": 1,
+      "rate": 0.14285714285714285
+    },
+    "exceed": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "ignore": {
+      "total": 9,
+      "passed": 6,
+      "rate": 0.6666666666666666
+    },
+    "insert": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "k-text": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "locale": {
+      "total": 2,
+      "passed": 1,
+      "rate": 0.5
+    },
+    "lookup": {
+      "total": 135,
+      "passed": 107,
+      "rate": 0.7925925925925926
+    },
+    "median": {
+      "total": 15,
+      "passed": 11,
+      "rate": 0.7333333333333333
+    },
+    "mutual": {
+      "total": 2,
+      "passed": 0,
+      "rate": 0
+    },
+    "nested": {
+      "total": 10,
+      "passed": 10,
+      "rate": 1
+    },
+    "number": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "proper": {
+      "total": 15,
+      "passed": 13,
+      "rate": 0.8666666666666667
+    },
+    "scalar": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "search": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "single": {
+      "total": 4,
+      "passed": 3,
+      "rate": 0.75
+    },
+    "spaces": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "switch": {
+      "total": 17,
+      "passed": 15,
+      "rate": 0.8823529411764706
+    },
+    "average": {
+      "total": 13,
+      "passed": 12,
+      "rate": 0.9230769230769231
+    },
+    "ceiling": {
+      "total": 15,
+      "passed": 12,
+      "rate": 0.8
+    },
+    "compare": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "control": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "countif": {
+      "total": 40,
+      "passed": 26,
+      "rate": 0.65
+    },
+    "decimal": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "default": {
+      "total": 11,
+      "passed": 8,
+      "rate": 0.7272727272727273
+    },
+    "diverge": {
+      "total": 2,
+      "passed": 0,
+      "rate": 0
+    },
+    "e-minus": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "elapsed": {
+      "total": 15,
+      "passed": 12,
+      "rate": 0.8
+    },
+    "eomonth": {
+      "total": 22,
+      "passed": 20,
+      "rate": 0.9090909090909091
+    },
+    "general": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "generic": {
+      "total": 237,
+      "passed": 200,
+      "rate": 0.8438818565400844
+    },
+    "hlookup": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "iferror": {
+      "total": 15,
+      "passed": 13,
+      "rate": 0.8666666666666667
+    },
+    "integer": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "invalid": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "k-large": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "literal": {
+      "total": 5,
+      "passed": 2,
+      "rate": 0.4
+    },
+    "minutes": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "ne-case": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "numbers": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "outside": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "percent": {
+      "total": 12,
+      "passed": 7,
+      "rate": 0.5833333333333334
+    },
+    "replace": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "roundup": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "seconds": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "sharp-s": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "unicode": {
+      "total": 2,
+      "passed": 0,
+      "rate": 0
+    },
+    "vlookup": {
+      "total": 17,
+      "passed": 16,
+      "rate": 0.9411764705882353
+    },
+    "xlookup": {
+      "total": 49,
+      "passed": 44,
+      "rate": 0.8979591836734694
+    },
+    "boundary": {
+      "total": 40,
+      "passed": 35,
+      "rate": 0.875
+    },
+    "coercion": {
+      "total": 104,
+      "passed": 89,
+      "rate": 0.8557692307692307
+    },
+    "composed": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "computed": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "converge": {
+      "total": 3,
+      "passed": 0,
+      "rate": 0
+    },
+    "criteria": {
+      "total": 45,
+      "passed": 36,
+      "rate": 0.8
+    },
+    "fraction": {
+      "total": 5,
+      "passed": 3,
+      "rate": 0.6
+    },
+    "grouping": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "instance": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "literals": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "maxcount": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "multiple": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "negative": {
+      "total": 12,
+      "passed": 6,
+      "rate": 0.5
+    },
+    "no-match": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "no-spill": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "non-leap": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "odd-size": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "question": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "rounding": {
+      "total": 4,
+      "passed": 3,
+      "rate": 0.75
+    },
+    "sections": {
+      "total": 7,
+      "passed": 5,
+      "rate": 0.7142857142857143
+    },
+    "serial-0": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "textjoin": {
+      "total": 21,
+      "passed": 20,
+      "rate": 0.9523809523809523
+    },
+    "unsorted": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "wildcard": {
+      "total": 42,
+      "passed": 22,
+      "rate": 0.5238095238095238
+    },
+    "zero-pad": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "above-max": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "all-blank": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "all-upper": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "ascending": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "auto-sign": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "below-min": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "bool-text": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "duplicate": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "empty-old": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "error-arg": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "even-size": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "first-row": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "half-pair": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "maxchange": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "month-end": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "no-spaces": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "non-ascii": {
+      "total": 5,
+      "passed": 4,
+      "rate": 0.8
+    },
+    "normalize": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "not-found": {
+      "total": 8,
+      "passed": 8,
+      "rate": 1
+    },
+    "precision": {
+      "total": 9,
+      "passed": 6,
+      "rate": 0.6666666666666666
+    },
+    "reference": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "rounddown": {
+      "total": 15,
+      "passed": 15,
+      "rate": 1
+    },
+    "row-range": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "serial-60": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "serial-61": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "sum-range": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "whole-col": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "whole-row": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "year-9999": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "all-spaces": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "apostrophe": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "arithmetic": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "delete-all": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "descending": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "empty-text": {
+      "total": 4,
+      "passed": 1,
+      "rate": 0.25
+    },
+    "first-cell": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "fixedpoint": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "index-zero": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "k-negative": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "keep-empty": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "longer-new": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "match-mode": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "multi-char": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "multi-star": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "nested-and": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "no-default": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "no-logical": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "nonnumeric": {
+      "total": 2,
+      "passed": 0,
+      "rate": 0
+    },
+    "percentile": {
+      "total": 15,
+      "passed": 13,
+      "rate": 0.8666666666666667
+    },
+    "precedence": {
+      "total": 2,
+      "passed": 1,
+      "rate": 0.5
+    },
+    "refchannel": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "regression": {
+      "total": 3,
+      "passed": 2,
+      "rate": 0.6666666666666666
+    },
+    "row-vector": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "scientific": {
+      "total": 15,
+      "passed": 11,
+      "rate": 0.7333333333333333
+    },
+    "single-any": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "single-col": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "single-row": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "start-zero": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "substitute": {
+      "total": 15,
+      "passed": 14,
+      "rate": 0.9333333333333333
+    },
+    "sumproduct": {
+      "total": 15,
+      "passed": 11,
+      "rate": 0.7333333333333333
+    },
+    "truncation": {
+      "total": 5,
+      "passed": 5,
+      "rate": 1
+    },
+    "whitespace": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "whole-pair": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "zero-empty": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "adjudicated": {
+      "total": 37,
+      "passed": 25,
+      "rate": 0.6756756756756757
+    },
+    "approx-text": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "approximate": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "boundary.2d": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "conditional": {
+      "total": 29,
+      "passed": 17,
+      "rate": 0.5862068965517241
+    },
+    "equal-empty": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-value": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "escape-star": {
+      "total": 3,
+      "passed": 1,
+      "rate": 0.3333333333333333
+    },
+    "first-match": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "ignore-text": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "index-error": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "index-large": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "largechange": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "multi-range": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "next-larger": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "no-wildcard": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "noncircular": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "passthrough": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "propagation": {
+      "total": 6,
+      "passed": 6,
+      "rate": 1
+    },
+    "punctuation": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "scale-comma": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "search-last": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "search-mode": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "text-number": {
+      "total": 4,
+      "passed": 2,
+      "rate": 0.5
+    },
+    "trunc-start": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "whole-range": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "year-offset": {
+      "total": 2,
+      "passed": 0,
+      "rate": 0
+    },
+    "before-epoch": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "blank-result": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "boundary.col": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.max": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "boundary.row": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "count-ignore": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "empty-lookup": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "empty-needle": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "error-caught": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-lookup": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "error-result": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "escape-tilde": {
+      "total": 2,
+      "passed": 1,
+      "rate": 0.5
+    },
+    "formula-cell": {
+      "total": 8,
+      "passed": 7,
+      "rate": 0.875
+    },
+    "if-not-found": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "ignore-empty": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "lazy-default": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "months-bound": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "next-smaller": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "overflow-day": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "question-pad": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "search-first": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "single-array": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "start-beyond": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "text-literal": {
+      "total": 2,
+      "passed": 0,
+      "rate": 0
+    },
+    "trunc-digits": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "trunc-months": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "binary-search": {
+      "total": 16,
+      "passed": 16,
+      "rate": 1
+    },
+    "both-negative": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "boundary.half": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "boundary.year": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "boundary.zero": {
+      "total": 5,
+      "passed": 2,
+      "rate": 0.4
+    },
+    "duplicate-key": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-counted": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "formula-empty": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "interpolation": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "mixed-elapsed": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "negative-base": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "normalize-day": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "omitted-range": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "type-mismatch": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "year-overflow": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.clamp": {
+      "total": 3,
+      "passed": 3,
+      "rate": 1
+    },
+    "boundary.float": {
+      "total": 7,
+      "passed": 5,
+      "rate": 0.7142857142857143
+    },
+    "boundary.index": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.shape": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.start": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "case-sensitive": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "count-negative": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "digit-boundary": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "error-criteria": {
+      "total": 5,
+      "passed": 3,
+      "rate": 0.6
+    },
+    "error-fallback": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "error-in-array": {
+      "total": 2,
+      "passed": 0,
+      "rate": 0
+    },
+    "error-in-range": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "index-negative": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "rounding-carry": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "three-sections": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.length": {
+      "total": 2,
+      "passed": 1,
+      "rate": 0.5
+    },
+    "empty-delimiter": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "error-candidate": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-condition": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-delimiter": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "escape-question": {
+      "total": 3,
+      "passed": 2,
+      "rate": 0.6666666666666666
+    },
+    "ignore-coercion": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "months-overflow": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "negative-digits": {
+      "total": 8,
+      "passed": 8,
+      "rate": 1
+    },
+    "negative-months": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "negative-serial": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "normalize-month": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "wildcard-escape": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "case-insensitive": {
+      "total": 5,
+      "passed": 3,
+      "rate": 0.6
+    },
+    "count-beyond-len": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "e-minus-positive": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "error-expression": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "error-unselected": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "general-fallback": {
+      "total": 8,
+      "passed": 2,
+      "rate": 0.25
+    },
+    "ignore-text-true": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "match-mode-trunc": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "reference-values": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "start-beyond-len": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "start-past-match": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "text-gt-wildcard": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "text-passthrough": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "boundary.instance": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.negative": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "boundary.overflow": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.past-end": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "ignore-text-false": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "negative-exponent": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "negative-positive": {
+      "total": 4,
+      "passed": 4,
+      "rate": 1
+    },
+    "positive-negative": {
+      "total": 2,
+      "passed": 1,
+      "rate": 0.5
+    },
+    "zero-significance": {
+      "total": 4,
+      "passed": 0,
+      "rate": 0
+    },
+    "error-in-sum-range": {
+      "total": 1,
+      "passed": 0,
+      "rate": 0
+    },
+    "escape-double-star": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "months-negative-11": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "boundary.index-wide": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "boundary.index-zero": {
+      "total": 2,
+      "passed": 2,
+      "rate": 1
+    },
+    "lazy-default-unused": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "subset-adjudication": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    },
+    "multi-char-delimiter": {
+      "total": 1,
+      "passed": 1,
+      "rate": 1
+    }
+  },
+  "failures": [
+    {
+      "id": "date-date-0008",
+      "formula": "=DATE(1900,2,29)",
+      "tags": [
+        "date",
+        "date",
+        "lotus"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 60
+      },
+      "actual": {
+        "type": "number",
+        "value": 61
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "date-date-0010",
+      "formula": "=DATE(100,1,1)",
+      "tags": [
+        "date",
+        "date",
+        "year-offset"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 36526
+      },
+      "actual": {
+        "type": "error",
+        "value": "#NUM!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "date-date-0011",
+      "formula": "=DATE(1899,12,31)",
+      "tags": [
+        "date",
+        "date",
+        "year-offset",
+        "boundary"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 693962
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "date-year-0003",
+      "formula": "=YEAR(0)",
+      "tags": [
+        "date",
+        "year",
+        "boundary.zero"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1900
+      },
+      "actual": {
+        "type": "number",
+        "value": 1899
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "date-year-0008",
+      "formula": "=YEAR(A1)",
+      "tags": [
+        "date",
+        "year",
+        "locale"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2026
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "date-year-0010",
+      "formula": "=YEAR(A1)",
+      "tags": [
+        "date",
+        "year",
+        "blank"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1900
+      },
+      "actual": {
+        "type": "number",
+        "value": 1899
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "date-month-0003",
+      "formula": "=MONTH(0)",
+      "tags": [
+        "date",
+        "month",
+        "boundary.zero"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 12
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "date-day-0003",
+      "formula": "=DAY(0)",
+      "tags": [
+        "date",
+        "day",
+        "boundary.zero"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "number",
+        "value": 31
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "date-today-0001",
+      "formula": "=TODAY()",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46341
+      },
+      "actual": {
+        "type": "number",
+        "value": 46343
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.714971875 ignored; actual=number(46343)"
+    },
+    {
+      "id": "date-today-0002",
+      "formula": "=TODAY()+1",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46342
+      },
+      "actual": {
+        "type": "number",
+        "value": 46344
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.714971875 ignored; actual=number(46344)"
+    },
+    {
+      "id": "date-today-0003",
+      "formula": "=YEAR(TODAY())",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2026
+      },
+      "actual": {
+        "type": "number",
+        "value": 2026
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.714971875 ignored; actual=number(2026)"
+    },
+    {
+      "id": "date-now-0001",
+      "formula": "=NOW()",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46341.714971875
+      },
+      "actual": {
+        "type": "number",
+        "value": 46343.58731449074
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.714971875 ignored; actual=number(46343.58731449074)"
+    },
+    {
+      "id": "date-now-0002",
+      "formula": "=NOW()-TODAY()",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0.714971990739286
+      },
+      "actual": {
+        "type": "number",
+        "value": 0.5873144907382084
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149719907 ignored; actual=number(0.5873144907382084)"
+    },
+    {
+      "id": "date-now-0003",
+      "formula": "=NOW()>=TODAY()",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "bool",
+        "value": true
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149719907 ignored; actual=bool(true)"
+    },
+    {
+      "id": "date-now-0004",
+      "formula": "=DAY(NOW())",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 15
+      },
+      "actual": {
+        "type": "number",
+        "value": 17
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149719907 ignored; actual=number(17)"
+    },
+    {
+      "id": "date-today-0004",
+      "formula": "=TODAY()",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46341
+      },
+      "actual": {
+        "type": "number",
+        "value": 46343
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149719907 ignored; actual=number(46343)"
+    },
+    {
+      "id": "date-today-0005",
+      "formula": "=TODAY()-1",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46340
+      },
+      "actual": {
+        "type": "number",
+        "value": 46342
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149719907 ignored; actual=number(46342)"
+    },
+    {
+      "id": "date-today-0006",
+      "formula": "=TODAY()+7",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46348
+      },
+      "actual": {
+        "type": "number",
+        "value": 46350
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149719907 ignored; actual=number(46350)"
+    },
+    {
+      "id": "date-today-0007",
+      "formula": "=TODAY()*1",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46341
+      },
+      "actual": {
+        "type": "number",
+        "value": 46343
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149719907 ignored; actual=number(46343)"
+    },
+    {
+      "id": "date-today-0008",
+      "formula": "=TODAY()=INT(NOW())",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "bool",
+        "value": true
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149719907 ignored; actual=bool(true)"
+    },
+    {
+      "id": "date-today-0009",
+      "formula": "=TODAY()<=NOW()",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "bool",
+        "value": true
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149719907 ignored; actual=bool(true)"
+    },
+    {
+      "id": "date-today-0010",
+      "formula": "=TODAY()-TODAY()",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149719907 ignored; actual=number(0)"
+    },
+    {
+      "id": "date-today-0011",
+      "formula": "=TODAY()/1",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46341
+      },
+      "actual": {
+        "type": "number",
+        "value": 46343
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343)"
+    },
+    {
+      "id": "date-today-0012",
+      "formula": "=TODAY()&\"\"",
+      "tags": [
+        "date",
+        "today",
+        "clock",
+        "text"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "46341"
+      },
+      "actual": {
+        "type": "text",
+        "value": "46343"
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=text(\"46343\")"
+    },
+    {
+      "id": "date-today-0013",
+      "formula": "=TODAY()+0.5",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46341.5
+      },
+      "actual": {
+        "type": "number",
+        "value": 46343.5
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343.5)"
+    },
+    {
+      "id": "date-today-0014",
+      "formula": "=TODAY()-46340",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 3
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(3)"
+    },
+    {
+      "id": "date-today-0015",
+      "formula": "=TODAY()^1",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46341
+      },
+      "actual": {
+        "type": "number",
+        "value": 46343
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343)"
+    },
+    {
+      "id": "date-today-0016",
+      "formula": "=TODAY()*2",
+      "tags": [
+        "date",
+        "today",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 92682
+      },
+      "actual": {
+        "type": "number",
+        "value": 92686
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(92686)"
+    },
+    {
+      "id": "date-now-0005",
+      "formula": "=NOW()",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46341.7149721065
+      },
+      "actual": {
+        "type": "number",
+        "value": 46343.58731449074
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343.58731449074)"
+    },
+    {
+      "id": "date-now-0006",
+      "formula": "=NOW()-TODAY()",
+      "tags": [
+        "date",
+        "now",
+        "clock",
+        "fraction"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0.714972106477944
+      },
+      "actual": {
+        "type": "number",
+        "value": 0.5873144907382084
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(0.5873144907382084)"
+    },
+    {
+      "id": "date-now-0007",
+      "formula": "=NOW()*1",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46341.7149721065
+      },
+      "actual": {
+        "type": "number",
+        "value": 46343.58731449074
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343.58731449074)"
+    },
+    {
+      "id": "date-now-0008",
+      "formula": "=NOW()+0",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46341.7149721065
+      },
+      "actual": {
+        "type": "number",
+        "value": 46343.58731449074
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343.58731449074)"
+    },
+    {
+      "id": "date-now-0009",
+      "formula": "=NOW()>0",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "bool",
+        "value": true
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=bool(true)"
+    },
+    {
+      "id": "date-now-0010",
+      "formula": "=NOW()-NOW()",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(0)"
+    },
+    {
+      "id": "date-now-0011",
+      "formula": "=NOW()/1",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46341.7149721065
+      },
+      "actual": {
+        "type": "number",
+        "value": 46343.58731449074
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46343.58731449074)"
+    },
+    {
+      "id": "date-now-0012",
+      "formula": "=NOW()+1",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46342.7149721065
+      },
+      "actual": {
+        "type": "number",
+        "value": 46344.58731449074
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(46344.58731449074)"
+    },
+    {
+      "id": "date-now-0013",
+      "formula": "=NOW()=NOW()",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "bool",
+        "value": true
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=bool(true)"
+    },
+    {
+      "id": "date-now-0014",
+      "formula": "=NOW()-46340",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1.71497210647794
+      },
+      "actual": {
+        "type": "number",
+        "value": 3.5873144907382084
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149721065 ignored; actual=number(3.5873144907382084)"
+    },
+    {
+      "id": "date-now-0015",
+      "formula": "=NOW()*2",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 92683.4299444444
+      },
+      "actual": {
+        "type": "number",
+        "value": 92687.17462898148
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149722222 ignored; actual=number(92687.17462898148)"
+    },
+    {
+      "id": "date-now-0016",
+      "formula": "=NOW()^1",
+      "tags": [
+        "date",
+        "now",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 46341.7149722222
+      },
+      "actual": {
+        "type": "number",
+        "value": 46343.58731449074
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149722222 ignored; actual=number(46343.58731449074)"
+    },
+    {
+      "id": "date-month-0011",
+      "formula": "=MONTH(A1)",
+      "tags": [
+        "date",
+        "month",
+        "blank"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 12
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "date-day-0012",
+      "formula": "=DAY(A1)",
+      "tags": [
+        "date",
+        "day",
+        "blank"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "number",
+        "value": 31
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "date-eomonth-0016",
+      "formula": "=EOMONTH(1,-1)",
+      "tags": [
+        "date",
+        "eomonth",
+        "probe",
+        "before-epoch"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#NUM!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "date-eomonth-0021",
+      "formula": "=EOMONTH(0,0)",
+      "tags": [
+        "date",
+        "eomonth",
+        "probe",
+        "serial-0"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 31
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "iter-self-diverge-0001",
+      "formula": "=A1",
+      "tags": [
+        "iter",
+        "self",
+        "diverge"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 101
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "iter-self-converge-0002",
+      "formula": "=A1",
+      "tags": [
+        "iter",
+        "self",
+        "converge"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1.9990234375
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "iter-mutual-0003",
+      "formula": "=A1+B1",
+      "tags": [
+        "iter",
+        "mutual",
+        "diverge"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 403
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "iter-maxchange-0004",
+      "formula": "=A1",
+      "tags": [
+        "iter",
+        "maxchange"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0.001
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "iter-single-0005",
+      "formula": "=A1",
+      "tags": [
+        "iter",
+        "single"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "iter-text-cycle-0007",
+      "formula": "=A1",
+      "tags": [
+        "iter",
+        "text"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "0xx"
+      },
+      "actual": {
+        "type": "text",
+        "value": "#CALC!x"
+      },
+      "bucket": "value-mismatch",
+      "detail": " | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "iter-bool-cycle-0008",
+      "formula": "=A1",
+      "tags": [
+        "iter",
+        "bool"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": false
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected bool, got error | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "iter-error-cycle-0009",
+      "formula": "=A1",
+      "tags": [
+        "iter",
+        "error"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#DIV/0!"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "value-mismatch",
+      "detail": " | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "iter-three-cycle-0011",
+      "formula": "=A1",
+      "tags": [
+        "iter",
+        "three"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 50
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "iter-tight-tol-0012",
+      "formula": "=A1",
+      "tags": [
+        "iter",
+        "converge",
+        "precision"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1.4999999999522
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "iter-fixed-point-0013",
+      "formula": "=A1",
+      "tags": [
+        "iter",
+        "fixedpoint"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "iter-max-count-0015",
+      "formula": "=A1",
+      "tags": [
+        "iter",
+        "maxcount"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 32768
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "iter-large-change-0017",
+      "formula": "=A1",
+      "tags": [
+        "iter",
+        "largechange"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "iter-two-converge-0018",
+      "formula": "=A1",
+      "tags": [
+        "iter",
+        "converge",
+        "mutual"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1.9990234375
+      },
+      "actual": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error | iteration settings were stored via set_calc_props but mbtexcel's evaluator is single-pass and ignores them"
+    },
+    {
+      "id": "math-round-0007",
+      "formula": "=ROUND(A1,2)",
+      "tags": [
+        "math",
+        "round",
+        "boundary.float"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1.01
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-power-0002",
+      "formula": "=POWER(-1,0.5)",
+      "tags": [
+        "math",
+        "power",
+        "error"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#NUM!"
+      },
+      "actual": {
+        "type": "number",
+        "value": "NaN"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "math-power-0003",
+      "formula": "=POWER(0,0)",
+      "tags": [
+        "math",
+        "power",
+        "boundary"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#NUM!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "math-sum-0002",
+      "formula": "=SUM(A1:A4)",
+      "tags": [
+        "math",
+        "sum",
+        "range",
+        "ignore"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-sumif-0002",
+      "formula": "=SUMIF(A1:A4,\"apple\",B1:B4)",
+      "tags": [
+        "math",
+        "sumif",
+        "text",
+        "case"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 8
+      },
+      "actual": {
+        "type": "number",
+        "value": 4
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-sumif-0003",
+      "formula": "=SUMIF(A1:A4,\"a*\",B1:B4)",
+      "tags": [
+        "math",
+        "sumif",
+        "wildcard"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 11
+      },
+      "actual": {
+        "type": "number",
+        "value": 7
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-sumproduct-0003",
+      "formula": "=SUMPRODUCT(A1:A3)",
+      "tags": [
+        "math",
+        "sumproduct",
+        "nonnumeric"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 4
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "math-arith-0006",
+      "formula": "=2^3^2",
+      "tags": [
+        "math",
+        "arith",
+        "precedence"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 64
+      },
+      "actual": {
+        "type": "number",
+        "value": 512
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-arith-0010",
+      "formula": "=0.1+0.2&\"\"",
+      "tags": [
+        "math",
+        "arith",
+        "concat",
+        "float"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "0.3"
+      },
+      "actual": {
+        "type": "text",
+        "value": "0.30000000000000004"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-arith-0013",
+      "formula": "=A1+1",
+      "tags": [
+        "math",
+        "arith",
+        "coercion",
+        "percent"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1.5
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "math-arith-0014",
+      "formula": "=123456789012345678&\"\"",
+      "tags": [
+        "math",
+        "arith",
+        "concat",
+        "precision"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "123456789012345000"
+      },
+      "actual": {
+        "type": "text",
+        "value": "123456789012345680"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-abs-0008",
+      "formula": "=ABS(A1)",
+      "tags": [
+        "math",
+        "abs",
+        "coercion",
+        "percent"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0.05
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "math-sumproduct-0006",
+      "formula": "=SUMPRODUCT(A1:A2,B1:B2)",
+      "tags": [
+        "math",
+        "sumproduct",
+        "nonnumeric"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 3
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "math-sumproduct-0007",
+      "formula": "=SUMPRODUCT(A1:A2,B1:B2)",
+      "tags": [
+        "math",
+        "sumproduct",
+        "bool"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 6
+      },
+      "actual": {
+        "type": "number",
+        "value": 7
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-sumif-0005",
+      "formula": "=SUMIF(A1:A4,\"<>apple\",B1:B4)",
+      "tags": [
+        "math",
+        "sumif",
+        "criteria",
+        "case"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 10
+      },
+      "actual": {
+        "type": "number",
+        "value": 14
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-sumif-0009",
+      "formula": "=SUMIF(A1:A3,\"~*\",B1:B3)",
+      "tags": [
+        "math",
+        "sumif",
+        "wildcard",
+        "escape"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 5
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-sumif-0108",
+      "formula": "=SUMIF(A1:A4,\"~*\",B1:B4)",
+      "tags": [
+        "math",
+        "sumif",
+        "wildcard",
+        "escape-star"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 5
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-sumif-0112",
+      "formula": "=SUMIF(A1:A3,\"apple\",B1:B3)",
+      "tags": [
+        "math",
+        "sumif",
+        "criteria",
+        "case"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 7
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-sumif-0113",
+      "formula": "=SUMIF(A1:A3,\"<>apple\",B1:B3)",
+      "tags": [
+        "math",
+        "sumif",
+        "criteria",
+        "ne-case"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 6
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-sumif-0116",
+      "formula": "=SUMIF(A1:A3,\"\",B1:B3)",
+      "tags": [
+        "math",
+        "sumif",
+        "criteria",
+        "probe",
+        "blank"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 20
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-sumif-0117",
+      "formula": "=SUMIF(A1:A3,\"=\",B1:B3)",
+      "tags": [
+        "math",
+        "sumif",
+        "criteria",
+        "probe",
+        "blank"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 20
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-sumif-0120",
+      "formula": "=SUMIF(A1:A2,\">0\",B1:B2)",
+      "tags": [
+        "math",
+        "sumif",
+        "error-in-sum-range"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "actual": {
+        "type": "number",
+        "value": 5
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "math-sumif-0125",
+      "formula": "=SUMIF(A1:A2,A1)",
+      "tags": [
+        "math",
+        "sumif",
+        "probe",
+        "error-criteria",
+        "adjudicated"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "math-sumif-0127",
+      "formula": "=SUMIF(A1:A2,A1,A1:A2)",
+      "tags": [
+        "math",
+        "sumif",
+        "probe",
+        "error-criteria",
+        "adjudicated"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "math-ceiling-0004",
+      "formula": "=CEILING(2.5,-2)",
+      "tags": [
+        "math",
+        "ceiling",
+        "error",
+        "positive-negative"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#NUM!"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-ceiling-0006",
+      "formula": "=CEILING(5,0)",
+      "tags": [
+        "math",
+        "ceiling",
+        "zero-significance"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "number",
+        "value": "NaN"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-ceiling-0007",
+      "formula": "=CEILING(-5,0)",
+      "tags": [
+        "math",
+        "ceiling",
+        "zero-significance",
+        "negative"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "number",
+        "value": "NaN"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-floor-0005",
+      "formula": "=FLOOR(0.3,0.1)",
+      "tags": [
+        "math",
+        "floor",
+        "precision"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0.3
+      },
+      "actual": {
+        "type": "number",
+        "value": 0.2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "math-floor-0006",
+      "formula": "=FLOOR(5,0)",
+      "tags": [
+        "math",
+        "floor",
+        "zero-significance"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#DIV/0!"
+      },
+      "actual": {
+        "type": "number",
+        "value": "NaN"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "math-floor-0007",
+      "formula": "=FLOOR(-5,0)",
+      "tags": [
+        "math",
+        "floor",
+        "zero-significance",
+        "negative"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#DIV/0!"
+      },
+      "actual": {
+        "type": "number",
+        "value": "NaN"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "stat-count-0001",
+      "formula": "=COUNT(A1:A5)",
+      "tags": [
+        "stat",
+        "count",
+        "range"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 3
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-count-0002",
+      "formula": "=COUNT(A1,2)",
+      "tags": [
+        "stat",
+        "count",
+        "coercion"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-counta-0001",
+      "formula": "=COUNTA(A1:A5)",
+      "tags": [
+        "stat",
+        "counta",
+        "empty-text"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 4
+      },
+      "actual": {
+        "type": "number",
+        "value": 3
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-countif-0002",
+      "formula": "=COUNTIF(A1:A4,\"apple\")",
+      "tags": [
+        "stat",
+        "countif",
+        "text",
+        "case"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 3
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-countif-0005",
+      "formula": "=COUNTIF(A1:A3,2)",
+      "tags": [
+        "stat",
+        "countif",
+        "text-number"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-median-0003",
+      "formula": "=MEDIAN(A1:A3)",
+      "tags": [
+        "stat",
+        "median",
+        "ignore"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "stat-median-0004",
+      "formula": "=MEDIAN(A1:A2)",
+      "tags": [
+        "stat",
+        "median",
+        "error"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#NUM!"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-error-0002",
+      "formula": "=COUNT(A1:A3)",
+      "tags": [
+        "stat",
+        "error",
+        "count-ignore"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "stat-error-0003",
+      "formula": "=COUNTA(A1:A3)",
+      "tags": [
+        "stat",
+        "error",
+        "counta"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-counta-0004",
+      "formula": "=COUNTA(A1)",
+      "tags": [
+        "stat",
+        "counta",
+        "empty-text"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-counta-0006",
+      "formula": "=COUNTA(\"x\",\"\",1)",
+      "tags": [
+        "stat",
+        "counta",
+        "literal"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 3
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-counta-0007",
+      "formula": "=COUNTA(A1:A2)",
+      "tags": [
+        "stat",
+        "counta",
+        "formula-cell"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-counta-0008",
+      "formula": "=COUNTA(A1)",
+      "tags": [
+        "stat",
+        "counta",
+        "error"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-countif-0007",
+      "formula": "=COUNTIF(A1:A4,\"<>apple\")",
+      "tags": [
+        "stat",
+        "countif",
+        "criteria",
+        "case"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 3
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-countif-0009",
+      "formula": "=COUNTIF(A1:A3,\"~*\")",
+      "tags": [
+        "stat",
+        "countif",
+        "wildcard",
+        "escape"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-countif-0011",
+      "formula": "=COUNTIF(A1:A3,\"2\")",
+      "tags": [
+        "stat",
+        "countif",
+        "text-number"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-median-0009",
+      "formula": "=MEDIAN(A1,2)",
+      "tags": [
+        "stat",
+        "median",
+        "bool"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 1.5
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-min-0006",
+      "formula": "=MIN(A1,5)",
+      "tags": [
+        "stat",
+        "min",
+        "bool"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 5
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-count-0004",
+      "formula": "=COUNT(A1:A3)",
+      "tags": [
+        "stat",
+        "count",
+        "range"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 3
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-countif-0107",
+      "formula": "=COUNTIF(A1:A3,\"apple\")",
+      "tags": [
+        "stat",
+        "countif",
+        "criteria",
+        "case"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-countif-0108",
+      "formula": "=COUNTIF(A1:A3,\"a*\")",
+      "tags": [
+        "stat",
+        "countif",
+        "wildcard",
+        "star"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 3
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-countif-0110",
+      "formula": "=COUNTIF(A1:A3,\"~*\")",
+      "tags": [
+        "stat",
+        "countif",
+        "wildcard",
+        "escape-star"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-countif-0111",
+      "formula": "=COUNTIF(A1:A3,\"~?\")",
+      "tags": [
+        "stat",
+        "countif",
+        "wildcard",
+        "escape-question"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-countif-0117",
+      "formula": "=COUNTIF(A1:A3,\"TRUE\")",
+      "tags": [
+        "stat",
+        "countif",
+        "criteria",
+        "bool-text",
+        "probe"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-countif-0118",
+      "formula": "=COUNTIF(A1:A3,\"\")",
+      "tags": [
+        "stat",
+        "countif",
+        "criteria",
+        "probe",
+        "blank"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-countif-0122",
+      "formula": "=COUNTIF(A1:A3,\"a*\")",
+      "tags": [
+        "stat",
+        "countif",
+        "wildcard",
+        "case"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 3
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-countif-0124",
+      "formula": "=COUNTIF(A1:A3,\"<>a*\")",
+      "tags": [
+        "stat",
+        "countif",
+        "wildcard",
+        "ne"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 3
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-stdev-0007",
+      "formula": "=STDEV(TRUE,2)",
+      "tags": [
+        "stat",
+        "stdev",
+        "coercion",
+        "bool"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0.707106781186548
+      },
+      "actual": {
+        "type": "error",
+        "value": "#DIV/0!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "stat-stdev-0014",
+      "formula": "=STDEV(\"x\")",
+      "tags": [
+        "stat",
+        "stdev",
+        "error",
+        "coercion"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#DIV/0!"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-var-0009",
+      "formula": "=VAR(A1:A3)",
+      "tags": [
+        "stat",
+        "var",
+        "ignore",
+        "bool"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 1.33333333333333
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-var-0014",
+      "formula": "=VAR(\"x\")",
+      "tags": [
+        "stat",
+        "var",
+        "error",
+        "coercion"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#DIV/0!"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-percentile-0007",
+      "formula": "=PERCENTILE(A1:A4,-0.1)",
+      "tags": [
+        "stat",
+        "percentile",
+        "error",
+        "k-negative"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#NUM!"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "stat-percentile-0008",
+      "formula": "=PERCENTILE(A1:A4,1.1)",
+      "tags": [
+        "stat",
+        "percentile",
+        "error",
+        "k-large"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#NUM!"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-lower-0002",
+      "formula": "=LOWER(\"CAFÉ\")",
+      "tags": [
+        "text",
+        "lower",
+        "non-ascii"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "café"
+      },
+      "actual": {
+        "type": "text",
+        "value": "cafÉ"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-value-0007",
+      "formula": "=VALUE(TRUE)",
+      "tags": [
+        "text",
+        "value",
+        "bool"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "text-value-0009",
+      "formula": "=VALUE(\"\")",
+      "tags": [
+        "text",
+        "value",
+        "empty"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "text-substitute-0004",
+      "formula": "=SUBSTITUTE(\"abc\",\"\",\"x\")",
+      "tags": [
+        "text",
+        "substitute",
+        "empty-old"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "abc"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected text, got error"
+    },
+    {
+      "id": "text-text-0006",
+      "formula": "=TEXT(1.5,\"0.??\")",
+      "tags": [
+        "text",
+        "text",
+        "question-pad"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "1.5 "
+      },
+      "actual": {
+        "type": "text",
+        "value": "1.5"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0007",
+      "formula": "=TEXT(1234567,\"0,,\")",
+      "tags": [
+        "text",
+        "text",
+        "scale-comma"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "1"
+      },
+      "actual": {
+        "type": "text",
+        "value": "1234567,,"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0009",
+      "formula": "=TEXT(\"abc\",\"0\")",
+      "tags": [
+        "text",
+        "text",
+        "text-passthrough"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "abc"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected text, got error"
+    },
+    {
+      "id": "text-text-0010",
+      "formula": "=TEXT(TRUE,\"0\")",
+      "tags": [
+        "text",
+        "text",
+        "bool"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "TRUE"
+      },
+      "actual": {
+        "type": "text",
+        "value": "1"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0012",
+      "formula": "=TEXT(123,\"General\")",
+      "tags": [
+        "text",
+        "text",
+        "general"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "text",
+        "value": "123"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got text"
+    },
+    {
+      "id": "text-text-0013",
+      "formula": "=TEXT(0,\"#\")",
+      "tags": [
+        "text",
+        "text",
+        "zero-empty"
+      ],
+      "expected": {
+        "type": "text",
+        "value": ""
+      },
+      "actual": {
+        "type": "text",
+        "value": "0"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-textjoin-0021",
+      "formula": "=LEN(TEXTJOIN(\"\",TRUE,A1:B1))",
+      "tags": [
+        "text",
+        "textjoin",
+        "boundary.length",
+        "exceed"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#CALC!"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0102",
+      "formula": "=TEXT(0.000123,\"0.00E+00\")",
+      "tags": [
+        "text",
+        "text",
+        "scientific",
+        "e-minus"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "1.23E-04"
+      },
+      "actual": {
+        "type": "text",
+        "value": "0.12E-03"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0107",
+      "formula": "=TEXT(12345,\"0.00E-00\")",
+      "tags": [
+        "text",
+        "text",
+        "scientific",
+        "probe",
+        "e-minus-positive"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "1.23E04"
+      },
+      "actual": {
+        "type": "text",
+        "value": "1.23E+04"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0108",
+      "formula": "=TEXT(0.5,\"0.0E+00\")",
+      "tags": [
+        "text",
+        "text",
+        "scientific",
+        "fraction"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "5.0E-01"
+      },
+      "actual": {
+        "type": "text",
+        "value": "0.5E+00"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0112",
+      "formula": "=TEXT(1,\"0.0E\")",
+      "tags": [
+        "text",
+        "text",
+        "scientific",
+        "probe",
+        "bare-e"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "text",
+        "value": "1.0E+00E"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got text"
+    },
+    {
+      "id": "text-text-0122",
+      "formula": "=TEXT(-0.5,\"[h]\")",
+      "tags": [
+        "text",
+        "text",
+        "elapsed",
+        "probe",
+        "negative"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "-12"
+      },
+      "actual": {
+        "type": "text",
+        "value": "--0.5"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0123",
+      "formula": "=TEXT(-1.5,\"[h]:mm\")",
+      "tags": [
+        "text",
+        "text",
+        "elapsed",
+        "probe",
+        "negative"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "text",
+        "value": "--1.5"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got text"
+    },
+    {
+      "id": "text-text-0128",
+      "formula": "=TEXT(50,\"[>100]\"\"big\"\";\"\"small\"\"\")",
+      "tags": [
+        "text",
+        "text",
+        "conditional",
+        "default"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "small"
+      },
+      "actual": {
+        "type": "text",
+        "value": "big"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0129",
+      "formula": "=TEXT(-5,\"[<0]-0;[>=0]0\")",
+      "tags": [
+        "text",
+        "text",
+        "conditional",
+        "sign"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "-5"
+      },
+      "actual": {
+        "type": "text",
+        "value": "5"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0130",
+      "formula": "=TEXT(5,\"[<0]-0;[>=0]0\")",
+      "tags": [
+        "text",
+        "text",
+        "conditional",
+        "sign"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "5"
+      },
+      "actual": {
+        "type": "text",
+        "value": "-5"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0140",
+      "formula": "=TEXT(1,\"[Red]0\")",
+      "tags": [
+        "text",
+        "text",
+        "conditional",
+        "probe",
+        "color"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "text",
+        "value": "1"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got text"
+    },
+    {
+      "id": "text-text-0143",
+      "formula": "=TEXT(2.675,\"0.00\")",
+      "tags": [
+        "text",
+        "text",
+        "regression",
+        "rounding"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "2.68"
+      },
+      "actual": {
+        "type": "text",
+        "value": "2.67"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0145",
+      "formula": "=TEXT(-50,\"[>0]0.0\")",
+      "tags": [
+        "text",
+        "text",
+        "probe",
+        "conditional",
+        "general-fallback",
+        "adjudicated"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "50"
+      },
+      "actual": {
+        "type": "text",
+        "value": "-50.0"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0146",
+      "formula": "=TEXT(-50,\"[>1]0.0\")",
+      "tags": [
+        "text",
+        "text",
+        "probe",
+        "conditional",
+        "general-fallback",
+        "adjudicated"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "-50"
+      },
+      "actual": {
+        "type": "text",
+        "value": "-50.0"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0147",
+      "formula": "=TEXT(-50,\"[>-10]0.0\")",
+      "tags": [
+        "text",
+        "text",
+        "probe",
+        "conditional",
+        "general-fallback",
+        "adjudicated"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "50"
+      },
+      "actual": {
+        "type": "text",
+        "value": "-50.0"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0148",
+      "formula": "=TEXT(-50,\"[<-100]0.0\")",
+      "tags": [
+        "text",
+        "text",
+        "probe",
+        "conditional",
+        "general-fallback",
+        "adjudicated"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "50"
+      },
+      "actual": {
+        "type": "text",
+        "value": "-50.0"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0151",
+      "formula": "=TEXT(-50,\"[>100]0;0.0\")",
+      "tags": [
+        "text",
+        "text",
+        "probe",
+        "conditional",
+        "default",
+        "adjudicated"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "-50.0"
+      },
+      "actual": {
+        "type": "text",
+        "value": "50.0"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0152",
+      "formula": "=TEXT(-50,\"[>100]0.0;\")",
+      "tags": [
+        "text",
+        "text",
+        "probe",
+        "conditional",
+        "default",
+        "adjudicated"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "-"
+      },
+      "actual": {
+        "type": "text",
+        "value": ""
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0153",
+      "formula": "=TEXT(-2,\"[h];[m]\")",
+      "tags": [
+        "text",
+        "text",
+        "probe",
+        "elapsed",
+        "sections",
+        "negative",
+        "adjudicated"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "2880"
+      },
+      "actual": {
+        "type": "text",
+        "value": "-2"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0155",
+      "formula": "=TEXT(-0.5,\"[>0]0.0\")",
+      "tags": [
+        "text",
+        "text",
+        "probe",
+        "conditional",
+        "general-fallback",
+        "adjudicated"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "0.5"
+      },
+      "actual": {
+        "type": "text",
+        "value": "-0.5"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0157",
+      "formula": "=TEXT(1234.5678,\"[>100000]0.00\")",
+      "tags": [
+        "text",
+        "text",
+        "probe",
+        "conditional",
+        "general-fallback",
+        "adjudicated"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "1234.5678"
+      },
+      "actual": {
+        "type": "text",
+        "value": "1234.57"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-text-0158",
+      "formula": "=TEXT(-5,\"0;yyyy\")",
+      "tags": [
+        "text",
+        "text",
+        "probe",
+        "date",
+        "sections",
+        "negative",
+        "adjudicated"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "text",
+        "value": "-5"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got text"
+    },
+    {
+      "id": "text-proper-0010",
+      "formula": "=PROPER(\"ÜBER cool\")",
+      "tags": [
+        "text",
+        "proper",
+        "unicode"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "Über Cool"
+      },
+      "actual": {
+        "type": "text",
+        "value": "ÜBer Cool"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "text-proper-0011",
+      "formula": "=PROPER(\"ßeta\")",
+      "tags": [
+        "text",
+        "proper",
+        "unicode",
+        "sharp-s"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "ßeta"
+      },
+      "actual": {
+        "type": "text",
+        "value": "ßEta"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "logic-and-0006",
+      "formula": "=AND(A1,A2)",
+      "tags": [
+        "logic",
+        "and",
+        "coercion",
+        "text"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "logic-and-0007",
+      "formula": "=AND(A1:A3)",
+      "tags": [
+        "logic",
+        "and",
+        "range",
+        "blank"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "logic-and-0008",
+      "formula": "=AND(A1:A3)",
+      "tags": [
+        "logic",
+        "and",
+        "range",
+        "text"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "logic-iferror-0006",
+      "formula": "=IFERROR(A1&\"x\",\"err\")",
+      "tags": [
+        "logic",
+        "iferror",
+        "concat"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "err"
+      },
+      "actual": {
+        "type": "text",
+        "value": "#REF!x"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "logic-not-0009",
+      "formula": "=NOT(A1)",
+      "tags": [
+        "logic",
+        "not",
+        "blank"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "logic-and-0011",
+      "formula": "=AND(A1:A2)",
+      "tags": [
+        "logic",
+        "and",
+        "range",
+        "bool"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "logic-iferror-0007",
+      "formula": "=IFERROR(1/0,#N/A)",
+      "tags": [
+        "logic",
+        "iferror",
+        "error-fallback"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "actual": null,
+      "bucket": "parse-error",
+      "detail": "engine: InvalidXml(msg=\"formula args invalid\")"
+    },
+    {
+      "id": "logic-switch-0004",
+      "formula": "=SWITCH(\"B\",\"b\",\"hit\",\"miss\")",
+      "tags": [
+        "logic",
+        "switch",
+        "case"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "hit"
+      },
+      "actual": {
+        "type": "text",
+        "value": "miss"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "logic-switch-0017",
+      "formula": "=SWITCH(A1,1,\"one\",\"other\")",
+      "tags": [
+        "logic",
+        "switch",
+        "blank",
+        "probe"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "other"
+      },
+      "actual": {
+        "type": "text",
+        "value": "one"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "logic-xor-0006",
+      "formula": "=XOR(\"TRUE\",\"FALSE\")",
+      "tags": [
+        "logic",
+        "xor",
+        "text-literal"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "logic-xor-0014",
+      "formula": "=XOR(\"false\",\"FALSE\")",
+      "tags": [
+        "logic",
+        "xor",
+        "text-literal",
+        "case"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": false
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "lookup-vlookup-0009",
+      "formula": "=VLOOKUP(\"APPLE\",A1:B2,2,FALSE)",
+      "tags": [
+        "lookup",
+        "vlookup",
+        "case-insensitive"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-index-0002",
+      "formula": "=INDEX(A1:C1,2)",
+      "tags": [
+        "lookup",
+        "index",
+        "single-row"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "error",
+        "value": "#REF!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-index-0006",
+      "formula": "=SUM(INDEX(A1:C3,0,2))",
+      "tags": [
+        "lookup",
+        "index",
+        "whole-col"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 15
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-index-0007",
+      "formula": "=SUM(INDEX(A1:C3,2,0))",
+      "tags": [
+        "lookup",
+        "index",
+        "whole-row"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 15
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-index-0008",
+      "formula": "=SUM(INDEX(A1:C3,0,0))",
+      "tags": [
+        "lookup",
+        "index",
+        "whole-range"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 45
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-match-0009",
+      "formula": "=MATCH(\"BANANA\",C1:C3,0)",
+      "tags": [
+        "lookup",
+        "match",
+        "case-insensitive"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-match-0010",
+      "formula": "=MATCH(\"ap*\",C1:C3,0)",
+      "tags": [
+        "lookup",
+        "match",
+        "wildcard"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-match-0011",
+      "formula": "=MATCH(\"b?nana\",C1:C3,0)",
+      "tags": [
+        "lookup",
+        "match",
+        "wildcard"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-match-0015",
+      "formula": "=MATCH(\"a~*b\",C1:C1,0)",
+      "tags": [
+        "lookup",
+        "match",
+        "wildcard-escape"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-index-0013",
+      "formula": "=INDEX(A1:C3,0,1)",
+      "tags": [
+        "lookup",
+        "index",
+        "no-spill"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-xlookup-0011",
+      "formula": "=XLOOKUP(\"BANANA\",A1:A3,B1:B3)",
+      "tags": [
+        "lookup",
+        "xlookup",
+        "case"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-xlookup-0031",
+      "formula": "=XLOOKUP(3,A1:A3,B1:B3)",
+      "tags": [
+        "lookup",
+        "xlookup",
+        "probe",
+        "error-in-array"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 30
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-xlookup-0032",
+      "formula": "=XLOOKUP(2,A1:A3,B1:B3,\"miss\")",
+      "tags": [
+        "lookup",
+        "xlookup",
+        "probe",
+        "error-in-array"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "miss"
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected text, got error"
+    },
+    {
+      "id": "lookup-xlookup-0033",
+      "formula": "=XLOOKUP(#N/A,A1:A3,B1:B3)",
+      "tags": [
+        "lookup",
+        "xlookup",
+        "probe",
+        "error-lookup"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "actual": null,
+      "bucket": "parse-error",
+      "detail": "engine: InvalidXml(msg=\"formula args invalid\")"
+    },
+    {
+      "id": "lookup-xlookup-0036",
+      "formula": "=XLOOKUP(5,A1:A5,B1:B5,\"miss\",-1.9)",
+      "tags": [
+        "lookup",
+        "xlookup",
+        "probe",
+        "match-mode-trunc"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 50
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "lookup-match-0101",
+      "formula": "=MATCH(\"~*\",A1:A2,0)",
+      "tags": [
+        "lookup",
+        "match",
+        "wildcard",
+        "escape"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-match-0102",
+      "formula": "=MATCH(\"~?\",A1:A2,0)",
+      "tags": [
+        "lookup",
+        "match",
+        "wildcard",
+        "escape"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-match-0103",
+      "formula": "=MATCH(\"a~*b\",A1:A2,0)",
+      "tags": [
+        "lookup",
+        "match",
+        "wildcard",
+        "escape"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-match-0104",
+      "formula": "=MATCH(\"a~?b\",A1:A2,0)",
+      "tags": [
+        "lookup",
+        "match",
+        "wildcard",
+        "escape"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-match-0105",
+      "formula": "=MATCH(\"a~~b\",A1:A2,0)",
+      "tags": [
+        "lookup",
+        "match",
+        "wildcard",
+        "escape-tilde"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "lookup-match-0106",
+      "formula": "=MATCH(\"*\",A1:A3,0)",
+      "tags": [
+        "lookup",
+        "match",
+        "wildcard",
+        "empty-text"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-match-0108",
+      "formula": "=MATCH(\"A*\",A1:A2,0)",
+      "tags": [
+        "lookup",
+        "match",
+        "wildcard",
+        "case"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-match-0109",
+      "formula": "=MATCH(\"a*b\",A1:A2,0)",
+      "tags": [
+        "lookup",
+        "match",
+        "wildcard"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-choose-0003",
+      "formula": "=CHOOSE(0,10)",
+      "tags": [
+        "lookup",
+        "choose",
+        "error",
+        "index-zero"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "lookup-choose-0005",
+      "formula": "=CHOOSE(2.9,10,20,30)",
+      "tags": [
+        "lookup",
+        "choose",
+        "trunc"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 20
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-choose-0011",
+      "formula": "=CHOOSE(-1,10)",
+      "tags": [
+        "lookup",
+        "choose",
+        "error",
+        "index-negative"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "number",
+        "value": -1
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "lookup-choose-0012",
+      "formula": "=CHOOSE(1.1,10,20)",
+      "tags": [
+        "lookup",
+        "choose",
+        "trunc"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 10
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "lookup-choose-0014",
+      "formula": "=CHOOSE(TRUE,10,20)",
+      "tags": [
+        "lookup",
+        "choose",
+        "coercion",
+        "bool"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 10
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-count-0001",
+      "formula": "=COUNT(A1,1)",
+      "tags": [
+        "generic",
+        "count",
+        "error"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-counta-0001",
+      "formula": "=COUNTA(A1)",
+      "tags": [
+        "generic",
+        "counta",
+        "error-counted"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-count-0002",
+      "formula": "=COUNT(1,A1)",
+      "tags": [
+        "generic",
+        "count",
+        "error2"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-match-0002",
+      "formula": "=MATCH(1,A1:A2,0)",
+      "tags": [
+        "generic",
+        "match",
+        "error2"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-sumif-0002",
+      "formula": "=SUMIF(A1:A2,A1)",
+      "tags": [
+        "generic",
+        "sumif",
+        "error2"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "gen-not-0002",
+      "formula": "=NOT(A1)",
+      "tags": [
+        "generic",
+        "not",
+        "blank"
+      ],
+      "expected": {
+        "type": "bool",
+        "value": true
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected bool, got error"
+    },
+    {
+      "id": "gen-year-0002",
+      "formula": "=YEAR(A1)",
+      "tags": [
+        "generic",
+        "year",
+        "blank"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1900
+      },
+      "actual": {
+        "type": "number",
+        "value": 1899
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-sum-0004",
+      "formula": "=SUM(A1,A2)",
+      "tags": [
+        "generic",
+        "sum",
+        "coercion"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "number",
+        "value": 7
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-average-0004",
+      "formula": "=AVERAGE(A1,A2)",
+      "tags": [
+        "generic",
+        "average",
+        "coercion"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#DIV/0!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 3
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "gen-min-0004",
+      "formula": "=MIN(A1,5)",
+      "tags": [
+        "generic",
+        "min",
+        "coercion"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 5
+      },
+      "actual": {
+        "type": "number",
+        "value": 3
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-median-0004",
+      "formula": "=MEDIAN(A1,A2,A3)",
+      "tags": [
+        "generic",
+        "median",
+        "coercion"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#NUM!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 3
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "gen-count-0004",
+      "formula": "=COUNT(A1)",
+      "tags": [
+        "generic",
+        "count",
+        "coercion"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-if-0004",
+      "formula": "=IF(A1,1,2)",
+      "tags": [
+        "generic",
+        "if",
+        "coercion"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "gen-sum-0005",
+      "formula": "=SUM(A1,1)",
+      "tags": [
+        "generic",
+        "sum",
+        "bool"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-sum-0006",
+      "formula": "=SUM(A1:A2)",
+      "tags": [
+        "generic",
+        "sum",
+        "bool",
+        "range"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 3
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-count-0005",
+      "formula": "=COUNT(A1)",
+      "tags": [
+        "generic",
+        "count",
+        "bool"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-text-0005",
+      "formula": "=TEXT(A1,\"0\")",
+      "tags": [
+        "generic",
+        "text",
+        "bool"
+      ],
+      "expected": {
+        "type": "text",
+        "value": "TRUE"
+      },
+      "actual": {
+        "type": "text",
+        "value": "1"
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-value-0004",
+      "formula": "=VALUE(A1)",
+      "tags": [
+        "generic",
+        "value",
+        "bool"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "gen-min-0005",
+      "formula": "=MIN(A1,2)",
+      "tags": [
+        "generic",
+        "min",
+        "bool"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-round-0012",
+      "formula": "=ROUND(1.005,2)",
+      "tags": [
+        "generic",
+        "round",
+        "boundary.float"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1.01
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-power-0005",
+      "formula": "=POWER(0,-1)",
+      "tags": [
+        "generic",
+        "power",
+        "boundary"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#DIV/0!"
+      },
+      "actual": {
+        "type": "number",
+        "value": "Infinity"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "gen-power-0006",
+      "formula": "=POWER(-1,0.5)",
+      "tags": [
+        "generic",
+        "power",
+        "boundary"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#NUM!"
+      },
+      "actual": {
+        "type": "number",
+        "value": "NaN"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "gen-sum-0007",
+      "formula": "=SUM(A1:A3)",
+      "tags": [
+        "generic",
+        "sum",
+        "range"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-sumproduct-0004",
+      "formula": "=SUMPRODUCT(A1:A2)",
+      "tags": [
+        "generic",
+        "sumproduct",
+        "text"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-count-0006",
+      "formula": "=COUNT(A1:A2)",
+      "tags": [
+        "generic",
+        "count",
+        "range"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-count-0007",
+      "formula": "=COUNT(A1:A2)",
+      "tags": [
+        "generic",
+        "count",
+        "range"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "error",
+        "value": "#N/A"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-counta-0004",
+      "formula": "=COUNTA(A1:A3)",
+      "tags": [
+        "generic",
+        "counta",
+        "range"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2
+      },
+      "actual": {
+        "type": "number",
+        "value": 0
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-countif-0003",
+      "formula": "=COUNTIF(A1:A2,\"a*\")",
+      "tags": [
+        "generic",
+        "countif",
+        "wildcard"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": {
+        "type": "number",
+        "value": 2
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-year-0005",
+      "formula": "=YEAR(A1)",
+      "tags": [
+        "generic",
+        "year",
+        "clock"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 2026
+      },
+      "actual": {
+        "type": "number",
+        "value": 2026
+      },
+      "bucket": "clock-no-injection",
+      "detail": "mbtexcel 0.3.2 has no clock injection (NOW/TODAY read @env.now()); corpus now=46341.7149741898 ignored; actual=number(2026)"
+    },
+    {
+      "id": "gen-round-0013",
+      "formula": "=ROUND(A1,2)",
+      "tags": [
+        "generic",
+        "round",
+        "percent"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0.12
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-percent-0001",
+      "formula": "=A1*2",
+      "tags": [
+        "generic",
+        "arith",
+        "percent"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0.5
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-abs-0005",
+      "formula": "=ABS(A1)",
+      "tags": [
+        "generic",
+        "abs",
+        "percent"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0.05
+      },
+      "actual": {
+        "type": "error",
+        "value": "#VALUE!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-count-0008",
+      "formula": "=COUNT(A1)",
+      "tags": [
+        "generic",
+        "count",
+        "coercion"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "value-mismatch",
+      "detail": ""
+    },
+    {
+      "id": "gen-power-0009",
+      "formula": "=POWER(A1,0)",
+      "tags": [
+        "generic",
+        "power",
+        "boundary"
+      ],
+      "expected": {
+        "type": "error",
+        "value": "#NUM!"
+      },
+      "actual": {
+        "type": "number",
+        "value": 1
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected error, got number"
+    },
+    {
+      "id": "gen-count-0009",
+      "formula": "=COUNT(#N/A)",
+      "tags": [
+        "generic",
+        "count",
+        "error",
+        "literal"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": null,
+      "bucket": "parse-error",
+      "detail": "engine: InvalidXml(msg=\"formula args invalid\")"
+    },
+    {
+      "id": "gen-count-0010",
+      "formula": "=COUNT(1/0)",
+      "tags": [
+        "generic",
+        "count",
+        "error",
+        "computed"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 0
+      },
+      "actual": {
+        "type": "error",
+        "value": "#DIV/0!"
+      },
+      "bucket": "type-mismatch",
+      "detail": "expected number, got error"
+    },
+    {
+      "id": "gen-counta-0005",
+      "formula": "=COUNTA(#N/A)",
+      "tags": [
+        "generic",
+        "counta",
+        "error",
+        "literal"
+      ],
+      "expected": {
+        "type": "number",
+        "value": 1
+      },
+      "actual": null,
+      "bucket": "parse-error",
+      "detail": "engine: InvalidXml(msg=\"formula args invalid\")"
+    }
+  ],
+  "rerun": "cd examples/compare && moon run --target native . -- --corpus ../../corpus/cases --report ../../corpus/reports/mbtexcel.json"
+}

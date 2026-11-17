@@ -1,0 +1,17 @@
+// compare: mbtexcel measurement adapter over the MoonCalc answer-key corpus.
+// Depends only on moonbitlang/mbtexcel and moonbitlang/x (+ core); never imports mooncalc.
+//
+//   cd examples/compare
+//   moon run --target native . -- --corpus ../../corpus/cases --report ../../corpus/reports/mbtexcel.json
+import {
+  "moonbitlang/core/env" @env,
+  "moonbitlang/core/json" @json,
+  "moonbitlang/core/debug" @debug,
+  "moonbitlang/core/string" @string,
+  "moonbitlang/mbtexcel/xlsx" @xlsx,
+  "moonbitlang/x/fs" @fs,
+}
+
+supported_targets = "native"
+
+pkgtype(kind: "executable")
