@@ -1,12 +1,14 @@
 // xlsx-demo：mbtexcel 读 → MoonCalc 算 → mbtexcel 写，进程内直调（不走子进程）。
 //
-// 数据流：
-//   1. gen 子命令用 mbtexcel 生成 fixture（不是二进制提交物，写在 _build/ 下）；
-//   2. run 子命令读取首个 sheet：公式格加前导 "=" 进网格，字面量按
-//      number/bool/string 映射，空白跳过；错误值单元格按 {"error": ...} 映射；
-//   3. 组 {grid: ...} 请求交给 @codec.evaluate_json（与 CLI/playground 同一契约）；
-//   4. 回写：公式格 set_cell_formula（公式无前导 "="，缓存值传结果文本），字面量不动；
-//   5. 读回输出文件，断言公式与缓存值（以及字面量未被改动）。
+// 数据流（M8：多表 + 工作簿级定义名称 + 跨表/整列整行公式）：
+//   1. gen 子命令用 mbtexcel 生成 3 个表的工作簿 fixture（Input / Calc / My Sheet）：
+//      跨表引用、跨表区域、整列整行、带引号表名、工作簿级定义名称（Rate/Tax/Qty）；
+//   2. run 子命令遍历全部 sheet：单元格键按 M8 契约归一为 `SHEET!A1`（ASCII 大写表名），
+//      公式格加前导 "=" 进网格，字面量按 number/bool/string 映射，空白跳过；
+//      定义名称从工作簿读出（name → refers_to）作为 grid.names 传入；
+//   3. 组 {grid: {..., "names": {...}}} 请求交给 @codec.evaluate_json（与 CLI --names / playground 同一契约）；
+//   4. 回写：按 `SHEET!A1` 的宿主表定位 sheet，公式格 set_cell_formula（公式无前导 "="，缓存值传结果文本），字面量不动；
+//   5. 读回输出文件，逐表断言公式、缓存值与字面量，并对关键格断言已知结果（多表语义的端到端验收 L3）。
 
 type Json = @json.Json
 
@@ -16,8 +18,8 @@ const OUTPUT_PATH : String = WORK_DIR + "/output.xlsx"
 
 fn usage() -> String {
   "usage: moon run examples/xlsx-demo --target native -- <gen|run>\n" +
-  "  gen  generate " + INPUT_PATH + " with mbtexcel\n" +
-  "  run  read input, evaluate with MoonCalc, write + verify " + OUTPUT_PATH
+  "  gen  generate " + INPUT_PATH + " with mbtexcel (3 sheets + defined names)\n" +
+  "  run  read all sheets, evaluate with MoonCalc, write + verify " + OUTPUT_PATH
 }
 
 fn[T] die(msg : String) -> T {
@@ -37,6 +39,19 @@ fn read_file(path : String) -> Bytes {
 
 fn write_file(path : String, bytes : Bytes) -> Unit {
   try @fs.write_bytes_to_file(path, bytes) catch { _ => die("cannot write file: " + path) }
+}
+
+// 与引擎 codec 的键契约一致：表名 ASCII 大写 + `!` + A1 地址。
+fn ascii_upper(s : String) -> String {
+  let mut out = ""
+  for ch in s {
+    if ch >= 'a' && ch <= 'z' {
+      out = out + Char::from_int(ch.to_int() - 32).to_string()
+    } else {
+      out = out + ch.to_string()
+    }
+  }
+  out
 }
 
 // Excel 缓存的数值文本（展示用）：整数不带小数点，其余用最短往返十进制。
@@ -116,48 +131,79 @@ fn literal_snapshot(v : @xlsx.CellValue) -> String {
 }
 
 struct FormulaCell {
+  key : String // `SHEET!A1`
+  sheet_name : String // 原始表名（回写定位用）
   addr : String
   formula : String
+}
+
+struct LiteralCell {
+  key : String
+  sheet_name : String
+  addr : String
+  snapshot : String
 }
 
 fn gen_demo() -> Unit raise @xlsx.XlsxError {
   ensure_work_dir()
   let wb = @mbtexcel.new_workbook()
-  let sheet = wb.add_sheet("Demo")
+  let input = wb.add_sheet("Input")
+  let calc = wb.add_sheet("Calc")
+  let quoted = wb.add_sheet("My Sheet")
 
-  // 字面量：数字 / 文本 / 布尔 / 错误值。
-  sheet.set_cell_value("A1", @xlsx.CellValue::Numeric(6.0))
-  sheet.set_cell_value("A2", @xlsx.CellValue::Numeric(7.0))
-  sheet.set_cell("C1", "MoonCalc")
-  sheet.set_cell_value("F1", @xlsx.CellValue::Bool(true))
-  sheet.set_cell_value("H3", @xlsx.CellValue::Error("#N/A"))
-  // lookup 表（VLOOKUP 的精确命中用它）。
-  sheet.set_cell("D1", "a")
-  sheet.set_cell("D2", "b")
-  sheet.set_cell("D3", "c")
-  sheet.set_cell_value("E1", @xlsx.CellValue::Numeric(10.0))
-  sheet.set_cell_value("E2", @xlsx.CellValue::Numeric(20.0))
-  sheet.set_cell_value("E3", @xlsx.CellValue::Numeric(30.0))
+  // Input：字面量（数字 / 文本 / 布尔 / 错误值）+ 查找表。
+  input.set_cell("A1", "Qty")
+  input.set_cell_value("A2", @xlsx.CellValue::Numeric(3.0))
+  input.set_cell_value("A3", @xlsx.CellValue::Numeric(4.0))
+  input.set_cell_value("A4", @xlsx.CellValue::Numeric(5.0))
+  input.set_cell_value("B1", @xlsx.CellValue::Numeric(0.25)) // Rate
+  input.set_cell_value("B2", @xlsx.CellValue::Numeric(0.07)) // Tax
+  input.set_cell("C1", "MoonCalc")
+  input.set_cell_value("D1", @xlsx.CellValue::Bool(true))
+  input.set_cell("E1", "a")
+  input.set_cell("E2", "b")
+  input.set_cell("E3", "c")
+  input.set_cell_value("F1", @xlsx.CellValue::Numeric(10.0))
+  input.set_cell_value("F2", @xlsx.CellValue::Numeric(20.0))
+  input.set_cell_value("F3", @xlsx.CellValue::Numeric(30.0))
+  input.set_cell_value("H1", @xlsx.CellValue::Error("#N/A"))
 
-  // 公式格：xlsx 里的公式不带前导 "="。
-  sheet.set_cell_formula("A3", "SUM(A1:A2)")
-  sheet.set_cell_formula("B1", "A1*A2")
-  sheet.set_cell_formula("B2", "ROUND(2.675,2)")
-  sheet.set_cell_formula("B3", "TEXT(1234.5,\"#,##0.00\")")
-  sheet.set_cell_formula("C2", "UPPER(C1)")
-  sheet.set_cell_formula("C3", "LEN(C1)")
-  sheet.set_cell_formula("C4", "VLOOKUP(\"b\",D1:E3,2,FALSE)")
-  sheet.set_cell_formula("F2", "NOT(F1)")
-  sheet.set_cell_formula("F3", "IF(F1,1,0)")
-  sheet.set_cell_formula("G1", "1/0")
-  sheet.set_cell_formula("G2", "IFERROR(G1,\"fallback\")")
-  sheet.set_cell_formula("H1", "DATE(2026,11,15)")
-  sheet.set_cell_formula("H2", "YEAR(H1)")
-  sheet.set_cell_formula("H4", "H3+1")
+  // My Sheet：带空格表名，跨表引用必须写成 'My Sheet'!A1。
+  quoted.set_cell_value("A1", @xlsx.CellValue::Numeric(10.0))
+  quoted.set_cell_value("A2", @xlsx.CellValue::Numeric(15.0))
+
+  // Calc：跨表引用 / 跨表区域 / 定义名称 / 整列整行 / 查找 / 错误传播。
+  calc.set_cell_formula("A1", "SUM(Input!A2:A4)") // 12
+  calc.set_cell_formula("A2", "A1*Rate") // 3
+  calc.set_cell_formula("A3", "ROUND(A2*(1+Tax),2)") // 3.21
+  calc.set_cell_formula("A4", "SUM(Input!A2:A4)/COUNT(Input!A2:A4)") // 4
+  calc.set_cell_formula("A5", "IF(A1>10,\"big\",\"small\")") // big
+  calc.set_cell_formula("A6", "UPPER(Input!C1)") // MOONCALC
+  calc.set_cell_formula("A7", "SUM('My Sheet'!A1:A2)") // 25
+  calc.set_cell_formula("A8", "SUM(Input!A:A)") // 12（整列，文本表头被忽略）
+  calc.set_cell_formula("A9", "SUM(Input!2:2)") // 23.07（整行：3 + 0.07 + 20，文本忽略）
+  calc.set_cell_formula("A10", "COUNT(Input!A:A)") // 3
+  calc.set_cell_formula("A11", "SUM(Qty)") // 12（区域形定义名称）
+  calc.set_cell_formula("B1", "A3+Tax") // 3.28
+  calc.set_cell_formula("B2", "VLOOKUP(\"b\",Input!E1:F3,2,FALSE)") // 20（跨表查找表）
+  calc.set_cell_formula("B3", "IF(Input!D1,1,0)") // 1（跨表布尔）
+  calc.set_cell_formula("B4", "Input!H1+1") // #N/A（跨表错误传播）
+  calc.set_cell_formula("B5", "SUM(Input!A2:A4)+Input!F1") // 22（混合）
+
+  // 工作簿级定义名称：refers_to 是跨表绝对引用（与 Excel 名称一致）。
+  wb.set_defined_name(@xlsx.DefinedName::new("Rate", "Input!$B$1"))
+  wb.set_defined_name(@xlsx.DefinedName::new("Tax", "Input!$B$2"))
+  wb.set_defined_name(@xlsx.DefinedName::new("Qty", "Input!$A$2:$A$4"))
 
   let bytes = try @mbtexcel.write(wb) catch { _ => die("mbtexcel write failed") }
   write_file(INPUT_PATH, bytes)
-  println("generated fixture: " + INPUT_PATH + " (" + bytes.length().to_string() + " bytes)")
+  println(
+    "generated fixture: " +
+    INPUT_PATH +
+    " (" +
+    bytes.length().to_string() +
+    " bytes, sheets=3, defined names=Rate/Tax/Qty)",
+  )
 }
 
 fn run_demo() -> Unit raise @xlsx.XlsxError {
@@ -169,43 +215,59 @@ fn run_demo() -> Unit raise @xlsx.XlsxError {
   if sheets.length() == 0 {
     die("workbook has no sheets")
   }
-  let sheet = sheets[0]
-  let sheet_name = sheet.name()
 
-  // 遍历首个 sheet：公式格、字面量按网格契约编码，空白跳过。
+  // 遍历全部 sheet：公式格、字面量按限定键编码，空白跳过。
   let grid_map : Map[String, Json] = Map::new()
   let formulas : Array[FormulaCell] = []
-  let literals : Array[(String, String)] = []
-  let rows = sheet.max_row()
-  let cols = sheet.max_col()
-  for r in 1..=rows {
-    for c in 1..=cols {
-      let addr = try @mbtexcel.coordinates_to_cell_name(c, r) catch { _ => die("bad cell coordinate") }
-      match sheet.get_cell_formula(addr) {
-        Some(formula) => {
-          grid_map[addr] = formula_json(formula)
-          formulas.push({ addr, formula })
-        }
-        None =>
-          match sheet.get_cell_value_raw(addr) {
-            None => ()
-            Some(cell) => {
-              match cell {
-                @xlsx.CellValue::Numeric(d) => grid_map[addr] = Json::number(d)
-                @xlsx.CellValue::String(s) => grid_map[addr] = Json::string(s)
-                @xlsx.CellValue::Bool(b) => grid_map[addr] = Json::boolean(b)
-                @xlsx.CellValue::Error(e) => grid_map[addr] = error_json(e)
-              }
-              literals.push((addr, literal_snapshot(cell)))
-            }
+  let literals : Array[LiteralCell] = []
+  for sheet in sheets {
+    let sheet_name = sheet.name()
+    let prefix = ascii_upper(sheet_name)
+    let rows = sheet.max_row()
+    let cols = sheet.max_col()
+    for r in 1..=rows {
+      for c in 1..=cols {
+        let addr = try @mbtexcel.coordinates_to_cell_name(c, r) catch { _ => die("bad cell coordinate") }
+        let key = prefix + "!" + addr
+        match sheet.get_cell_formula(addr) {
+          Some(formula) => {
+            grid_map[key] = formula_json(formula)
+            formulas.push({ key, sheet_name, addr, formula })
           }
+          None =>
+            match sheet.get_cell_value_raw(addr) {
+              None => ()
+              Some(cell) => {
+                match cell {
+                  @xlsx.CellValue::Numeric(d) => grid_map[key] = Json::number(d)
+                  @xlsx.CellValue::String(s) => grid_map[key] = Json::string(s)
+                  @xlsx.CellValue::Bool(b) => grid_map[key] = Json::boolean(b)
+                  @xlsx.CellValue::Error(e) => grid_map[key] = error_json(e)
+                }
+                literals.push({ key, sheet_name, addr, snapshot: literal_snapshot(cell) })
+              }
+            }
+        }
       }
     }
   }
 
-  // 进程内调用 codec：与 CLI/playground 共用同一份 JSON 网格契约。
+  // 定义名称从工作簿读出 → grid.names（Y 名称 ASCII 大写键，值为 refers_to 文本）。
+  let names_json : Map[String, Json] = Map::new()
+  for dn in wb.defined_names() {
+    names_json[ascii_upper(dn.name)] = Json::string(dn.refers_to)
+  }
+  let grid_json : Map[String, Json] = Map::new()
+  for key, cell in grid_map {
+    grid_json[key] = cell
+  }
+  if names_json.length() > 0 {
+    grid_json["names"] = Json::object(names_json)
+  }
+
+  // 进程内调用 codec：与 CLI --names / playground 共用同一份 JSON 网格契约。
   let request : Map[String, Json] = Map::new()
-  request["grid"] = Json::object(grid_map)
+  request["grid"] = Json::object(grid_json)
   let response = @codec.evaluate_json(Json::stringify(Json::object(request)))
   let resp = try @json.parse(response) catch { _ => die("internal: invalid codec response JSON") }
   let ok = match resp.value("ok") {
@@ -239,30 +301,33 @@ fn run_demo() -> Unit raise @xlsx.XlsxError {
     None => die("codec response: missing results")
   }
 
-  // 回写：只改公式格，缓存值传引擎结果文本；字面量保持原样。
+  // 回写：只改公式格，按宿主表定位 sheet，缓存值传引擎结果文本；字面量保持原样。
   for item in formulas {
-    let cached = match values.get(item.addr) {
+    let target_sheet = match wb.sheet(item.sheet_name) {
+      Some(sh) => sh
+      None => die("writeback: sheet not found: " + item.sheet_name)
+    }
+    let cached = match values.get(item.key) {
       Some(t) => t
       None => ""
     }
-    try sheet.set_cell_formula(item.addr, item.formula, value=cached) catch {
-      _ => die("set_cell_formula failed at " + item.addr)
+    try target_sheet.set_cell_formula(item.addr, item.formula, value=cached) catch {
+      _ => die("set_cell_formula failed at " + item.key)
     }
   }
   let out_bytes = try @mbtexcel.write(wb) catch { _ => die("mbtexcel write failed") }
   write_file(OUTPUT_PATH, out_bytes)
 
-  // 读回输出文件断言缓存值与公式（以及字面量未被改动）。
+  // 读回输出文件：逐表断言公式文本与缓存值（以及字面量未被改动）。
   let wb2 = try @mbtexcel.read(out_bytes) catch { _ => die("cannot re-read output workbook") }
-  let sheets2 = wb2.sheets()
-  if sheets2.length() == 0 {
-    die("output workbook has no sheets")
-  }
-  let sheet2 = sheets2[0]
   let mut checks = 0
   let mut failures = 0
   for item in formulas {
-    let expected = match values.get(item.addr) {
+    let sheet2 = match wb2.sheet(item.sheet_name) {
+      Some(sh) => sh
+      None => die("re-read: sheet not found: " + item.sheet_name)
+    }
+    let expected = match values.get(item.key) {
       Some(t) => t
       None => ""
     }
@@ -273,11 +338,11 @@ fn run_demo() -> Unit raise @xlsx.XlsxError {
           checks += 1
         } else {
           failures += 1
-          println("FAIL formula " + item.addr + ": expected `" + item.formula + "`, got `" + f + "`")
+          println("FAIL formula " + item.key + ": expected `" + item.formula + "`, got `" + f + "`")
         }
       None => {
         failures += 1
-        println("FAIL formula " + item.addr + ": missing")
+        println("FAIL formula " + item.key + ": missing")
       }
     }
     let got_raw = try sheet2.get_cell_value_raw(item.addr) catch { _ => None }
@@ -292,40 +357,80 @@ fn run_demo() -> Unit raise @xlsx.XlsxError {
           checks += 1
         } else {
           failures += 1
-          println("FAIL cached " + item.addr + ": expected `" + expected + "`, got `" + got_text + "`")
+          println("FAIL cached " + item.key + ": expected `" + expected + "`, got `" + got_text + "`")
         }
       }
       None => {
         failures += 1
-        println("FAIL cached " + item.addr + ": missing")
+        println("FAIL cached " + item.key + ": missing")
       }
     }
   }
-  for (addr, expected) in literals {
-    let got_raw = try sheet2.get_cell_value_raw(addr) catch { _ => None }
+  for item in literals {
+    let sheet2 = match wb2.sheet(item.sheet_name) {
+      Some(sh) => sh
+      None => die("re-read: sheet not found: " + item.sheet_name)
+    }
+    let got_raw = try sheet2.get_cell_value_raw(item.addr) catch { _ => None }
     match got_raw {
       Some(cell) => {
         let got = literal_snapshot(cell)
-        if got == expected {
+        if got == item.snapshot {
           checks += 1
         } else {
           failures += 1
-          println("FAIL literal " + addr + ": expected `" + expected + "`, got `" + got + "`")
+          println("FAIL literal " + item.key + ": expected `" + item.snapshot + "`, got `" + got + "`")
         }
       }
       None => {
         failures += 1
-        println("FAIL literal " + addr + ": missing")
+        println("FAIL literal " + item.key + ": missing")
       }
     }
   }
+
+  // 关键格断言已知结果：多表/名称/整列整行语义的端到端验收（L3）。
+  let expected_results : Array[(String, String)] = [
+    ("CALC!A1", "12"),
+    ("CALC!A2", "3"),
+    ("CALC!A3", "3.21"),
+    ("CALC!A4", "4"),
+    ("CALC!A5", "big"),
+    ("CALC!A6", "MOONCALC"),
+    ("CALC!A7", "25"),
+    ("CALC!A8", "12"),
+    ("CALC!A9", "23.07"),
+    ("CALC!A10", "3"),
+    ("CALC!A11", "12"),
+    ("CALC!B1", "3.28"),
+    ("CALC!B2", "20"),
+    ("CALC!B3", "1"),
+    ("CALC!B4", "#N/A"),
+    ("CALC!B5", "22"),
+    // 输入表的公式格为空表；断言字面量读回由 literals 循环覆盖。
+  ]
+  for (key, want) in expected_results {
+    let got = match values.get(key) {
+      Some(t) => t
+      None => ""
+    }
+    if got == want {
+      checks += 1
+    } else {
+      failures += 1
+      println("FAIL expected " + key + ": want `" + want + "`, got `" + got + "`")
+    }
+  }
+
   println(
-    "xlsx-demo: sheet `" +
-    sheet_name +
-    "` formulas=" +
+    "xlsx-demo: sheets=" +
+    sheets.length().to_string() +
+    " formulas=" +
     formulas.length().to_string() +
     " literals=" +
-    literals.length().to_string(),
+    literals.length().to_string() +
+    " names=" +
+    names_json.length().to_string(),
   )
   if failures > 0 {
     die("xlsx-demo verification FAILED: " + failures.to_string() + " failure(s)")
@@ -335,7 +440,7 @@ fn run_demo() -> Unit raise @xlsx.XlsxError {
     checks.to_string() +
     "/" +
     checks.to_string() +
-    " (formula + cached value + literal checks) -> " +
+    " (formula + cached value + literal + expected-result checks) -> " +
     OUTPUT_PATH,
   )
 }
