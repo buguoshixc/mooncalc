@@ -11,5 +11,5 @@ description = "MoonCalc xlsx read-calc-write demo shell (mbtexcel); not part of 
 import {
   "moonbitlang/x@0.5.7",
   "moonbitlang/mbtexcel@0.3.2",
-  "buguoshixc/mooncalc@0.3.0",
+  "buguoshixc/mooncalc@0.4.0",
 }
