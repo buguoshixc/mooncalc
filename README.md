@@ -195,7 +195,7 @@ _build/native/debug/build/buguoshixc/mooncalc/cmd/main/main.exe bench --corpus c
 - [ADR 0004：纯计算核心 + 薄 IO 壳，引擎支持全后端](docs/adr/0004-pure-core-thin-io-shell.md)
 - [ADR 0005：新建 mooncalc 仓库，moonpack 归档](docs/adr/0005-new-mooncalc-repo.md)
 - [ADR 0006：函数子集取通用表格自动化口径，约 50 个](docs/adr/0006-general-purpose-function-subset.md)
-- [ADR 0007：函数 50→60（统计/文本/数学/查找族扩列）](docs/adr/0007-function-subset-expansion.md)
+- [ADR 0007：函数 50→60（统计/文本/数学/查找族扩列）](docs/adr/0007-sixty-function-subset.md)
 - [ADR 0008：M8 核心引用语义（跨表 / 定义名称 / 整列整行）](docs/adr/0008-m8-reference-semantics.md)
 - [工具链实测记录](docs/toolchain.md)
 - [重算性能基准](docs/performance.md)

@@ -197,6 +197,8 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 
 动态数组/溢出、隐式交集 `@`（顶层单列 Range 的取首行行为只模拟了宏取 ZZ1 的场景）、3D 引用 `Sheet1:Sheet3!A1`、外部工作簿链接、工作表级（sheet-scoped）定义名称、未加引号的数字开头表名、R1C1、数组字面量、交集（空格）与联合、函数调用中的空实参（如 XLOOKUP 省略中间可选参数）、1904 日期系统、locale 相关解析与格式（货币、非 ISO 日期顺序、locale 文本函数）、非 BMP 大小写映射、locale 星期名/月份名、TEXT 颜色/locale 前缀/分数段、`TEXT` General 回退且 `|x|>=1e11`、XLOOKUP 二分+通配符组合、IFS 奇数参数（Excel 拒绝录入，spec 标 `subset-out`）。
 
+上述排除项均为本引擎**声明子集的范围选择**，用于把不可验证的语义排除在验收分母之外，不构成与生态内其他实现的能力对比；与 mbtexcel 0.3.2 的逐项差异见 `docs/comparison-mbtexcel.md`。
+
 默认重算（迭代关闭，Excel 默认）下环上单元格 = 0 并标 `circular:true`；启用迭代计算走 opt-in API（见「迭代计算」一节）。跨表/名称/整列整行的增量与解释为“不可枚举即回退全量/降级披露”，不改变结果语义。
 
 ## 数值对照策略（bench）

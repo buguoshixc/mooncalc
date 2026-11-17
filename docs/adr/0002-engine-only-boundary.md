@@ -6,7 +6,7 @@
 
 ## 备选方案
 
-- 引擎 + XLSX 读写集成：演示更直观，但范围翻倍，且正面撞上官方 `moonbitlang/office.mbt` 已排期的 formula calculation 与 cache refresh（其 TODO.md 将 Formula verification/cache refresh 明确列在 Deferred 段）。
+- 引擎 + XLSX 读写集成：演示更直观，但范围翻倍，且与官方 `moonbitlang/office.mbt` 的 formula calculation 路线存在重叠风险（该判断参考 2026-10 时其仓库 TODO；本轮未复核上游现状）。
 - 引擎 + 公式审计/依赖分析层：差异化更强，但 16 天内多做一层风险偏高。
 
 ## 后果
