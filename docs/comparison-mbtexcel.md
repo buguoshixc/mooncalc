@@ -64,7 +64,7 @@ mbtexcel 的 1,267 条桶分解（`corpus/reports/mbtexcel.json`）：
 | 跨表引用 `Sheet!A1` / `Sheet!A1:B2` | ✅ | ✅ 基础形态通过 | 探针 `probe-xsheet-ref` 双方通过；`refs-xsheet` 语料 24/26，2 条失败均非“跨表解析”本身（1 条跨表自环、1 条 200 格深链，见本表「循环引用」「依赖深度」两行） |
 | 整列/整行 `A:A` / `2:2` | ✅（used-range 展开） | ✅ 基础形态通过（解析器另有 `parse_range_unbounded`） | 探针 `probe-whole-col` 双方通过；语料 wholecol 15/15、wholerow 11/11；上游 `inspect/range.mbt:56/:71` |
 | 工作簿级定义名称（存储 API） | ✅ `Grid.names` | ✅ `set/get/delete/get_defined_names` | `xlsx/workbook.mbt:926/961/984/227`、`xlsx/workbook_compat.mbt:89` |
-| 工作簿级定义名称（公式求值） | ✅ | ⚠️ 部分可用：24 条名称用例通过 15，失败 9（7 条 `#VALUE!` + 2 条名称环 SIGSEGV） | 探针 `probe-defined-name`（`=Rate*2` 期望 0.14，得 `#VALUE!`）；失败 7 条为 `refs-names-001/002/016/019/020/023/024`。对照：`refs-names-001`（`RATE`→`Data!$A$1`）失败而 `refs-names-013`（`DATA_RATE`→`Data!$A$1`）通过，两者名称体相同、仅标识符不同；失败涉及的 `RATE` 与 `N` 均为上游已注册函数名（`xlsx/formula_builtins.mbt`），`N` 那条还同时含带引号表名因素，未拆分。发布包内有名称求值代码（`xlsx/formula_eval.mbt:2`），本表只报告实测，不推断机制 |
+| 工作簿级定义名称（公式求值） | ✅ | ⚠️ 部分可用：24 条名称用例通过 15，失败 9（7 条 `#VALUE!` + 2 条名称环 SIGSEGV） | 探针 `probe-defined-name`（`=Rate*2` 期望 0.14，得 `#VALUE!`）；失败 7 条为 `refs-names-001/002/016/019/020/023/024`。对照：`refs-names-001`（`RATE`→`Data!$A$1`）失败而 `refs-names-013`（`DATA_RATE`→`Data!$A$1`）通过，两者名称体相同、仅标识符不同；失败涉及的 `RATE` 与 `N` 均为上游已注册函数名（`xlsx/formula_builtins.mbt`），`N` 那条还同时含带引号表名因素，未拆分。发布包内有名称求值代码（`xlsx/formula_eval.mbt:2`），补充可观测链：`refs-names-016` 顶层公式 `=A1` 不含名称引用，但其引用的 A1 单元格公式为 `=Rate*2`（记录 `names` 含 `RATE`→`Data!$A$1`），`#VALUE!` 经 A1 传递；本条不能单独区分名称注册层与公式引用层，机制不推断。本表只报告实测 |
 | 循环定义名称 | ✅ `#NAME?`（真实 Excel 答案键） | ❌ 实测进程 SIGSEGV | `refs-names-011/012`；适配器二分到单条记录，`engine-crash` 桶（报告 `actual: null`） |
 | 循环引用（迭代关闭） | ✅ 环上 = 0 + `circular:true` | ❌ `#CALC!` | 探针 `probe-circular-no-iter`；语料 `refs-xsheet-021`（`Data!A1` 内的裸 `A1` 指回自身，构成跨表自环；Excel 环上=0，mbtexcel `#CALC!`） |
 | 依赖深度 | 按 Excel 公式长度限制求值（8192 字符，约 4000 项左结合链，迭代不递归） | ❌ 深链 `#CALC!`（源码上限 128；实测 200 格链失败，未二分阈值） | `docs/semantics.md:48`；`xlsx/formula_parse.mbt:10` `max_depth: 128`、`xlsx/formula_builtins_stats.mbt:1837`；`refs-probe-008`（200 格）与 `probe-200-chain` |
@@ -135,7 +135,7 @@ mbtexcel 的 1,267 条桶分解（`corpus/reports/mbtexcel.json`）：
 | `TEXT` 格式串 | `text-text-0006` `=TEXT(1.5,"0.??")`：`"1.5 "` → `"1.5"`；`text-text-0009` `=TEXT("abc","0")`：`"abc"` → `#VALUE!`；`text-text-0143` `=TEXT(2.675,"0.00")`：`"2.68"` → `"2.67"` | value-mismatch | 28 |
 | 迭代计算 | `iter-self-diverge-0001`（A1=`=A1+1`，100/0.001）：101 → `#CALC!`；`iter-self-converge-0002`：1.9990234375 → `#CALC!`；`iter-text-cycle-0007`：`"0xx"` → `"#CALC!x"` | type 12 + value 2 | 14（/18） |
 | 时钟不可比 | `TODAY`/`NOW` 类（答案键注入 `now`）→ 读宿主时钟 | clock-no-injection | 33 |
-| 定义名称求值 | `refs-names-001` `=Rate`：0.07 → `#VALUE!`；`refs-names-019` `=Rate+Tax`：2.5 → `#VALUE!` | type-mismatch | 7（全部涉及与内置函数同名的标识符 `RATE`/`N`；`RATE` 与 `DATA_RATE` 的名称体同为 `Data!$A$1`，前者失败、后者通过，对照见能力矩阵） |
+| 定义名称求值 | `refs-names-001` `=Rate`：0.07 → `#VALUE!`；`refs-names-019` `=Rate+Tax`：2.5 → `#VALUE!` | type-mismatch | 7（全部涉及与内置函数同名的标识符 `RATE`/`N`；`RATE` 与 `DATA_RATE` 的名称体同为 `Data!$A$1`，前者失败、后者通过，对照见能力矩阵；补充可观测链：`refs-names-016` 顶层公式 `=A1` 不含名称引用，但其引用的 A1 单元格公式为 `=Rate*2`（记录 `names` 含 `RATE`→`Data!$A$1`），`#VALUE!` 经 A1 传递；本条不能单独区分名称注册层与公式引用层，机制不推断） |
 | 名称环崩溃 | `refs-names-011/012`：`#NAME?` → SIGSEGV | engine-crash | 2 |
 | 错误字面量作实参 | `logic-iferror-0007` `=IFERROR(1/0,#N/A)`、`lookup-xlookup-0033`、`gen-count-0009`、`gen-counta-0005` → 解析拒绝 | parse-error | 4 |
 | 深链 / 跨表自环 | `refs-probe-008` 200 格链：200 → `#CALC!`；`refs-xsheet-021`（`Data!A1` 内裸 `A1` 指回自身）：0 → `#CALC!` | type-mismatch | 2 |

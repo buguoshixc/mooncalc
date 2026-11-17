@@ -84,7 +84,7 @@ MoonBit 生态里“有没有公式引擎”已经有答案：`moonbitlang/mbtex
 2. **逐条隔离**：每条记录新建工作簿/求值上下文；记录之间不共享状态（定义名称、工作表、迭代设置都要在记录结束后清理/丢弃）。
 3. **写入 grid**（与 [`corpus/schema.md`](../corpus/schema.md) 一致）：JSON 数字 → 数值；字符串 → 文本（含文本型数字）；`true`/`false` → 布尔；`null` → 空白；`{"formula":"=..."}` → 公式；`{"error":"#N/A"}` → 错误值。`SHEET!A1` 键创建命名工作表，裸 `A1` 键写主表；`names` 字段写入引擎的名称存储（引擎没有名称存储时，该记录按实际结果/不支持处理，不得伪造）。
 4. **答案格**：把 `formula` 原样写入固定单元格（参考实现写主表 `ZZ1`；主表名 `MoonCalcMain`，若记录本身占用该名则改名），调用**单格求值入口**（参考实现 `Workbook::calc_cell_typed`）。
-5. **四态映射**：number / text / bool / error / blank（`None` 视为 blank）；blank 归一为数值 0 与 harness 一致；错误按 `#...#` 字符串名比较。
+5. **值态映射（五态）**：number / text / bool / error / blank（`None` 视为 blank）；blank 归一为数值 0 与 harness 一致；错误按 `#...#` 字符串名比较。
 6. **分类**：按 §2.2 顺序判定；容差可用 `--tol` / `--clock-tol` 覆盖并写入报告。
 7. **时钟**：引擎支持注入时用记录的 `now`；不支持 → `clock-no-injection`，不得计通过。
 8. **迭代**：记录带 `iter` 时，按 `max_iterations`/`max_change` 求值；引擎若“存设置但求值不读”，如实计失败并在 `attribution.iteration` 披露。
