@@ -66,7 +66,7 @@ moon run examples/xlsx-demo --target native -- run   # 3 表读→算→写 outp
 
 ## 作为 mooncakes 库使用
 
-已发布：[mooncakes.io/buguoshixc/mooncalc](https://mooncakes.io/buguoshixc/mooncalc)（0.3.0；M8 版 0.4.0 已就绪、`moon publish --dry-run` 通过，API 文档由平台依据 `///` 注释自动生成）。
+已发布：[mooncakes.io/buguoshixc/mooncalc](https://mooncakes.io/buguoshixc/mooncalc)（**0.4.0**，M8 版；API 文档由平台依据 `///` 注释自动生成）。
 
 ```bash
 moon add buguoshixc/mooncalc
