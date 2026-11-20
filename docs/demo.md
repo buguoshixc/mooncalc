@@ -1,6 +1,6 @@
 # 端到端演示脚本
 
-四层验证 + 五个演示，全程离线。所有命令在仓库根目录执行；`moon` 需 `export PATH="$HOME/.moon/bin:$PATH"`。
+四层验证 + 六个演示，全程离线。所有命令在仓库根目录执行；`moon` 需 `export PATH="$HOME/.moon/bin:$PATH"`。
 
 ## 0. 一键全量验证
 
@@ -10,7 +10,7 @@ bash scripts/run-bench.sh    # 权威语料跑分（默认 corpus/cases）
 node scripts/smoke.mjs       # headless Chromium 冒烟（39 断言）
 ```
 
-预期：`ALL CHECKS PASS`；`1267/1267 passed (100%)`（真实 Excel 语料，含 M8 refs 批）；`SMOKE PASS`。
+预期：`ALL CHECKS PASS`（166 项单测，native + wasm-gc）；`1505/1505 passed (100%)`（真实 Excel 语料：旧批 1,267 + M9 数组批 238）；`SMOKE PASS`。
 
 ## 1. CLI：互引 + 错误 + 循环的网格
 
@@ -37,12 +37,12 @@ fixture 看点（对应输出）：
 ## 2. bench：N/X% 与逐条归因
 
 ```bash
-... bench --corpus corpus/cases --report corpus/reports/real.json          # 1267/1267（100%）
+... bench --corpus corpus/cases --report corpus/reports/real.json          # 1505/1505（100%）
 ... bench --corpus corpus/provisional                                    # 过渡语料，34/34
 ... bench --corpus tests/fixtures/badcorpus --fail-under 0.95; echo "exit=$?"   # 1（有差异）
 ```
 
-看点：按 source 分栏、buckets（match / excel-precision / clock-tolerance / numeric-tolerance / value-mismatch / …）、逐条 FAIL 的 expected/actual。权威语料为桌面 Excel 2024/2610 导出的 **1,267 条**（1,169 旧语料 + 98 条 M8 refs 批），当前 100% 通过（1,247 match + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，后三个桶为可披露的表征/时钟容差；2 条奇数参数 IFS 与 3 条非法/重复定义名称被 Excel 拒绝录入，显式标为子集外；5 条超出声明子集的探针另存 `corpus/excluded/`，不计入分母）。
+看点：按 source 分栏、buckets（match / excel-precision / clock-tolerance / numeric-tolerance / value-mismatch / …）、逐条 FAIL 的 expected/actual。权威语料为桌面 Excel 2024/2610 导出的 **1,505 条**（旧 1,267：1,169 旧语料 + 98 条 M8 refs 批；M9 数组批 238 条），当前 100% 通过（1,485 match + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，后三个桶为可披露的表征/时钟容差；2 条奇数参数 IFS 与 3 条非法/重复定义名称被 Excel 拒绝录入，按非法输入处理；5 条非稳态旧探针另存 `corpus/excluded/`，不计入分母；数组批 p014/p015/p126 排除理由见 PROVENANCE）。
 
 M8 引用语义的差分探针（12 条，含定义名称、跨表环、200 格链）：
 
@@ -50,7 +50,7 @@ M8 引用语义的差分探针（12 条，含定义名称、跨表环、200 格�
 ... bench --corpus corpus/probes
 ```
 
-MoonCalc 通过 10/12：未过的 `SUMSQ`/`COUNTBLANK` 不在 60 函数声明子集内（`#NAME?`），语义探针 10/10。
+MoonCalc 通过 10/12：未过的 `SUMSQ`/`COUNTBLANK` 尚未实现（返回 `#NAME?`，M10 缺口），语义探针 10/10。
 
 ## 3. playground：现场改格
 
@@ -88,9 +88,31 @@ moon run examples/xlsx-demo --target native -- run   # 读→算→写并读回�
 - 预期输出：`xlsx-demo verification PASS: 65/65`，前缀 `xlsx-demo: sheets=3 formulas=16 literals=17 names=3`。
 - 引擎核心零改动：IO 全部在 `examples/` 壳层，`scripts/check.sh` 的零 IO 守卫不受影响。
 
+### 4.1 数组版：交集 / 隐式交集 / CSE / 动态 spill（M9）
+
+```bash
+moon run examples/array-demo --target native -- gen
+moon run examples/array-demo --target native -- run
+```
+
+看点（35 项逐格断言）：
+
+- `Data` 表 A1:C3 = 1..9；`Report` 表 10 个公式：
+  - `A1 =SUM(Data!A1:B2 Data!B2:C3)` → 5（交集 B2）；
+  - `A2 =Data!A1:A3` → 4、`C3 =Data!A1:C1` → 3（普通公式的隐式交集，宿主行/列）；
+  - `A3 =@Data!A1:C1` → 1（显式 `@`）；
+  - `A4 =SUM((Data!A1:A2,Data!B1:B2))` → 12（并集聚合）；
+  - `A5 ={1,2;3,4}` → 1，`B1 =SUM({1,2}+{10;20})` → 66（数组字面量/广播）；
+  - `A7 =Data!A1:C3` → `#VALUE!`（2D 宿主不在区域内）；
+  - CSE `D4:E5 =Data!A1:B2*2` → `[[2,4],[8,10]]`，回写 `t="array" ref="D4:E5"`，followers 写缓存值；
+  - 动态 `G4 =Data!A1:B2+10` → spill `G4:H5 = [[11,12],[14,15]]`，followers 按字面值回写。
+- 读回断言：公式、缓存值、followers、CSE `formula_type=Array`/`range_ref`、Data 字面量未改动；共 35 项。
+- **诚实限制**：mbtexcel 0.3.2 可写 CSE 的 `t="array"`/`ref`，但没有动态 spill 元数据；动态数组的 follower 缓存值以字面值写入，读回断言逐格校验，不能声称写了 Excel 的动态数组元数据。
+- 预期输出：`array-demo: formulas=10 checks=35 failures=0`。
+
 ## 5. 矩阵与署名偏差
 
-打开 [support-matrix.md](support-matrix.md) 与 [semantics.md](semantics.md)：60 函数状态、Excel 2024 语料裁定项（TEXT 条件分段/累计时长、EOMONTH 边界、criteria 空/错误条件、XLOOKUP 二分、TEXTJOIN `#CALC!`）、显式契约（未注入时钟→#NUM!、子集外 TEXT→#VALUE!、IFS 奇数参数被 Excel 拒录）。
+打开 [support-matrix.md](support-matrix.md) 与 [semantics.md](semantics.md)：61 函数状态、M9 数组/交集语义、Excel 2024 语料裁定项（TEXT 条件分段/累计时长、EOMONTH 边界、criteria 空/错误条件、XLOOKUP 二分、TEXTJOIN `#CALC!`）、公开契约（未注入时钟→#NUM!、当前未覆盖的 TEXT 格式→#VALUE!、IFS 奇数参数属 Excel 拒录的非法输入）。
 
 ## 退出码约定（评审可脚本化）
 

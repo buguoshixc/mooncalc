@@ -1,1 +1,1 @@
-members = [".", "examples/xlsx-demo"]
+members = [".", "examples/xlsx-demo", "examples/array-demo"]

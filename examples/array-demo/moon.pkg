@@ -1,0 +1,14 @@
+// array-demo：真实 xlsx 读 → MoonCalc 数组语义计算 → 回写 → 读回逐格断言。
+// 引擎零 IO；文件读写全部在本示例壳层，使用 mbtexcel 0.3.2。
+import {
+  "moonbitlang/core/env" @env,
+  "moonbitlang/x/fs" @fs,
+  "moonbitlang/mbtexcel" @mbtexcel,
+  "moonbitlang/mbtexcel/xlsx" @xlsx,
+  "buguoshixc/mooncalc/src/engine" @engine,
+  "buguoshixc/mooncalc/src/value" @value,
+}
+
+supported_targets = "native"
+
+pkgtype(kind: "executable")

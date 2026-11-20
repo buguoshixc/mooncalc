@@ -8,6 +8,8 @@ package "buguoshixc/mooncalc-xlsx-demo"
 // Types and methods
 type FormulaCell
 
+type LiteralCell
+
 // Type aliases
 
 // Traits
