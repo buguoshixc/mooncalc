@@ -1,10 +1,12 @@
-# 函数支持矩阵（60 函数 + M8 核心引用语义）
+# 函数/语义支持矩阵（61 函数 + M8 引用语义 + M9 数组语义）
 
-状态截至 2026-11-17（M8 完成）。**权威语料（真实 Excel 导出）**：`corpus/cases/` **1,267 条**——旧 8 文件 1,169 条由 Excel 2024（16.0.20527.20196, zh-CN）生成（含 M7 新增 150 条函数 + 18 条迭代），M8 refs 批 98 条由桌面 Excel 2610（16.0.20527.20196）单批生成（来源与 SHA-256 见 `corpus/cases/PROVENANCE.md`）。2 条奇数参数 IFS 与 3 条非法/重复定义名称被 Excel 拒绝录入（`logic.skipped.txt`、`refs.skipped.txt`，不进入分母）；5 条超出 M8 声明子集的探针另存 `corpus/excluded/`，不计分。权威跑分 **1,267/1,267（100%）**（报告 `corpus/reports/real.json`）：1,247 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，无未归因失败。
+状态截至 2026-11-21（M9 完成）。**目标标准**：桌面 Excel 2024 / 2610（16.0.20527.20196，zh-CN）公式语言与计算语义，承诺完整符合性（[ADR 0009](adr/0009-full-conformance-endpoint.md)）；本矩阵是当前覆盖快照，不是终点。
+
+**权威语料（真实 Excel 导出）**：`corpus/cases/` **1,505 条**——旧 8 文件 1,169 条 + M8 refs 98 条 + M9 数组/交集批 238 条。旧批由 Excel 2024/2610 生成；M9 数组批 238 条全部由桌面 Excel 2610 单批生成（`corpus/probes/arrays.tsv` + `arrays.results.json`，SHA-256 见 `corpus/cases/PROVENANCE.md`）。2 条奇数参数 IFS 与 3 条非法/重复定义名称被 Excel 拒绝录入（`logic.skipped.txt`、`refs.skipped.txt`，不进入分母）；5 条非稳态旧探针另存 `corpus/excluded/`，不计分；数组批 exclusions p014/p015/p126 见 PROVENANCE。权威跑分 **1,505/1,505（100%）**（报告 `corpus/reports/real.json`）：1,485 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，无未归因失败。
 
 - 规格用例：`corpus/spec/*.tsv` 共 **1,171 条**（另 8 行表头）；逐函数计数按「公式中出现该函数调用」统计（含嵌套，一条用例可计入多个函数）。M8 另新增 `corpus/spec/refs.tsv` **106 条**（跨表 / 定义名称 / 整列整行 / mbtexcel 偏差探针），答案键由桌面 Excel 单批生成后并入分母；回收前标 provisional，不伪造。
-- 权威语料列：**1,169 条已生成语料**中该函数的通过数；括号外的分子/分母均来自实际生成记录。
-- 跑分口径：精确相等为主；15 位有效数字表征差（相对差 ≤1e-14）单列 `excel-precision` 桶并通过，`clock` 用例用绝对天数容差单列 `clock-tolerance` 桶并通过，孤代理对表征差单列 `surrogate-representation` 桶并通过——三桶都在报告中披露（本版：match 1,149 + clock-tolerance 3 + excel-precision 16 + surrogate-representation 1）。
+- 下表「权威语料」列是**旧 1,169 条已生成语料**中的函数通过数，用于逐函数历史覆盖；M9 新增 238 条数组/交集批不按函数计数，统一计入全量 1,505。
+- 跑分口径：精确相等为主；15 位有效数字表征差（相对差 ≤1e-14）单列 `excel-precision` 桶并通过，`clock` 用例用绝对天数容差单列 `clock-tolerance` 桶并通过，孤代理对表征差单列 `surrogate-representation` 桶并通过——三桶都在报告中披露（旧 1,169 批：match 1,149 + clock-tolerance 3 + excel-precision 16 + surrogate-representation 1；本版全量 1,505 批：match 1,485 + 同三桶）。
 - 过渡跑分（source: manual）：`corpus/provisional/` 34/34；语义细节见 [semantics.md](semantics.md)。
 
 ## 逻辑（8）
@@ -12,7 +14,7 @@
 | 函数 | 状态 | 规格用例（1,171 旧） | 权威语料（1,169 旧语料） | 偏差 / 说明 |
 |---|---|---|---|---|
 | IF | 已实现（惰性） | 23 | 23/23 | — |
-| IFS | 已实现（惰性，M6 新增） | 16 | 14/14 | 首 TRUE 取对应值；无匹配 `#N/A`；奇数参数 `#VALUE!`；2 条奇数参数规格被 Excel 拒绝录入（子集外，不进入分母） |
+| IFS | 已实现（惰性，M6 新增） | 16 | 14/14 | 首 TRUE 取对应值；无匹配 `#N/A`；奇数参数 `#VALUE!`；2 条奇数参数规格被 Excel 拒绝录入（非法输入，不进入分母） |
 | SWITCH | 已实现（M6 新增） | 17 | 17/17 | 表达式求值一次；`=` 语义比较（无通配）；表达式/已求值候选的错误立即传播；命中值/默认值惰性 |
 | AND | 已实现（急切） | 17 | 17/17 | 引用数字格按 ≠0 参与；字面文本 TRUE/FALSE 参与、其余文本忽略 |
 | OR | 已实现（急切） | 16 | 16/16 | 同 AND |
@@ -20,7 +22,7 @@
 | IFERROR | 已实现（惰性） | 15 | 15/15 | — |
 | XOR | 已实现（M7 新增，急切） | 15 | 15/15 | TRUE 个数奇→TRUE；通道同 AND/OR；无逻辑值 `#VALUE!`；急切错误传播已裁定 |
 
-## 数学（13）
+## 数学（14）
 
 | 函数 | 状态 | 规格用例（1,171 旧） | 权威语料（1,169 旧语料） | 偏差 / 说明 |
 |---|---|---|---|---|
@@ -34,7 +36,8 @@
 | SQRT | 已实现 | 16 | 16/16 | 结果经 15 位有效数字表征桶 1 条 |
 | SUM | 已实现（双通道） | 19 | 19/19 | — |
 | SUMIF | 已实现（比较符+通配符+空/错误条件） | 43 | 43/43 | 空条件匹配空白/空文本；`"<>"` 匹配非空白；错误条件与同值错误格匹配；M6 新增 28 条 criteria 边界已全部生成并裁定 |
-| SUMPRODUCT | 已实现 | 15 | 15/15 | — |
+| SUMPRODUCT | 已实现 | 15 | 15/15 | 维度不一致→`#VALUE!`；并集参数拒绝（Excel 实测） |
+| PRODUCT | 已实现（M9 新增） | 15 | 15/15 | 数值通道乘积；无数值→0；并集按区域展开 |
 | CEILING | 已实现（M7 新增，legacy） | 15 | 15/15 | 商的 15 位归一后 ceil；number>0 且 sig<0→`#NUM!`；sig=0→0；符号组合已裁定 |
 | FLOOR | 已实现（M7 新增，legacy） | 17 | 17/17 | 同 CEILING 镜像（floor）；**sig=0→`#DIV/0!`**（与 CEILING 不对称，已裁定） |
 
@@ -81,7 +84,7 @@
 | VLOOKUP | 已实现（精确+近似） | 17 | 17/17 | — |
 | XLOOKUP | 已实现（M6 新增，含 search_mode ±2 二分） | 49 | 49/49 | 向量 look/return、match 0/-1/1/2、search 1/-1/2/-2；二分按 lower_bound，无序输入可能未命中（按实测）；二分+通配符/小数模式 `#VALUE!` |
 | HLOOKUP | 已实现（精确+近似） | 15 | 15/15 | — |
-| INDEX | 已实现（0→整行/列） | 18 | 18/18 | 顶层单列 0 行结果取首行（Excel 隐式交集到公式列） |
+| INDEX | 已实现（0→整行/列，支持并集 area_num） | 18 | 18/18 | 返回引用：宿主格隐式交集；`0,0` 整表；并集第 4 参数选区域 |
 | MATCH | 已实现（0/1/-1+通配符） | 31 | 31/31 | 空文本精确查找不命中空白格，命中空文本格；通配符/转义/空查找边界已生成并裁定 |
 | CHOOSE | 已实现（M7 新增，惰性） | 15 | 15/15 | index trunc 1-based；越界→`#VALUE!`；只求被选值 |
 
@@ -110,13 +113,29 @@ M8 不新增函数，补齐的是“引用如何落到单元格”。契约与�
 | 整列 `A:A` / 整行 `2:2` | 已实现 | m8_test | 按该表 used-range 展开；空表 1×1；缺表 `#REF!` |
 | 增量重算 × 引用语义 | 已实现 | m8_test | 名称/限定引用进依赖图；不可枚举（整列/名称环）→ 全量回退并上报 |
 | 错误解释 × 引用语义 | 已实现 | m8_test | 跨表前驱；不可枚举依赖降级为纯错误前驱链（`oversized`），不静默丢前驱 |
-| 3D `Sheet1:Sheet3!A1` / 外部链接 / R1C1 / 数组字面量 | 显式排除 | parser_test | 解析错误（见 semantics.md 排除清单） |
+| 3D `Sheet1:Sheet3!A1` / 外部链接 / R1C1 / 工作表级名称 / 空实参 | **当前缺口（M11）** | parser_test | 解析错误或未实现；是里程碑，不是验收范围外 |
+
+## 数组/交集/并集语义（M9，非函数）
+
+M9 新增标准数组语义。逐项契约、探针与答案键见 [semantics.md 的「数组与交集/并集语义」](semantics.md) 与 [ADR 0009](adr/0009-full-conformance-endpoint.md)。
+
+| 能力 | 状态 | 覆盖 | 说明 |
+|---|---|---|---|
+| 数组字面量 `{1,2;3,4}` | 已实现 | arrays 批 + parser_test | 矩形/非空校验；普通公式取左上角，CSE/动态展开 |
+| 逐元素运算与广播 | 已实现 | arrays 批 | 结果 max(行/列)；单行/单列/标量广播；越界 `#N/A` |
+| 交集（空格） | 已实现 | arrays 批 | 公共矩形；空 `#NULL!`；链式交集；并集叉积 |
+| 并集（括号内逗号） | 已实现 | arrays 批 | 聚合展开、重复格重复计数；标量/动态顶层 `#VALUE!`；SUMIF/COUNTIF/SUMPRODUCT 拒绝 |
+| `@` 显式交集 | 已实现 | arrays 批 | 引用按隐式交集；数组取左上角；并集 `#VALUE!` |
+| 隐式交集 | 已实现 | arrays 批 + array-demo | 行/列/二维规则；宿主格由 `eval_at_key`/`recalc_arrays` 提供 |
+| CSE 多格 | 已实现 | arrays 批 + array_test | 选区填充/截断/广播/`#N/A`/标量填充；阻塞 `#SPILL!`；`ArrayLayout` 侧契约 |
+| 动态 spill / `#SPILL!` / `#` | 已实现 | arrays 批（阻塞）+ array_test（`#`/spill 引用） | 阻塞检测；spill 格可引用；`D4#` 区域引用；`#` 普通公式隐式交集 |
 
 ## 汇总
 
-- 60/60 已注册；`moon test` 159 项全绿（引擎语义回归 + codec + 语法 + bench 桶 + 限制边界 + 确定性 fuzz + 增量等价 + 迭代 + explain + batch4 + M8 引用语义）。
+- **61/61 已注册**；`moon test` **166 项**全绿（native + wasm-gc；引擎语义回归 + codec + 语法 + bench 桶 + 限制边界 + 确定性 fuzz + 增量等价 + 迭代 + explain + batch4 + M8 引用语义 + M9 数组/CSE/spill）。
 - 运算符/语法另有 28 条规格用例（优先级、`-2^2`、`2^3^2`、`%`、`&`、一元 `+`、比较排序、错误字面量、空白引用），不调用任何函数。
-- 权威语料 **1,267/1,267（100%）**：1,247 精确命中；3 clock-tolerance；16 excel-precision（STDEV/VAR/PERCENTILE/SQRT 等 15 位表征差）；1 surrogate-representation（REPLACE 半代理对，VBA 序列化为 U+FFFD）。无未归因失败。M8 refs 批 98/98（跨表互引/区域、引号表名、名称链、整列整行、缺表 `#REF!`、名称环 `#NAME?`）。
+- 权威语料 **1,505/1,505（100%）**：旧 1,267（1,247 精确命中；3 clock-tolerance；16 excel-precision；1 surrogate-representation）+ M9 数组批 238（全 match）。无未归因失败。M8 refs 批 98/98（跨表互引/区域、引号表名、名称链、整列整行、缺表 `#REF!`、名称环 `#NAME?`）。
 - M6 规格用例新增 251 条（总 1,003）：5 个新函数 112 条、criteria 边界 53 条、MATCH 边界 12 条、TEXT 新格式 61 条、XLOOKUP 二分/空查找 13 条；除 2 条 Excel 拒绝录入的 IFS 奇数参数外全部生成答案键并通过。
 - M7（ADR 0007）新增 10 函数 150 条 + 迭代 18 条（总 1,171 规格 / 1,169 生成）：全部裁定通过（10 函数各 15/15，FLOOR 含嵌套 17/17）；迭代语义裁定为「初始 1 轮 + 至多 N 轮、每轮后查收敛、非数值变化不阻止收敛」。
-- M8（ADR 0008）新增核心引用语义（跨表 / 工作簿级名称 / 整列整行）+ `corpus/spec/refs.tsv` 106 条规格；答案键已由桌面 Excel 回收（106 行导出 103 条，3 条非法/重复名称被 Excel 拒录；5 条超出声明子集另存 `corpus/excluded/`），98 条计入分母并全部通过；旧 1,169 条在 M8 后分桶不变。
+- M8（ADR 0008）新增核心引用语义（跨表 / 工作簿级名称 / 整列整行）+ `corpus/spec/refs.tsv` 106 条规格；答案键已由桌面 Excel 回收（106 行导出 103 条，3 条非法/重复名称被 Excel 拒录；5 条非稳态旧探针另存 `corpus/excluded/`），98 条计入分母并全部通过；旧 1,169 条在 M8 后分桶不变。
+- M9（ADR 0009）新增数组语义 + `corpus/probes/arrays.tsv` 238 条真实 Excel 探针答案键；函数新增 PRODUCT（61）；`corpus/cases/arrays.json` 238/238 通过；全量 1,505/1,505；数组 demo 35/35；探针 239 条中 236 通过（2 条 `SUM (` 有意分歧 + 1 条不稳定覆盖探针，书面记录）。

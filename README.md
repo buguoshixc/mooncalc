@@ -2,13 +2,13 @@
 
 **Excel 兼容的电子表格公式引擎，用 MoonBit 编写。**
 
-> 状态（2026-11-17，M8 完成）：60 函数引擎（**MoonBit**）＋**核心引用语义**（跨表 `Sheet!A1`、工作簿级定义名称、整列整行 `A:A`/`2:2`，ADR 0008）、native CLI、wasm-gc playground、mbtexcel 读→算→写示例（**多表**版）；AST 缓存（热态约 2.6×）、增量重算（改一格 5×）、可选迭代计算、错误解释 API（explain + 依赖图）。**真实 Excel 答案键语料 1,267/1,267（100%）**（桌面 Excel 2024 · 16.0.20527.20196 · zh-CN 生成；2 条奇数参数 IFS + 3 条非法/重复定义名称被 Excel 拒绝录入，显式标为子集外；5 条超出声明子集的探针另存 `corpus/excluded/` 不计分），无未归因失败：1,247 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation。另有 12 条 M8 语义探针（`corpus/probes/`）与 mbtexcel 0.3.2 的差分对照（[docs/comparison-mbtexcel.md](docs/comparison-mbtexcel.md)）。2026 MoonBit 年度黑客松 11 月赛参赛项目。
+> 状态（2026-11-21，M9 完成）：**目标标准＝桌面 Excel 2024 / 2610（Build 16.0.20527.20196，zh-CN）的公式语言与计算语义，承诺完整符合性**（[ADR 0009](docs/adr/0009-full-conformance-endpoint.md)）；当前已实现 61 函数、交集/并集/`@`、隐式交集、数组字面量、CSE 与动态 spill，native CLI、wasm-gc playground、mbtexcel 读→算→写示例（多表版 + 数组版）；AST 缓存、增量重算、可选迭代计算、错误解释 API。**真实 Excel 答案键语料 1,505/1,505（100%）**（旧 1,267 条 + M9 数组批 238 条；桌面 Excel 2024 · 2610 · zh-CN 生成），无未归因失败：1,485 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation。另有 239 条语义探针（236 通过，2 条有意分歧 + 1 条不稳定覆盖探针，见 `corpus/cases/PROVENANCE.md`）与 mbtexcel 0.3.2 的差分对照（旧 1,267 条，[docs/comparison-mbtexcel.md](docs/comparison-mbtexcel.md)）。2026 MoonBit 年度黑客松 11 月赛参赛项目。
 
 ## 这是什么
 
 MoonCalc 接收一组单元格——每个单元格承载字面值或公式——按 Excel 语义求值并返回结果或错误值。它不读写 `.xlsx` 文件，文件读写交给 mbtexcel 这类工具，MoonCalc 只负责计算。
 
-项目走“窄而深”的路线：实现 60 个核心函数，覆盖逻辑、文本、数学、统计、查找、日期六族；每个函数的弱类型强制转换、错误值传播和边界情形都要严格对照真实 Excel。正确性用真实 Excel 生成的答案键语料逐条验证，对外公开用例数和通过率，未通过的用例逐条归因。
+项目以 **Excel 2024 / 2610 的公式语言与计算语义为最终验收终点**，承诺完整符合性；当前实现 61 个函数（六族 + PRODUCT）与 M9 数组/交集/并集/隐式交集/CSE/动态 spill 语义。函数数量是当前覆盖，不是终点：未实现的标准语义作为公开缺口进入里程碑（[ADR 0009](docs/adr/0009-full-conformance-endpoint.md)），不再声明为“验收范围外”。正确性用真实 Excel 生成的答案键语料逐条验证，对外公开用例数和通过率，未通过的用例逐条归因；不把失败用例移出分母。
 
 ## 浏览器演示
 
@@ -27,7 +27,7 @@ MoonCalc 接收一组单元格——每个单元格承载字面值或公式—�
 ```bash
 export PATH="$HOME/.moon/bin:$PATH"
 
-# 全量验证：双目标构建 + 159 项单测 + 零 IO 守卫
+# 全量验证：双目标构建 + 166 项单测 + 零 IO 守卫
 bash scripts/check.sh
 
 # CLI：求值一个含引用链/错误传播/循环引用的网格
@@ -60,6 +60,14 @@ export PATH="$HOME/.moon/bin:$PATH"
 moon run examples/xlsx-demo --target native -- gen   # 生成 fixture _build/xlsx-demo/input.xlsx
 moon run examples/xlsx-demo --target native -- run   # 3 表读→算→写 output.xlsx，并逐表读回断言
 # xlsx-demo verification PASS: 65/65 (formula + cached value + literal + expected-result checks)
+```
+
+M9 数组版（交集、隐式交集、CSE 2×2、动态 spill 2×2；CSE 回写 `t="array"`，动态 spill 缓存值按字面值回写并披露）：
+
+```bash
+moon run examples/array-demo --target native -- gen
+moon run examples/array-demo --target native -- run
+# array-demo: formulas=10 checks=35 failures=0
 ```
 
 完整演示脚本见 [docs/demo.md](docs/demo.md)。
@@ -112,33 +120,33 @@ fn main {
 
 | 层 | 数字 | 性质 |
 |---|---|---|
-| 单元/快照测试 | 159/159 | 手写期望（引擎语义回归 + codec + 语法 + bench 桶 + 限制边界 + 确定性 fuzz + 增量等价 + 迭代 + explain） |
+| 单元/快照测试 | 166/166（native + wasm-gc 同测） | 手写期望（引擎语义回归 + codec + 语法 + bench 桶 + 限制边界 + 确定性 fuzz + 增量等价 + 迭代 + explain + 数组/CSE/spill） |
 | 过渡语料 bench | 34/34（100%） | source: manual，**非权威**，仅证明流程 |
-| 用例规格 | 1,277 条（corpus/spec/，每函数 ≥15 + M8 refs 批 106） | 1,272 条已生成权威答案键（2 条奇数参数 IFS + 3 条非法/重复定义名称被 Excel 拒录）；其中 5 条超出声明子集或属非稳态，另存 `corpus/excluded/`，验收分母 1,267 |
-| **真实 Excel 语料** | **1,267/1,267（100%）** | 桌面 Excel 为唯一裁判；1,247 match + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，0 条未归因失败，见 `corpus/reports/real.json`；M8 refs 批（98 条）含跨表/名称/整列整行 |
+| 用例规格 | 1,277 条旧规格（corpus/spec/）+ M9 数组/交集 238 条（corpus/probes/arrays.tsv） | 旧批 1,272 条生成权威答案键（2 条奇数参数 IFS + 3 条非法/重复定义名称被 Excel 拒录）；其中 5 条非稳态另存 `corpus/excluded/`，旧分母 1,267；数组批 238/238 录入成功 |
+| **真实 Excel 语料** | **1,505/1,505（100%）** | 桌面 Excel 为唯一裁判；旧 1,267（1,247 match + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation）+ M9 数组批 238（全 match），0 条未归因失败，见 `corpus/reports/real.json`；M8 refs 批（98 条）含跨表/名称/整列整行 |
 
 比较策略：默认精确相等；**15 位有效数字表征差**（相对差 ≤1e-14）单列 `excel-precision` 桶并通过（源头是 Excel/VBA 只能以 15 位十进制序列化答案）；`clock` 用例按**绝对天数**容差（`--clock-tol`，默认 1e-6 天）单列 `clock-tolerance` 桶并通过（`now` 由生成器在同一重算里经 `=NOW()` 辅助格捕获）；**孤代理对表征差**（VBA 将 REPLACE 半代理对切割产生的孤代理对序列化为 U+FFFD）单列 `surrogate-representation` 桶并通过；相对差 <1e-9 仍单列 `numeric-tolerance` 桶计失败并归因。权威报告：`corpus/reports/real.json`。
 
-这把尺子不只量 MoonCalc：schema、1,267 条答案键、生成器、桶/归因规则与适配器契约已整理成可复用验收套件（[docs/conformance-kit.md](docs/conformance-kit.md)），任何引擎都能接入；mbtexcel 0.3.2 的 1,023/1,267 就是由该套件的独立适配器（`examples/compare`，不 import mooncalc）产出的。
+这把尺子不只量 MoonCalc：schema、1,505 条答案键、生成器、桶/归因规则与适配器契约已整理成可复用验收套件（[docs/conformance-kit.md](docs/conformance-kit.md)），任何引擎都能接入；mbtexcel 0.3.2 的 1,023/1,267 是旧批上的独立适配器（`examples/compare`，不 import mooncalc）产出，M9 数组批尚未纳入该适配器（不把旧分母数字冒充新分母）。
 
 ## 设计要点
 
 - **纯计算核心，不做任何 IO**：同一份核心同时编译到 native 和 wasm-gc；`scripts/check.sh` 机械守卫（双目标构建 + grep 禁 `@fs`/`@sys`/`println`）。native 侧跑答案键语料对照，wasm-gc 侧做浏览器 playground。
 - **输入是内存网格契约**：单元格网格是唯一数据契约，JSON 序列化跨进程传递；CLI 与 wasm 导出共用同一 codec。
-- **函数子集是公开契约**：子集外行为显式约定（未知函数 `#NAME?`、TEXT 子集外 `#VALUE!`），见 [docs/semantics.md](docs/semantics.md)。
+- **完整符合性是终点，当前覆盖是里程碑**：未知函数 `#NAME?`、未覆盖格式 `#VALUE!` 只是当前行为，不是“验收范围外”；缺口与里程碑见 [ADR 0009](docs/adr/0009-full-conformance-endpoint.md) 与 [docs/semantics.md](docs/semantics.md)。
 - **核心不读系统时钟**：`TODAY`/`NOW` 由调用方注入 `now`（未注入 → `#NUM!`），同一份语料任何时候跑出同样结果。
 - **循环引用复刻 Excel 默认**（迭代关闭）：环上单元格 = 0，元数据标 `circular:true`；循环定义名称按真实 Excel 答案键返回 `#NAME?`（不返回 0）。
 - **M8 核心引用语义**：跨表引用/区域 `Sheet!A1`、带引号表名、工作簿级定义名称、整列整行按 used-range 展开（不静默截断；缺表 `#REF!`）；增量/解释对不可枚举依赖显式回退并披露（ADR 0008）。
 - **离线、确定性**：不调用模型 API 或网络服务，适合放进 CI 做回归对照。
 - **不崩溃保证**：复刻 Excel 公式限制（≤8192 字符、≤64 层嵌套），超限返回 `ParseError`；长二元链迭代求值，任何输入在 native 与 wasm-gc 上都不会栈溢出（边界回归 + 确定性 fuzz 守卫）。
 
-## 函数子集（60，已全部实现）
+## 当前函数覆盖（61，里程碑 M9 快照；终点是全部内置函数）
 
 | 族 | 函数 |
 | --- | --- |
 | 逻辑 | IF、IFS、SWITCH、AND、OR、NOT、IFERROR、XOR |
 | 文本 | LEFT、RIGHT、MID、LEN、TRIM、UPPER、LOWER、CONCAT、TEXTJOIN、TEXT、VALUE、FIND、SUBSTITUTE、REPLACE、SEARCH、PROPER |
-| 数学 | ROUND、ROUNDUP、ROUNDDOWN、ABS、INT、MOD、POWER、SQRT、SUM、SUMIF、SUMPRODUCT、CEILING、FLOOR |
+| 数学 | ROUND、ROUNDUP、ROUNDDOWN、ABS、INT、MOD、POWER、SQRT、SUM、SUMIF、SUMPRODUCT、PRODUCT、CEILING、FLOOR |
 | 统计 | AVERAGE、COUNT、COUNTA、COUNTIF、MIN、MAX、MEDIAN、STDEV、VAR、PERCENTILE |
 | 查找 | VLOOKUP、XLOOKUP、HLOOKUP、INDEX、MATCH、CHOOSE |
 | 日期 | DATE、EOMONTH、YEAR、MONTH、DAY、TODAY、NOW |
@@ -163,7 +171,7 @@ fn main {
 - [x] M6：`examples/xlsx-demo`（mbtexcel 读→算→写，核心零改动）
 - [x] M6：函数 45→50（XLOOKUP、IFS、SWITCH、TEXTJOIN、EOMONTH）+ 75+ 条新规格用例
 - [x] M6：TEXT 加深（E+/E- 科学计数、[h]/[m]/[s] 累计时长、[>100] 条件分段）+ criteria 边界语料
-- [x] M6：桌面 Excel 2024 生成新增答案键 → bench 修复循环（1,001/1,001，2 条 Excel 拒录 IFS 显式子集外）
+- [x] M6：桌面 Excel 2024 生成新增答案键 → bench 修复循环（1,001/1,001，2 条 Excel 拒录 IFS 按非法输入处理）
 - [x] M6：playground 依赖图/错误上溯/新预设（smoke 20 断言）
 - [x] 健壮性加固：Excel 公式限制（8192 字符/64 层嵌套）+ 长链迭代求值，修复超长/超深公式段错误；边界回归 + 确定性 fuzz（88 项单测）
 - [x] 公开 API 文档补全（全部 pub 类型/构造器/字段/方法 /// 注释）
@@ -178,10 +186,11 @@ fn main {
 - [x] M8：核心引用语义（跨表/带引号表名/定义名称/整列整行；`Grid.names`、`eval_at_key`、`explain_at_key`、CLI `--names`）+ ADR 0008
 - [x] M8：答案键语料 refs 批（桌面 Excel 生成 103/106，裁定后 98 条进分母；1,267/1,267）+ 12 条语义探针 + mbtexcel 0.3.2 差分报告（`corpus/reports/mbtexcel.json`，1,267 条）
 - [x] M8：`examples/xlsx-demo` 多表版（3 表 + 定义名称，读→算→写 65/65 断言）；comparison 文档、申报书与 README 数字同步
+- [x] M9：目标标准与完整符合性终点（ADR 0009，0003/0006/0007 Superseded）；交集/并集/`@`/隐式交集/数组字面量/CSE/动态 spill；数组批 238 条真实 Excel 答案键（1,505/1,505）；`examples/array-demo` 35/35；PRODUCT
 
 ## 语料生成（用户侧动作）
 
-权威语料已由桌面 Excel 生成并放入 `corpus/cases/`（**1,267 条**；旧 8 文件 1,169 条 + M8 refs 批 98 条。2 条奇数参数 IFS 与 3 条非法/重复定义名称被 Excel 拒绝录入，见 `corpus/cases/logic.skipped.txt`、`refs.skipped.txt`；5 条超出声明子集的探针另存 `corpus/excluded/`；来源、版本与 SHA-256 见 [corpus/cases/PROVENANCE.md](corpus/cases/PROVENANCE.md)）。重新生成时在桌面 Excel 运行 [corpus/excel/generate_corpus.bas](corpus/excel/generate_corpus.bas)：全量用 `GenerateCorpus`，单批（如 `corpus/spec/refs.tsv`）用 `GenerateCorpusOne`（说明见 [corpus/excel/README.md](corpus/excel/README.md)），把导出的 JSON 放入 `corpus/cases/`，然后：
+权威语料已由桌面 Excel 生成并放入 `corpus/cases/`（**1,505 条**；旧 8 文件 1,169 条 + M8 refs 批 98 条 + M9 数组批 238 条。2 条奇数参数 IFS 与 3 条非法/重复定义名称被 Excel 拒绝录入，见 `corpus/cases/logic.skipped.txt`、`refs.skipped.txt`；5 条非稳态旧探针另存 `corpus/excluded/`；数组批 exclusions p014/p015/p126 见 `corpus/cases/PROVENANCE.md`；来源、版本与 SHA-256 见 [corpus/cases/PROVENANCE.md](corpus/cases/PROVENANCE.md)）。重新生成时在桌面 Excel 运行 [corpus/excel/generate_corpus.bas](corpus/excel/generate_corpus.bas)：全量用 `GenerateCorpus`，单批（如 `corpus/spec/refs.tsv`）用 `GenerateCorpusOne`（说明见 [corpus/excel/README.md](corpus/excel/README.md)），把导出的 JSON 放入 `corpus/cases/`，然后：
 
 ```bash
 _build/native/debug/build/buguoshixc/mooncalc/cmd/main/main.exe bench --corpus corpus/cases --report corpus/reports/real.json
@@ -197,6 +206,7 @@ _build/native/debug/build/buguoshixc/mooncalc/cmd/main/main.exe bench --corpus c
 - [ADR 0006：函数子集取通用表格自动化口径，约 50 个](docs/adr/0006-general-purpose-function-subset.md)
 - [ADR 0007：函数 50→60（统计/文本/数学/查找族扩列）](docs/adr/0007-sixty-function-subset.md)
 - [ADR 0008：M8 核心引用语义（跨表 / 定义名称 / 整列整行）](docs/adr/0008-m8-reference-semantics.md)
+- [ADR 0009：完整符合性终点——Excel 2024 / 2610 公式语言](docs/adr/0009-full-conformance-endpoint.md)
 - [工具链实测记录](docs/toolchain.md)
 - [重算性能基准](docs/performance.md)
 - [一致性验收套件（conformance kit）](docs/conformance-kit.md)

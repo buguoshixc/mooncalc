@@ -1,16 +1,16 @@
 # MoonCalc vs mbtexcel 0.3.2：能力矩阵与语义差分
 
-> 日期：2026-11-17（2026-11-18 增补「口径继承」与「架构能力矩阵」两节）　被测版本：`moonbitlang/mbtexcel@0.3.2`（钉死，`moon info` 与 `moon.mod` 均记录）　MoonCalc：本仓库 `main`（M8 完成后）
-> 判官：**桌面 Excel 2026-11-17 生成的答案键**（`corpus/cases/`，1,267 条；环境见 [corpus/cases/PROVENANCE.md](../corpus/cases/PROVENANCE.md)）。
+> 日期：2026-11-17（2026-11-18 增补「口径继承」与「架构能力矩阵」；2026-11-21 M9 更新）　被测版本：`moonbitlang/mbtexcel@0.3.2`（钉死，`moon info` 与 `moon.mod` 均记录）　MoonCalc：本仓库 `main`（M9 完成后）
+> 判官：**桌面 Excel 2026-11-17 生成的旧批答案键**（`corpus/cases/` 中 1,267 条；环境见 [corpus/cases/PROVENANCE.md](../corpus/cases/PROVENANCE.md)）。M9 新增的 238 条数组/交集答案键**不在本差分内**（mbtexcel 适配器尚未扩展数组通道）；本文件不把旧 1,267 分母冒充 1,505。
 > 本文件中的每个数字都能用文末命令从仓库重跑；报告与哈希一并入库。
 
 ## 一句话结论
 
-mbtexcel 0.3.2 是**功能宽度远大于 MoonCalc 的 XLSX 库**（含公式求值，约 438 个规范函数名），但在“声明子集内的公式语义”上，用同一份真实 Excel 答案键做差分，**1,267 条里通过 1,023 条（80.7%）**；244 条失败全部逐条落在五个桶里（没有“其他”桶），每桶都有代表行与归因（见下）。MoonCalc 在同一份答案键上 **1,267/1,267**。两者的定位不同：mbtexcel 解决“读写 xlsx + 尽量算”，MoonCalc 解决“把声明子集内的公式算得和 Excel 一样，并把不可枚举依赖做成增量/可解释 API”。
+mbtexcel 0.3.2 是**功能宽度远大于 MoonCalc 的 XLSX 库**（含公式求值，约 438 个规范函数名），但在“旧批 1,267 条公式语义”上，用同一份真实 Excel 答案键做差分，**1,267 条里通过 1,023 条（80.7%）**；244 条失败全部逐条落在五个桶里（没有“其他”桶），每桶都有代表行与归因（见下）。MoonCalc 在同一份旧批答案键上 **1,267/1,267**；加上 M9 数组批后全量 **1,505/1,505**（该批不在本差分内）。两者的定位不同：mbtexcel 解决“读写 xlsx + 尽量算”，MoonCalc 解决“把当前覆盖的公式语义算得和 Excel 一样，并把不可枚举依赖做成增量/可解释 API”；完整终点见 [ADR 0009](adr/0009-full-conformance-endpoint.md)。
 
 诚实让步放在最前面：
 
-- **函数广度**：mbtexcel 约 438 个规范函数名（发布包两张 handler 表去重、折叠 `_XLFN.` 前缀与 `XdotY` 拼写后可复算），MoonCalc 是 60 个。差距是数量级的，本文件不试图用 60 个函数去论证“更强的电子表格引擎”。
+- **函数广度**：mbtexcel 约 438 个规范函数名（发布包两张 handler 表去重、折叠 `_XLFN.` 前缀与 `XdotY` 拼写后可复算），MoonCalc 当前是 61 个。差距是数量级的，本文件不试图用 61 个函数去论证“更强的电子表格引擎”。
 - **文件能力**：mbtexcel 读写 `.xlsx`（工作表、样式、图元等），MoonCalc 核心不碰文件；本项目通过 `examples/xlsx-demo` 把两者组合成读→算→写链路。
 - **生态位置**：mbtexcel 是 MoonBit 生态里已有的 XLSX 方案；MoonCalc 的差异化在“真实 Excel 答案键驱动的语义深度 + 增量/解释 + 引用语义的求值一致性”。跨表引用、整列整行、定义名称的**存储 API** 这些单项能力上游也已具备，逐项分层见下方能力矩阵与架构能力矩阵；不声称替代它。
 
@@ -60,7 +60,7 @@ mbtexcel 的 1,267 条桶分解（`corpus/reports/mbtexcel.json`）：
 
 | 能力 | MoonCalc | mbtexcel 0.3.2 | 证据 |
 | --- | --- | --- | --- |
-| 公式求值 | 60 函数 + M8 引用语义 | 约 438 个规范函数名 | `xlsx/formula_builtins.mbt:133`（`build_raising_handlers`）与 `:252`（`build_plain_handlers`）；折叠 `_XLFN.` 与 `XdotY` 拼写、去重后可复算 438；`README.mbt.md:18` “300+ built-in functions” |
+| 公式求值 | 61 函数 + M8 引用语义 + M9 数组语义 | 约 438 个规范函数名 | `xlsx/formula_builtins.mbt:133`（`build_raising_handlers`）与 `:252`（`build_plain_handlers`）；折叠 `_XLFN.` 与 `XdotY` 拼写、去重后可复算 438；`README.mbt.md:18` “300+ built-in functions” |
 | 跨表引用 `Sheet!A1` / `Sheet!A1:B2` | ✅ | ✅ 基础形态通过 | 探针 `probe-xsheet-ref` 双方通过；`refs-xsheet` 语料 24/26，2 条失败均非“跨表解析”本身（1 条跨表自环、1 条 200 格深链，见本表「循环引用」「依赖深度」两行） |
 | 整列/整行 `A:A` / `2:2` | ✅（used-range 展开） | ✅ 基础形态通过（解析器另有 `parse_range_unbounded`） | 探针 `probe-whole-col` 双方通过；语料 wholecol 15/15、wholerow 11/11；上游 `inspect/range.mbt:56/:71` |
 | 工作簿级定义名称（存储 API） | ✅ `Grid.names` | ✅ `set/get/delete/get_defined_names` | `xlsx/workbook.mbt:926/961/984/227`、`xlsx/workbook_compat.mbt:89` |
@@ -74,7 +74,7 @@ mbtexcel 的 1,267 条桶分解（`corpus/reports/mbtexcel.json`）：
 | 增量重算 API | ✅ 改一格只算下游（5.2×）+ 回退元数据 | ❌ 无 | `grep -rn "pub fn .*recalc"` 0 命中 |
 | 错误解释 / 依赖图 | ✅ `explain` + `dependency_graph` | ❌ 无 | 本仓库 `src/engine/explain.mbt`、`incremental.mbt` |
 | 系统时钟注入 | ✅ `now` 参数（未注入 → `#NUM!`） | ❌ 硬读 `@env.now()` | 33 条 `clock` 语料不可比 |
-| 真实 Excel 答案键语料 | ✅ 1,267 条入库（生成器 + 溯源 + 哈希） | ❌ 无 `.xlsx`/答案键 fixture | 发布包内 `find . -name "*.xlsx" \| wc -l` = 0；上游自述的验收目标是 excelize 语义对齐（`README.mbt.md:6`；`:397-416` 指向 `../scripts/test_parity_gates.sh`、`../docs/excelize-parity.md` 等，**这些 docs/scripts 不在发布包内**） |
+| 真实 Excel 答案键语料 | ✅ 1,505 条入库（旧批 1,267 + M9 数组 238；生成器 + 溯源 + 哈希） | ❌ 无 `.xlsx`/答案键 fixture | 发布包内 `find . -name "*.xlsx" \| wc -l` = 0；上游自述的验收目标是 excelize 语义对齐（`README.mbt.md:6`；`:397-416` 指向 `../scripts/test_parity_gates.sh`、`../docs/excelize-parity.md` 等，**这些 docs/scripts 不在发布包内**） |
 | 错误字面量作公式实参 | ✅ | ❌ 解析拒绝 | 4 条 `parse-error`：`logic-iferror-0007`、`lookup-xlookup-0033`、`gen-count-0009`、`gen-counta-0005`（`InvalidXml(msg="formula args invalid")`） |
 | 读/写 `.xlsx` | ❌（交给示例壳） | ✅ | `xlsx/workbook.mbt` 读写 API |
 
@@ -91,7 +91,7 @@ mbtexcel 的 1,267 条桶分解（`corpus/reports/mbtexcel.json`）：
 | `probe-200-chain` | 200 格跨表链 `=H5` | `200` | `#CALC!` | 深链失败（源码深度上限常量 128；实测 200 格失败，未二分阈值） |
 | `probe-defined-name` | `=Rate*2`（RATE→`Data!$A$1`=0.07） | `0.14` | `#VALUE!` | 实测三种写法（`=Rate`、`=Rate*2`、`=SUM(Rate,1)`）均 `#VALUE!`；本探针只记录该可观测行为 |
 
-探针汇总：mbtexcel **6/12 通过**（6 条偏差：1 条 `value-mismatch` + 5 条 `type-mismatch`）；MoonCalc **10/12**，未过的 2 条（`SUMSQ`、`COUNTBLANK`）是**函数不在 60 条声明子集内**（结果 `#NAME?`，属于公开契约“子集外 = `#NAME?`”，不是语义判错）。语义探针口径：MoonCalc 10/10。
+探针汇总：mbtexcel **6/12 通过**（6 条偏差：1 条 `value-mismatch` + 5 条 `type-mismatch`）；MoonCalc **10/12**，未过的 2 条（`SUMSQ`、`COUNTBLANK`）是**函数尚未实现**（结果 `#NAME?`，属于公开缺口 M10，不是“语义判错”，也不是验收范围外）。语义探针口径：MoonCalc 10/10。
 
 全语料里同源的偏差还有：
 
@@ -181,16 +181,16 @@ mbtexcel 的公开 API 面取自发布包 0.3.2 的 `pub fn` 与文档注释（�
 
 1. **上游能构 wasm**：README 明写库与 CLI 都可构 wasm；差异不在“能否编译 wasm”，而在“零 IO 纯核心契约 + 双目标同测 + 浏览器内交互 playground”。
 2. **单格入口 ≠ 整网格 API**：`calc_cell_typed` 每次调用重算、无记忆化（源码注释自述）；增量/解释/迭代在其公开 API 里不存在。第三方当然可以在其上自建，但那是第三方代码，不是它的能力。
-3. **R1C1 是范围选择**：上游另有 R1C1 入口 `calc_cell_typed_rc`/`calc_cell_value_rc`（`:2076`/`:2144`）；MoonCalc 在附录 C 书面排除 R1C1，这是子集选择，不计入本矩阵的“有/无”。
+3. **R1C1 是当前缺口**：上游另有 R1C1 入口 `calc_cell_typed_rc`/`calc_cell_value_rc`（`:2076`/`:2144`）；MoonCalc 的 R1C1 仍是未实现里程碑（M11），不是“验收范围外”。
 4. **计数口径**：438 由两张 handler 表（564 个注册条目：80 个 `_XLFN.` 别名、46 个 `XdotY` 拼写）去重、折叠后得到；这是“注册名”数，不代表每个都达到 Excel 语义（本文 244 条失败即为反证）。
 
 ## 复现边界与分母口径
 
-- MoonCalc 的判官只有桌面 Excel：1,267 条答案键由 VBA 生成器在同一台 Excel 2610 上逐条重算后读出（生成器、溯源、SHA-256 全入库），比较桶规则公开。代价是覆盖面窄（60 函数）与语料生成需要人工/N 次桌面 Excel 会话。
+- MoonCalc 的判官只有桌面 Excel：旧批 1,267 条答案键由 VBA 生成器在同一台 Excel 2610 上逐条重算后读出，M9 数组批 238 条由 COM 探针 harness 生成（生成器、溯源、SHA-256 全入库），比较桶规则公开。代价是当前函数面仍窄（61 函数）与语料生成需要桌面 Excel 会话。
 - 两者的“通过率”不在同一分母上：mbtexcel 的 1,267 条里有 33 条时钟用例它**无法**参与比较（无注入 API），我们把它单列为 `clock-no-injection` 而不是算失败；即便把这 33 条全部按通过计，mbtexcel 也只有 1,056/1,267（83.3%）。
 - 重跑边界：`total`/`passed`/`buckets`/失败 id 集合可复现；33 条 clock 的 `actual` 随宿主时钟变化，因此重跑报告的 SHA 与入库报告不同，这是报告已声明的预期漂移。
 
 ## 何时用谁
 
 - 要**读写 xlsx / 样式 / 大而全的函数面**：用 mbtexcel。
-- 要**把声明子集内的公式算到与 Excel 逐格一致**、需要**增量重算/错误解释/确定性时钟**、或要把 xlsx 计算接进自己的服务：用 MoonCalc；需要文件能力时按 `examples/xlsx-demo` 组合两者（读→算→写，核心零 IO）。
+- 要**把当前覆盖的公式语义算到与 Excel 逐格一致**、需要**增量重算/错误解释/确定性时钟**、或要把 xlsx 计算接进自己的服务：用 MoonCalc；需要文件能力时按 `examples/xlsx-demo` 组合两者（读→算→写，核心零 IO）。
