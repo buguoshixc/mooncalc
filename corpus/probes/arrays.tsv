@@ -1,0 +1,238 @@
+p001	D4	normal	1	1	=A1:A2 B1:B2	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+p002	D4	normal	1	1	=A1:B2 B2:C3	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p003	D4	normal	1	1	=A1:B3 B2:C4	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9;A4=n:10;B4=n:11;C4=n:12
+p004	B2	normal	1	1	=A1:B3 B2:C4	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9;A4=n:10;B4=n:11;C4=n:12
+p007	D4	normal	1	1	=A1,B1	A1=n:1;B1=n:2
+p008	D4	normal	1	1	=(A1,B1)	A1=n:1;B1=n:2
+p009	D4	normal	1	1	=A1:B2,C1:D2	A1=n:1;B1=n:2;A2=n:3;B2=n:4;C1=n:5;D1=n:6;C2=n:7;D2=n:8
+p010	D4	normal	1	1	=(A1,B1)+0	A1=n:1;B1=n:2
+p011	D4	normal	1	1	=SUM((A1:A2,B1:B2))	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+p012	D4	normal	1	1	=COUNT((A1:A2,B1:B2))	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+p013	D4	normal	1	1	=SUM((A1,B1))	A1=n:1;B1=n:2
+p016	D4	normal	1	1	=A1 (B1)	A1=n:1;B1=n:2
+p017	D4	normal	1	1	=(A1:B2) (B2:C3)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p018	C3	normal	1	1	=A1:A5	A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5
+p019	C3	normal	1	1	=A1:C1	A1=n:1;B1=n:2;C1=n:3
+p020	B2	normal	1	1	=A1:C3	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p021	D4	normal	1	1	=A1:C3	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p022	A1	normal	1	1	=A1:C3	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p023	D1	normal	1	1	=A1:C3	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p024	A4	normal	1	1	=A1:C3	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p025	B3	normal	1	1	=A:A	A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5
+p026	B3	normal	1	1	=1:1	A1=n:1;B1=n:2;C1=n:3
+p027	C3	normal	1	1	=@A1:A5	A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5
+p028	C3	normal	1	1	=@A1:C1	A1=n:1;B1=n:2;C1=n:3
+p029	B2	normal	1	1	=@A1:C3	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p030	D4	normal	1	1	=@A1:C3	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p031	D4	normal	1	1	=@5	
+p032	D4	normal	1	1	=@A1	A1=n:1
+p033	D4	normal	1	1	=@SUM(A1:A5)	A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5
+p034	C3	normal	1	1	=@INDEX(A1:C3,0,1)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p035	C3	normal	1	1	=@A1:A5+1	A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5
+p036	C3	normal	1	1	=SUM(@A1:A5)	A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5
+p037	D4	normal	1	1	=@{1,2}	
+p038	D4	normal	1	1	={1,2;3,4}	
+p039	D4	dynamic	1	1	={1,2;3,4}	
+p040	D4	cse	2	2	={1,2;3,4}	
+p041	D4	cse	1	1	={1,2;3,4}	
+p042	D4	cse	1	3	={1,2}	
+p043	D4	cse	2	2	=1+1	
+p044	D4	cse	2	2	=A1:B2	A1=n:1;B1=n:2;A2=n:3;B2=n:4
+p045	C3	normal	1	1	=A1:A3*2	A1=n:1;A2=n:2;A3=n:3
+p046	D4	normal	1	1	=A1:A3*2	A1=n:1;A2=n:2;A3=n:3
+p047	D4	cse	1	1	=SUM(A1:A3*2)	A1=n:1;A2=n:2;A3=n:3
+p048	D4	normal	1	1	=SUM(A1:A3*2)	A1=n:1;A2=n:2;A3=n:3
+p049	D4	dynamic	1	1	=SUM(A1:A3*2)	A1=n:1;A2=n:2;A3=n:3
+p050	D4	dynamic	1	1	=A1:A3*2	A1=n:1;A2=n:2;A3=n:3
+p051	D4	dynamic	1	1	={1,2}+1	
+p052	D4	dynamic	1	1	=1+{1,2}	
+p053	D4	dynamic	1	1	={1,2}+{10;20}	
+p054	D4	dynamic	1	1	={1,2;3,4}+{10,20}	
+p055	D4	dynamic	1	1	={1,2;3,4}+{10;20}	
+p056	D4	dynamic	1	1	={1,2;3,4}+10	
+p057	D4	dynamic	1	1	={1,2;3,4}+{1,2,3}	
+p058	D4	dynamic	1	1	={1,2}+{1,2,3}	
+p059	D4	dynamic	1	1	={1,"2"}+1	
+p060	D4	dynamic	1	1	={1,"a"}+1	
+p061	D4	dynamic	1	1	={TRUE,FALSE}+1	
+p062	D4	dynamic	1	1	={1,2;3,4}*{1;1}	
+p063	D4	dynamic	1	1	={1,2;3,4}*{1,1}	
+p064	D4	dynamic	1	1	=SUM({1,2;3,4})	
+p065	D4	dynamic	1	1	=SUM({1,2}*2)	
+p066	D4	dynamic	1	1	=SUM({1,2}+{10;20})	
+p067	D4	dynamic	1	1	=SUM({1,2}*{10;20})	
+p068	D4	dynamic	1	1	=SUMPRODUCT({1,2},{10;20})	
+p069	D4	dynamic	1	1	=COUNT({1,"a";TRUE,#N/A})	
+p070	D4	dynamic	1	1	={1,"2";TRUE,#N/A}	
+p080	D4	normal	1	1	=SUM(A1:B1,B1:C1)	A1=n:1;B1=n:2;C1=n:3
+p081	D4	normal	1	1	=SUM((A1:B1,B1:C1))	A1=n:1;B1=n:2;C1=n:3
+p082	D4	normal	1	1	=SUM(A1:A2 B1:B2)	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+p083	D4	normal	1	1	=A1:B2 B2:C3	A1=n:1;B1=n:2;C1=n:3;A2=n:4;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p084	A2	normal	1	1	=A1:B3 A2:C2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p085	C2	normal	1	1	=A1:B3 A2:C2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p086	D4	dynamic	1	1	=A1:B3 A2:C2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p087	D4	normal	1	1	=A1:B3 A2:C2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p088	D4	normal	1	1	=A1 + B1	A1=n:1;B1=n:2
+p089	D4	normal	1	1	=A1+B1	A1=n:1;B1=n:2
+p090	D4	normal	1	1	=A1 +B1	A1=n:1;B1=n:2
+p091	D4	normal	1	1	=A1+ B1	A1=n:1;B1=n:2
+p092	D4	normal	1	1	=B1 (A1)	A1=n:1;B1=n:2
+p097	D4	normal	1	1	=A1:B2 B2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p098	D4	normal	1	1	=B2 A1:B2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p099	D4	normal	1	1	=A1:B2 A1:B2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p100	D4	dynamic	1	1	=A1:B2 A1:B2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p101	D4	normal	1	1	=SUM(A1:B2 B2:C3)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p102	D4	normal	1	1	=(A1:B2,B2:C3) B2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p103	D4	normal	1	1	=COUNTIF((A1:A2,B1:B2),">1")	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+p104	D4	normal	1	1	=SUM((A1:A2,B1:B2)*2)	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+p105	A1	normal	1	1	=(A1:B2,B2:C3)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p106	D4	normal	1	1	=SUM((A1:B2,B2:C3))	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p107	D4	normal	1	1	=A1:B2,C1:D2	A1=n:1;B1=n:2;A2=n:3;B2=n:4;C1=n:5;D1=n:6;C2=n:7;D2=n:8
+p108	D4	normal	1	1	=(A1:B2,C1:D2)	A1=n:1;B1=n:2;A2=n:3;B2=n:4;C1=n:5;D1=n:6;C2=n:7;D2=n:8
+p109	D4	normal	1	1	=(A1,B1)+0	A1=n:1;B1=n:2
+p110	D4	cse	3	1	=A1:A3*2	A1=n:1;A2=n:2;A3=n:3
+p111	D4	cse	2	1	=A1:A3*2	A1=n:1;A2=n:2;A3=n:3
+p112	D4	cse	1	1	=A1:A3*2	A1=n:1;A2=n:2;A3=n:3
+p113	D4	cse	3	1	=A1:A3+1	A1=n:1;A2=n:2;A3=n:3
+p114	D4	dynamic	1	1	=A1:A3+1	A1=n:1;A2=n:2;A3=n:3
+p115	C3	normal	1	1	=A1:A3+1	A1=n:1;A2=n:2;A3=n:3
+p116	D4	normal	1	1	=A1:A3+1	A1=n:1;A2=n:2;A3=n:3
+p117	D4	dynamic	1	1	=A1:A3&"-"	A1=n:1;A2=n:2;A3=n:3
+p118	D4	dynamic	1	1	=IF(A1:A3>2,"y","n")	A1=n:1;A2=n:2;A3=n:3
+p119	D4	dynamic	1	1	=IF(A1:A3>2,A1:A3,"n")	A1=n:1;A2=n:2;A3=n:3
+p120	D4	normal	1	1	=SUM(IF(A1:A3>2,A1:A3,0))	A1=n:1;A2=n:2;A3=n:3
+p121	D4	cse	1	1	=SUM(IF(A1:A3>2,A1:A3,0))	A1=n:1;A2=n:2;A3=n:3
+p122	D4	dynamic	1	1	=SUM(IF(A1:A3>2,A1:A3,0))	A1=n:1;A2=n:2;A3=n:3
+p123	C3	normal	1	1	=INDEX(A1:C3,0,1)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p124	C3	dynamic	1	1	=INDEX(A1:C3,0,1)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p125	C3	normal	1	1	=INDEX(A1:C3,0,0)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p127	C3	normal	1	1	=INDEX(A1:C3,1,0)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p128	C3	dynamic	1	1	=INDEX(A1:C3,1,0)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p129	D4	normal	1	1	=INDEX(A1:C3,0,1)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p130	D4	dynamic	1	1	=INDEX(A1:C3,0,1)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p140	C3	normal	1	1	=@INDEX(A1:C3,0,0)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p141	C3	normal	1	1	=@INDEX(A1:C3,0,1)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p142	C3	dynamic	1	1	=@A1:A5	A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5
+p143	D4	dynamic	1	1	=@A1:C3	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+p145	D4	dynamic	1	1	={1;2;3}	
+p146	D4	cse	3	1	={1;2;3}	
+p147	D4	dynamic	1	1	={1,2,3}	
+p150	D4	cse	1	2	={1,2,3}	
+p151	D4	cse	1	3	={1,2}	
+p152	D4	cse	1	3	=1+1	
+p153	D4	cse	1	3	=A1:B2	A1=n:1;B1=n:2;A2=n:3;B2=n:4
+p154	C3	normal	1	1	=SUM(A1:A3*2)	A1=n:1;A2=n:2;A3=n:3
+p155	C3	cse	1	1	=SUM(A1:A3*2)	A1=n:1;A2=n:2;A3=n:3
+p156	C3	dynamic	1	1	=SUM(A1:A3*2)	A1=n:1;A2=n:2;A3=n:3
+p157	E1	normal	1	1	=A1:A5	A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5
+p158	E5	normal	1	1	=A1:A5	A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5
+p159	E1	dynamic	1	1	=A1:A5	A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5
+p160	E5	dynamic	1	1	=A1:A5	A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5
+q001	D4	normal	1	1	=INDEX(A1:C3,0,0)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q002	D4	normal	1	1	=INDEX(A1:C3,1,0)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q005	D4	normal	1	1	={1;2;3}	
+q006	D4	normal	1	1	={1,2;3,4}+0	
+q007	D4	normal	1	1	=A1:A3+0	A1=n:1;A2=n:2;A3=n:3
+q008	C3	normal	1	1	=A1:A3+0	A1=n:1;A2=n:2;A3=n:3
+q009	C3	normal	1	1	=INDEX(A1:A3,0,1)+0	A1=n:1;A2=n:2;A3=n:3
+q012	D4	dynamic	1	1	=@{1,2;3,4}	
+q013	D4	dynamic	1	1	=@INDEX(A1:C3,0,0)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q014	D4	dynamic	1	1	=@INDEX(A1:C3,1,0)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q016	D4	normal	1	1	=@{1,2;3,4}	
+q017	D4	normal	1	1	=@INDEX(A1:C3,0,0)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q018	D4	normal	1	1	=@INDEX(A1:C3,1,0)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q026	D4	cse	1	1	=A1:A2 B1:B2	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+q027	D4	dynamic	1	1	=A1:A2 B1:B2	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+q028	D4	cse	2	2	=A1:B3 B2:C4	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9;A4=n:10;B4=n:11;C4=n:12
+q029	D4	dynamic	1	1	=A1:B3 B2:C4	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9;A4=n:10;B4=n:11;C4=n:12
+q031	D4	normal	1	1	=SUM(A:A 3:3)	A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5
+q032	D4	dynamic	1	1	=A:A 3:3	A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5
+q034	D4	normal	1	1	=SUM(A1:C3 B1:C3 B3:D4)	A1=n:1;B1=n:2;C1=n:3;D1=n:4;A2=n:5;B2=n:6;C2=n:7;D2=n:8;A3=n:9;B3=n:10;C3=n:11;D3=n:12;A4=n:13;B4=n:14;C4=n:15;D4=n:16
+q035	D4	normal	1	1	=SUM(A1:B2 B2:C3 + 1)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q036	D4	normal	1	1	=SUM((A1:B2 B2:C3)+1)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q037	D4	normal	1	1	=SUM((A1:B2,B2:C3) B2)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q038	D4	normal	1	1	=SUM(A1:B2 (B2,C3))	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q039	D4	normal	1	1	=SUM(A1:B2,C1:D2)	A1=n:1;B1=n:2;A2=n:3;B2=n:4;C1=n:5;D1=n:6;C2=n:7;D2=n:8
+q040	D4	normal	1	1	=SUM((A1:B2,C1:D2))	A1=n:1;B1=n:2;A2=n:3;B2=n:4;C1=n:5;D1=n:6;C2=n:7;D2=n:8
+q041	D4	normal	1	1	=MIN((A1:B2,B2:C3))	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q042	D4	normal	1	1	=MAX((A1:B2,B2:C3))	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q043	D4	normal	1	1	=AVERAGE((A1:B2,B2:C3))	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q044	D4	normal	1	1	=PRODUCT((A1:B2,B2:C3))	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q045	D4	normal	1	1	=SUMPRODUCT((A1:B2,B2:C3))	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q046	D4	normal	1	1	=SUMIF((A1:A2,B1:B2),">1")	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+q047	D4	normal	1	1	=INDEX((A1:B2,C1:D2),1,1,2)	A1=n:1;B1=n:2;A2=n:3;B2=n:4;C1=n:5;D1=n:6;C2=n:7;D2=n:8
+q049	D4	normal	1	1	=@(A1,B1)	A1=n:1;B1=n:2
+q050	D4	normal	1	1	=SUM(@(A1,B1))	A1=n:1;B1=n:2
+q051	D4	dynamic	1	1	=(A1,B1)	A1=n:1;B1=n:2
+q052	D4	cse	1	1	=(A1,B1)	A1=n:1;B1=n:2
+q053	D4	cse	2	1	=(A1,B1)	A1=n:1;B1=n:2
+q054	D4	normal	1	1	=A1:B2,B2:C3	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q055	D4	normal	1	1	=SUM(A1:B2,B2:C3)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q057	D4	normal	1	1	=SUM(A1:B2 B2:C3,C1:D2)	A1=n:1;B1=n:2;A2=n:3;B2=n:4;C1=n:5;D1=n:6;C2=n:7;D2=n:8
+q058	D4	normal	1	1	=SUM((A1:B2 B2:C3),C1:D2)	A1=n:1;B1=n:2;A2=n:3;B2=n:4;C1=n:5;D1=n:6;C2=n:7;D2=n:8
+q060	D4	cse	1	1	=A1:A2 B1:B2	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+q061	D4	cse	2	1	=A1:A2 B1:B2	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+q062	D4	dynamic	1	1	=A1:A2 B1:B2	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+q063	D4	dynamic	1	1	=A1:B2 B1:C2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q064	D4	cse	1	2	=A1:B2 B1:C2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q065	D4	normal	1	1	=A1:B2 B1:C2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q066	D4	normal	1	1	=SUM(A1:B2 B1:C2)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q067	D4	normal	1	1	=SUM(A1:B2 B1:C2 + 0)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q068	D4	normal	1	1	=SUM((A1:B2 B1:C2)*2)	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q069	D4	cse	1	2	=(A1:B2 B1:C2)*2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q070	D4	dynamic	1	1	=(A1:B2 B1:C2)*2	A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9
+q071	D4	normal	1	1	={1,"2";TRUE,#N/A}	
+q072	D4	normal	1	1	=@ {1,2;3,4}	
+q073	D4	normal	1	1	=@{1,2;3,4}	
+q074	D4	normal	1	1	=SUM({1,"2";TRUE,#N/A})	
+q075	D4	normal	1	1	=SUM({1,"2"})	
+q076	D4	normal	1	1	=COUNT({1,"2"})	
+q077	D4	normal	1	1	=AVERAGE({1,"2"})	
+q078	D4	normal	1	1	=SUM({TRUE,FALSE})	
+q079	D4	normal	1	1	=COUNT({TRUE,FALSE})	
+q080	D4	normal	1	1	=SUM({1,TRUE})	
+q081	D4	normal	1	1	=COUNT({1,TRUE})	
+q082	D4	normal	1	1	=SUM({#N/A,1})	
+q083	D4	normal	1	1	=SUM({1,2;3,4}+{10,20,30})	
+q084	D4	normal	1	1	=SUM(IF({1,0},{10,20},0))	
+q085	D4	dynamic	1	1	=IF({1,0},{10,20},0)	
+q086	D4	normal	1	1	=SUM({1,2}*{10;20})	
+q087	D4	normal	1	1	=SUM({1,2}+{10;20})	
+q088	D4	normal	1	1	=SUM({1,2;3,4}*{10,20})	
+q089	D4	normal	1	1	=SUM({1,2;3,4}*{10;20})	
+q090	D4	normal	1	1	=SUM({1,2;3,4}+{10;20})	
+q091	D4	normal	1	1	=SUM({1,2;3,4}+{10,20})	
+q092	D4	normal	1	1	=SUMPRODUCT({1,2;3,4},{10;20})	
+q093	D4	normal	1	1	=SUMPRODUCT({1,2;3,4},{10,20})	
+q094	D4	normal	1	1	=SUMPRODUCT({1,2},{10,20})	
+q095	D4	normal	1	1	=SUMPRODUCT({1,2;3,4},{10,20;30,40})	
+q096	D4	normal	1	1	=SUMPRODUCT((A1:A2,B1:B2))	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+q097	D4	normal	1	1	=SUM((A1:A2,B1:B2),C1)	A1=n:1;A2=n:2;B1=n:10;B2=n:20;C1=n:3
+q098	D4	normal	1	1	=COUNT((A1:A2,B1:B2),C1)	A1=n:1;A2=n:2;B1=n:10;B2=n:20;C1=n:3
+q099	D4	normal	1	1	=SUM((A1:A2,B1:B2)) + 0	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+q100	D4	dynamic	1	1	=SUM((A1:A2,B1:B2)) + 0	A1=n:1;A2=n:2;B1=n:10;B2=n:20
+q101	D4	normal	1	1	=SUM(A1:A3 B1:B3)	A1=n:1;A2=n:2;A3=n:3;B1=n:10;B2=n:20;B3=n:30
+q103	D4	normal	1	1	=SUM(A1:A3 A1:A2)	A1=n:1;A2=n:2;A3=n:3
+q104	D4	cse	2	1	=A1:A3 A1:A2	A1=n:1;A2=n:2;A3=n:3
+q105	D4	dynamic	1	1	=A1:A3 A1:A2	A1=n:1;A2=n:2;A3=n:3
+q106	C3	normal	1	1	=A1:A3 A1:A2	A1=n:1;A2=n:2;A3=n:3
+q107	E2	normal	1	1	=A1:A3 A1:A2	A1=n:1;A2=n:2;A3=n:3
+q108	D4	normal	1	1	=SUM(A1:A3 A1:A2)	A1=n:1;A2=n:2;A3=n:3
+q109	D4	normal	1	1	=SUM(A1:A3 A2:A4)	A1=n:1;A2=n:2;A3=n:3;A4=n:4
+q110	D4	normal	1	1	=COUNT(A1:A3 A2:A4)	A1=n:1;A2=n:2;A3=n:3;A4=n:4
+q111	D4	cse	1	3	={1,2}	
+q112	D4	cse	1	2	={1,2,3}	
+q113	D4	cse	2	2	={1,2,3}	
+q114	D4	cse	2	2	={1;2;3}	
+q115	D4	cse	3	1	={1,2,3}	
+q116	D4	cse	2	3	={1,2;3,4}	
+q117	D4	cse	1	2	=1+1	
+q118	D4	cse	2	2	=1+1	
+q119	D4	cse	2	2	=A1:B2	A1=n:1;B1=n:2;A2=n:3;B2=n:4
+q120	D4	cse	3	1	=A1:A3*2	A1=n:1;A2=n:2;A3=n:3
+q121	D4	cse	2	1	=A1:A3*2	A1=n:1;A2=n:2;A3=n:3
+q122	D4	cse	1	1	=A1:A3*2	A1=n:1;A2=n:2;A3=n:3
+q123	D4	cse	1	2	=A1:A3	A1=n:1;A2=n:2;A3=n:3
+q124	D4	cse	3	1	=A1:C1	A1=n:1;B1=n:2;C1=n:3
+s001	D4	dynamic	1	1	={1;2;3}	D5=n:99
+s002	D4	dynamic	1	1	={1,2,3}	E4=n:99

@@ -1,0 +1,2122 @@
+[
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q001",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=INDEX(A1:C3,0,0)",
+        "anchor":  "D4",
+        "entered":  "=INDEX(A1:C3,0,0)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q002",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=INDEX(A1:C3,1,0)",
+        "anchor":  "D4",
+        "entered":  "=INDEX(A1:C3,1,0)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q003",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q004",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=SEQUENCE(1,3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(1,3)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q005",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "={1;2;3}",
+        "anchor":  "D4",
+        "entered":  "={1;2;3}"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q006",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "={1,2;3,4}+0",
+        "anchor":  "D4",
+        "entered":  "={1,2;3,4}+0"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q007",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=A1:A3+0",
+        "anchor":  "D4",
+        "entered":  "=A1:A3+0"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q008",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3",
+        "value":  {
+                      "v":  3,
+                      "t":  "number"
+                  },
+        "formula":  "=A1:A3+0",
+        "anchor":  "C3",
+        "entered":  "=A1:A3+0"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q009",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3",
+        "value":  {
+                      "v":  3,
+                      "t":  "number"
+                  },
+        "formula":  "=INDEX(A1:A3,0,1)+0",
+        "anchor":  "C3",
+        "entered":  "=INDEX(A1:A3,0,1)+0"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q010",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=SEQUENCE(3)+0",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)+0"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q011",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=@SEQUENCE(3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q012",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=@{1,2;3,4}",
+        "anchor":  "D4",
+        "entered":  "={1,2;3,4}"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q013",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=@INDEX(A1:C3,0,0)",
+        "anchor":  "D4",
+        "entered":  "=INDEX(A1:C3,0,0)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q014",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=@INDEX(A1:C3,1,0)",
+        "anchor":  "D4",
+        "entered":  "=INDEX(A1:C3,1,0)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q015",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=@SEQUENCE(3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q016",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=@{1,2;3,4}",
+        "anchor":  "D4",
+        "entered":  "={1,2;3,4}"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q017",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=@INDEX(A1:C3,0,0)",
+        "anchor":  "D4",
+        "entered":  "=INDEX(A1:C3,0,0)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q018",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=@INDEX(A1:C3,1,0)",
+        "anchor":  "D4",
+        "entered":  "=INDEX(A1:C3,1,0)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q019",
+        "hasSpill":  true,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=D4#",
+        "anchor":  "F1",
+        "spillRange":  "F1:F3",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q020",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "v":  2,
+                      "t":  "number"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "F5",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q021",
+        "hasSpill":  true,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=D4#",
+        "anchor":  "F5",
+        "spillRange":  "F5:F7",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q022",
+        "hasSpill":  false,
+        "setup":  "D5=f2:=SEQUENCE(3)",
+        "value":  {
+                      "v":  "#ERRCODE-2146826243!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q023",
+        "hasSpill":  false,
+        "setup":  "D5=f:=1",
+        "value":  {
+                      "v":  "#ERRCODE-2146826243!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "dynamic",
+        "id":  "q024",
+        "setup":  "D5=t:x",
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "error":  "指定的转换无效。",
+        "entered":  null
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q026",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;B1=n:10;B2=n:20",
+        "value":  {
+                      "v":  "#NULL!",
+                      "t":  "error"
+                  },
+        "formula":  "=A1:A2 B1:B2",
+        "anchor":  "D4",
+        "entered":  "=A1:A2 B1:B2"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q027",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;B1=n:10;B2=n:20",
+        "value":  {
+                      "v":  "#NULL!",
+                      "t":  "error"
+                  },
+        "formula":  "=A1:A2 B1:B2",
+        "anchor":  "D4",
+        "entered":  "=A1:A2 B1:B2"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q028",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9;A4=n:10;B4=n:11;C4=n:12",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  5,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  5,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  8,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  8,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=A1:B3 B2:C4",
+        "anchor":  "D4",
+        "entered":  "=A1:B3 B2:C4"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q029",
+        "hasSpill":  true,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9;A4=n:10;B4=n:11;C4=n:12",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  5,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  8,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=A1:B3 B2:C4",
+        "anchor":  "D4",
+        "spillRange":  "D4:D5",
+        "entered":  "=A1:B3 B2:C4"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q031",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5",
+        "value":  {
+                      "v":  3,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(A:A 3:3)",
+        "anchor":  "D4",
+        "entered":  "=SUM(A:A 3:3)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q032",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3;A4=n:4;A5=n:5",
+        "value":  {
+                      "v":  3,
+                      "t":  "number"
+                  },
+        "formula":  "=A:A 3:3",
+        "anchor":  "D4",
+        "entered":  "=A:A 3:3"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q034",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;D1=n:4;A2=n:5;B2=n:6;C2=n:7;D2=n:8;A3=n:9;B3=n:10;C3=n:11;D3=n:12;A4=n:13;B4=n:14;C4=n:15;D4=n:16",
+        "value":  {
+                      "v":  21,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(A1:C3 B1:C3 B3:D4)",
+        "anchor":  "D4",
+        "entered":  "=SUM(A1:C3 B1:C3 B3:D4)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q035",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  6,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(A1:B2 B2:C3 + 1)",
+        "anchor":  "D4",
+        "entered":  "=SUM(A1:B2 B2:C3 + 1)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q036",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  6,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM((A1:B2 B2:C3)+1)",
+        "anchor":  "D4",
+        "entered":  "=SUM((A1:B2 B2:C3)+1)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q037",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  10,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM((A1:B2,B2:C3) B2)",
+        "anchor":  "D4",
+        "entered":  "=SUM((A1:B2,B2:C3) B2)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q038",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  5,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(A1:B2 (B2,C3))",
+        "anchor":  "D4",
+        "entered":  "=SUM(A1:B2 (B2,C3))"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q039",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;A2=n:3;B2=n:4;C1=n:5;D1=n:6;C2=n:7;D2=n:8",
+        "value":  {
+                      "v":  36,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(A1:B2,C1:D2)",
+        "anchor":  "D4",
+        "entered":  "=SUM(A1:B2,C1:D2)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q040",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;A2=n:3;B2=n:4;C1=n:5;D1=n:6;C2=n:7;D2=n:8",
+        "value":  {
+                      "v":  36,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM((A1:B2,C1:D2))",
+        "anchor":  "D4",
+        "entered":  "=SUM((A1:B2,C1:D2))"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q041",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=MIN((A1:B2,B2:C3))",
+        "anchor":  "D4",
+        "entered":  "=MIN((A1:B2,B2:C3))"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q042",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  9,
+                      "t":  "number"
+                  },
+        "formula":  "=MAX((A1:B2,B2:C3))",
+        "anchor":  "D4",
+        "entered":  "=MAX((A1:B2,B2:C3))"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q043",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  5,
+                      "t":  "number"
+                  },
+        "formula":  "=AVERAGE((A1:B2,B2:C3))",
+        "anchor":  "D4",
+        "entered":  "=AVERAGE((A1:B2,B2:C3))"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q044",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  86400,
+                      "t":  "number"
+                  },
+        "formula":  "=PRODUCT((A1:B2,B2:C3))",
+        "anchor":  "D4",
+        "entered":  "=PRODUCT((A1:B2,B2:C3))"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q045",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SUMPRODUCT((A1:B2,B2:C3))",
+        "anchor":  "D4",
+        "entered":  "=SUMPRODUCT((A1:B2,B2:C3))"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q046",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;B1=n:10;B2=n:20",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SUMIF((A1:A2,B1:B2),\"\u003e1\")",
+        "anchor":  "D4",
+        "entered":  "=SUMIF((A1:A2,B1:B2),\"\u003e1\")"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q047",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;A2=n:3;B2=n:4;C1=n:5;D1=n:6;C2=n:7;D2=n:8",
+        "value":  {
+                      "v":  5,
+                      "t":  "number"
+                  },
+        "formula":  "=INDEX((A1:B2,C1:D2),1,1,2)",
+        "anchor":  "D4",
+        "entered":  "=INDEX((A1:B2,C1:D2),1,1,2)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q048",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=OFFSET((A1,B1),0,0)",
+        "anchor":  "D4",
+        "entered":  "=OFFSET((A1,B1),0,0)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q049",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=@(A1,B1)",
+        "anchor":  "D4",
+        "entered":  "=@(A1,B1)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q050",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SUM(@(A1,B1))",
+        "anchor":  "D4",
+        "entered":  "=SUM(@(A1,B1))"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q051",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=(A1,B1)",
+        "anchor":  "D4",
+        "entered":  "=(A1,B1)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q052",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=(A1,B1)",
+        "anchor":  "D4",
+        "entered":  "=(A1,B1)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q053",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  "#VALUE!",
+                                        "t":  "error"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  "#VALUE!",
+                                        "t":  "error"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=(A1,B1)",
+        "anchor":  "D4",
+        "entered":  "=(A1,B1)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q054",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=A1:B2,B2:C3",
+        "anchor":  "D4",
+        "entered":  "=A1:B2,B2:C3"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q055",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  40,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(A1:B2,B2:C3)",
+        "anchor":  "D4",
+        "entered":  "=SUM(A1:B2,B2:C3)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q057",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;A2=n:3;B2=n:4;C1=n:5;D1=n:6;C2=n:7;D2=n:8",
+        "value":  {
+                      "v":  30,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(A1:B2 B2:C3,C1:D2)",
+        "anchor":  "D4",
+        "entered":  "=SUM(A1:B2 B2:C3,C1:D2)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q058",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;A2=n:3;B2=n:4;C1=n:5;D1=n:6;C2=n:7;D2=n:8",
+        "value":  {
+                      "v":  30,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM((A1:B2 B2:C3),C1:D2)",
+        "anchor":  "D4",
+        "entered":  "=SUM((A1:B2 B2:C3),C1:D2)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q060",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;B1=n:10;B2=n:20",
+        "value":  {
+                      "v":  "#NULL!",
+                      "t":  "error"
+                  },
+        "formula":  "=A1:A2 B1:B2",
+        "anchor":  "D4",
+        "entered":  "=A1:A2 B1:B2"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q061",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;B1=n:10;B2=n:20",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  "#NULL!",
+                                        "t":  "error"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  "#NULL!",
+                                        "t":  "error"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=A1:A2 B1:B2",
+        "anchor":  "D4",
+        "entered":  "=A1:A2 B1:B2"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q062",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;B1=n:10;B2=n:20",
+        "value":  {
+                      "v":  "#NULL!",
+                      "t":  "error"
+                  },
+        "formula":  "=A1:A2 B1:B2",
+        "anchor":  "D4",
+        "entered":  "=A1:A2 B1:B2"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q063",
+        "hasSpill":  true,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  5,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=A1:B2 B1:C2",
+        "anchor":  "D4",
+        "spillRange":  "D4:D5",
+        "entered":  "=A1:B2 B1:C2"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q064",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "t":  "array",
+                      "rows":  1,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=A1:B2 B1:C2",
+        "anchor":  "D4",
+        "entered":  "=A1:B2 B1:C2"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q065",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=A1:B2 B1:C2",
+        "anchor":  "D4",
+        "entered":  "=A1:B2 B1:C2"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q066",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  7,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(A1:B2 B1:C2)",
+        "anchor":  "D4",
+        "entered":  "=SUM(A1:B2 B1:C2)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q067",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SUM(A1:B2 B1:C2 + 0)",
+        "anchor":  "D4",
+        "entered":  "=SUM(A1:B2 B1:C2 + 0)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q068",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SUM((A1:B2 B1:C2)*2)",
+        "anchor":  "D4",
+        "entered":  "=SUM((A1:B2 B1:C2)*2)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q069",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "t":  "array",
+                      "rows":  1,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  4,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  4,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=(A1:B2 B1:C2)*2",
+        "anchor":  "D4",
+        "entered":  "=(A1:B2 B1:C2)*2"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q070",
+        "hasSpill":  true,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3;A2=n:4;B2=n:5;C2=n:6;A3=n:7;B3=n:8;C3=n:9",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  4,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  10,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=(A1:B2 B1:C2)*2",
+        "anchor":  "D4",
+        "spillRange":  "D4:D5",
+        "entered":  "=(A1:B2 B1:C2)*2"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q071",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "={1,\"2\";TRUE,#N/A}",
+        "anchor":  "D4",
+        "entered":  "={1,\"2\";TRUE,#N/A}"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q072",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=@ {1,2;3,4}",
+        "anchor":  "D4",
+        "entered":  "= {1,2;3,4}"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q073",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=@{1,2;3,4}",
+        "anchor":  "D4",
+        "entered":  "={1,2;3,4}"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q074",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#N/A",
+                      "t":  "error"
+                  },
+        "formula":  "=SUM({1,\"2\";TRUE,#N/A})",
+        "anchor":  "D4",
+        "entered":  "=SUM({1,\"2\";TRUE,#N/A})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q075",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM({1,\"2\"})",
+        "anchor":  "D4",
+        "entered":  "=SUM({1,\"2\"})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q076",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=COUNT({1,\"2\"})",
+        "anchor":  "D4",
+        "entered":  "=COUNT({1,\"2\"})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q077",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=AVERAGE({1,\"2\"})",
+        "anchor":  "D4",
+        "entered":  "=AVERAGE({1,\"2\"})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q078",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  0,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM({TRUE,FALSE})",
+        "anchor":  "D4",
+        "entered":  "=SUM({TRUE,FALSE})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q079",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  0,
+                      "t":  "number"
+                  },
+        "formula":  "=COUNT({TRUE,FALSE})",
+        "anchor":  "D4",
+        "entered":  "=COUNT({TRUE,FALSE})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q080",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM({1,TRUE})",
+        "anchor":  "D4",
+        "entered":  "=SUM({1,TRUE})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q081",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=COUNT({1,TRUE})",
+        "anchor":  "D4",
+        "entered":  "=COUNT({1,TRUE})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q082",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#N/A",
+                      "t":  "error"
+                  },
+        "formula":  "=SUM({#N/A,1})",
+        "anchor":  "D4",
+        "entered":  "=SUM({#N/A,1})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q083",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#N/A",
+                      "t":  "error"
+                  },
+        "formula":  "=SUM({1,2;3,4}+{10,20,30})",
+        "anchor":  "D4",
+        "entered":  "=SUM({1,2;3,4}+{10,20,30})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q084",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  10,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(IF({1,0},{10,20},0))",
+        "anchor":  "D4",
+        "entered":  "=SUM(IF({1,0},{10,20},0))"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q085",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  1,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  10,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  0,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=IF({1,0},{10,20},0)",
+        "anchor":  "D4",
+        "spillRange":  "D4:E4",
+        "entered":  "=IF({1,0},{10,20},0)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q086",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  90,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM({1,2}*{10;20})",
+        "anchor":  "D4",
+        "entered":  "=SUM({1,2}*{10;20})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q087",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  66,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM({1,2}+{10;20})",
+        "anchor":  "D4",
+        "entered":  "=SUM({1,2}+{10;20})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q088",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  160,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM({1,2;3,4}*{10,20})",
+        "anchor":  "D4",
+        "entered":  "=SUM({1,2;3,4}*{10,20})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q089",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  170,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM({1,2;3,4}*{10;20})",
+        "anchor":  "D4",
+        "entered":  "=SUM({1,2;3,4}*{10;20})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q090",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  70,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM({1,2;3,4}+{10;20})",
+        "anchor":  "D4",
+        "entered":  "=SUM({1,2;3,4}+{10;20})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q091",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  70,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM({1,2;3,4}+{10,20})",
+        "anchor":  "D4",
+        "entered":  "=SUM({1,2;3,4}+{10,20})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q092",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SUMPRODUCT({1,2;3,4},{10;20})",
+        "anchor":  "D4",
+        "entered":  "=SUMPRODUCT({1,2;3,4},{10;20})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q093",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SUMPRODUCT({1,2;3,4},{10,20})",
+        "anchor":  "D4",
+        "entered":  "=SUMPRODUCT({1,2;3,4},{10,20})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q094",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  50,
+                      "t":  "number"
+                  },
+        "formula":  "=SUMPRODUCT({1,2},{10,20})",
+        "anchor":  "D4",
+        "entered":  "=SUMPRODUCT({1,2},{10,20})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q095",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  300,
+                      "t":  "number"
+                  },
+        "formula":  "=SUMPRODUCT({1,2;3,4},{10,20;30,40})",
+        "anchor":  "D4",
+        "entered":  "=SUMPRODUCT({1,2;3,4},{10,20;30,40})"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q096",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;B1=n:10;B2=n:20",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SUMPRODUCT((A1:A2,B1:B2))",
+        "anchor":  "D4",
+        "entered":  "=SUMPRODUCT((A1:A2,B1:B2))"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q097",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;B1=n:10;B2=n:20;C1=n:3",
+        "value":  {
+                      "v":  36,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM((A1:A2,B1:B2),C1)",
+        "anchor":  "D4",
+        "entered":  "=SUM((A1:A2,B1:B2),C1)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q098",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;B1=n:10;B2=n:20;C1=n:3",
+        "value":  {
+                      "v":  5,
+                      "t":  "number"
+                  },
+        "formula":  "=COUNT((A1:A2,B1:B2),C1)",
+        "anchor":  "D4",
+        "entered":  "=COUNT((A1:A2,B1:B2),C1)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q099",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;B1=n:10;B2=n:20",
+        "value":  {
+                      "v":  33,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM((A1:A2,B1:B2)) + 0",
+        "anchor":  "D4",
+        "entered":  "=SUM((A1:A2,B1:B2)) + 0"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q100",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;B1=n:10;B2=n:20",
+        "value":  {
+                      "v":  33,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM((A1:A2,B1:B2)) + 0",
+        "anchor":  "D4",
+        "entered":  "=SUM((A1:A2,B1:B2)) + 0"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q101",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3;B1=n:10;B2=n:20;B3=n:30",
+        "value":  {
+                      "v":  "#NULL!",
+                      "t":  "error"
+                  },
+        "formula":  "=SUM(A1:A3 B1:B3)",
+        "anchor":  "D4",
+        "entered":  "=SUM(A1:A3 B1:B3)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q103",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3",
+        "value":  {
+                      "v":  3,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(A1:A3 A1:A2)",
+        "anchor":  "D4",
+        "entered":  "=SUM(A1:A3 A1:A2)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q104",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=A1:A3 A1:A2",
+        "anchor":  "D4",
+        "entered":  "=A1:A3 A1:A2"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "q105",
+        "hasSpill":  true,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=A1:A3 A1:A2",
+        "anchor":  "D4",
+        "spillRange":  "D4:D5",
+        "entered":  "=A1:A3 A1:A2"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q106",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=A1:A3 A1:A2",
+        "anchor":  "C3",
+        "entered":  "=A1:A3 A1:A2"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q107",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3",
+        "value":  {
+                      "v":  2,
+                      "t":  "number"
+                  },
+        "formula":  "=A1:A3 A1:A2",
+        "anchor":  "E2",
+        "entered":  "=A1:A3 A1:A2"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q108",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3",
+        "value":  {
+                      "v":  3,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(A1:A3 A1:A2)",
+        "anchor":  "D4",
+        "entered":  "=SUM(A1:A3 A1:A2)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q109",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3;A4=n:4",
+        "value":  {
+                      "v":  5,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(A1:A3 A2:A4)",
+        "anchor":  "D4",
+        "entered":  "=SUM(A1:A3 A2:A4)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q110",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3;A4=n:4",
+        "value":  {
+                      "v":  2,
+                      "t":  "number"
+                  },
+        "formula":  "=COUNT(A1:A3 A2:A4)",
+        "anchor":  "D4",
+        "entered":  "=COUNT(A1:A3 A2:A4)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q111",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  1,
+                      "cols":  3,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  "#N/A",
+                                        "t":  "error"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "={1,2}",
+        "anchor":  "D4",
+        "entered":  "={1,2}"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q112",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  1,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "={1,2,3}",
+        "anchor":  "D4",
+        "entered":  "={1,2,3}"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q113",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "={1,2,3}",
+        "anchor":  "D4",
+        "entered":  "={1,2,3}"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q114",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "={1;2;3}",
+        "anchor":  "D4",
+        "entered":  "={1;2;3}"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q115",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "={1,2,3}",
+        "anchor":  "D4",
+        "entered":  "={1,2,3}"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q116",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  3,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  "#N/A",
+                                        "t":  "error"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  4,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  "#N/A",
+                                        "t":  "error"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "={1,2;3,4}",
+        "anchor":  "D4",
+        "entered":  "={1,2;3,4}"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q117",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  1,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=1+1",
+        "anchor":  "D4",
+        "entered":  "=1+1"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q118",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=1+1",
+        "anchor":  "D4",
+        "entered":  "=1+1"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q119",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;A2=n:3;B2=n:4",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  4,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=A1:B2",
+        "anchor":  "D4",
+        "entered":  "=A1:B2"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q120",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  4,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  6,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=A1:A3*2",
+        "anchor":  "D4",
+        "entered":  "=A1:A3*2"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q121",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  4,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=A1:A3*2",
+        "anchor":  "D4",
+        "entered":  "=A1:A3*2"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q122",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3",
+        "value":  {
+                      "v":  2,
+                      "t":  "number"
+                  },
+        "formula":  "=A1:A3*2",
+        "anchor":  "D4",
+        "entered":  "=A1:A3*2"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q123",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3",
+        "value":  {
+                      "t":  "array",
+                      "rows":  1,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=A1:A3",
+        "anchor":  "D4",
+        "entered":  "=A1:A3"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "q124",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;B1=n:2;C1=n:3",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=A1:C1",
+        "anchor":  "D4",
+        "entered":  "=A1:C1"
+    }
+]

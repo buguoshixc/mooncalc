@@ -76,7 +76,7 @@
 | `logic-ifs-0005` | `=IFS(TRUE,1,FALSE)` | IFS 参数个数为奇数（缺少成对的值参数），Excel 拒绝录入（VBA 设置 `Formula` 返回 1004 错误） |
 | `logic-ifs-0015` | `=IFS(A1>0,IFS(A1>5,"big","mid"),TRUE,"neg")` | 内层 IFS 参数个数为奇数，同上 |
 
-Excel 无法为「奇数参数 IFS」产生任何答案值，因此该行为不可复现；引擎按 `docs/semantics.md` 声明返回 `#VALUE!`，属于显式声明的子集外行为（spec 已加 `subset-out` 标签，不进入基准分母）。
+Excel 无法为「奇数参数 IFS」产生任何答案值，因此该行为不可复现；引擎按 `docs/semantics.md` 返回 `#VALUE!`；这是 Excel 拒录的非法输入，不是标准语义，spec 已加 `subset-out` 标签，不进入基准分母。
 
 ## 已知注意
 
@@ -103,6 +103,8 @@ Excel 无法为「奇数参数 IFS」产生任何答案值，因此该行为不�
 - 最终：**1,169/1,169（100%）**，1,149 match + 3 clock-tolerance + 16 excel-precision
   + 1 surrogate-representation，无未归因失败。
 
+> 以下是 M8 时点的历史记录；其中“声明子集”“移出验收分母”是当时口径，已被 ADR 0009 的完整符合性终点取代。当前分母与 1,505/1,505 结果见文末 M9 节。
+
 ## M8 refs 批（2026-11-17）
 
 | 项 | 值 |
@@ -111,7 +113,7 @@ Excel 无法为「奇数参数 IFS」产生任何答案值，因此该行为不�
 | Excel 版本 | 版本 2610；Build 16.0.20527.20196（64 位；Home2024Retail；zh-CN） |
 | COM 报告 | `Application.Version` 16.0 / `Build` 20527 / `OperatingSystem` Windows (64-bit) NT 10.00 |
 | 生成器 | `corpus/excel/generate_corpus.bas`（834 行；SHA-256 `f45fc1eb4a961f6de556e28655871a7cdf99565206d680065b4acc8805eb8340`；模块 `MoonCalcCorpus` 833 行） |
-| 生成工作簿 | `corpus/excel/generator.xlsm`（61,503 bytes；SHA-256 `E2B1DCDED523380317FB57774A06DA4BC6E48DAEDA30435487A51AC47187D4D2`；旧 314 行模块已删除并导入上述 .bas） |
+| 生成工作簿 | `corpus/excel/generator.xlsm`（61,505 bytes；SHA-256 `E2B1DCDED523380317FB57774A06DA4BC6E48DAEDA30435487A51AC47187D4D2`；旧 314 行模块已删除并导入上述 .bas） |
 | 规格输入 | `corpus/spec/refs.tsv`（106 条，7 列：id/formula/grid/now/tags/iter/names） |
 | 生成方式 | 桌面 Excel COM：打开工作簿 → 删除旧 `MoonCalcCorpus` → 导入 .bas → `Application.Run "GenerateCorpusOne"`；临时开启 VBA 工程访问，结束后还原注册表 |
 | 计算模式 | 手动计算、逐条强制重算；迭代关闭（无 `iter` 规格）；`DisplayAlerts=false`，未出现循环引用弹窗 |
@@ -169,7 +171,7 @@ generator 已按上表产出 103 条；随后按“声明子集语义”裁定�
 | `refs-missheet-006/007` | 公式用 `INDIRECT`，该函数不在 60 函数声明子集内；“缺表 → `#REF!`”已由 5 条直接引用答案键（`refs-missheet-001..005`）验证，无需转述路径 |
 | `refs-probe-003` | `SUMSQ` 不在声明子集内（文本忽略语义由 `SUM` 探针覆盖） |
 | `refs-probe-006` | `COUNTBLANK` 不在声明子集内 |
-| `refs-probe-004` | 迭代关闭下自增环的单趟值（Excel 得 1）属非稳态语义，声明子集按“环 = 0 + `circular`”明示披露，不承诺该瞬态 |
+| `refs-probe-004` | 迭代关闭下自增环的单趟值（Excel 得 1）属非稳态语义，当前契约按“环 = 0 + `circular`”明示披露，不把该瞬态纳入权威答案键 |
 
 裁定结果与代码动作：
 
@@ -177,3 +179,31 @@ generator 已按上表产出 103 条；随后按“声明子集语义”裁定�
 - 缺表：`=NoSheet!A1`、`=SUM(NoSheet!A1:A3)`、混合引用均得 `#REF!`，与实现一致（`refs-missheet-001..005` 通过）。
 - `refs-probe-008`（200 格跨表链，答案 `=H5` → 200）通过，验证裸引用绑定主表。
 - 全语料（1,169 + 98 = **1,267 条**）MoonCalc 重跑：**1,267/1,267**（`match` 1,247 + `clock-tolerance` 3 + `excel-precision` 16 + `surrogate-representation` 1），无失败。
+
+## 数组 / 交集 / 并集 / 隐式交集批（`arrays.json`，2026-11-21）
+
+| 项 | 值 |
+| --- | --- |
+| 生成日期 | 2026-11-21 01:17 (Asia/Shanghai) |
+| Excel 版本 | 版本 2610；Build 16.0.20527.20196（64 位；Home2024Retail；zh-CN）；`Application.Version` 16.0 / `Build` 20527 |
+| 生成器 | `corpus/probes/run_probes.ps1`（PowerShell COM；数据驱动；按 `mode` 用 `Range.Formula`（normal）/ `Range.Formula2`（dynamic）/ `Range.FormulaArray`（CSE）写入并重算；读取标量或选区二维值；SHA-256 `1bb754fa8f31cc814f9e4f1e68caf16bdc64420a2eb8e69d32c043be6fc3b8fe`） |
+| 规格输入 | `corpus/probes/arrays.tsv`（238 条，7 列：id/anchor/mode/rows/cols/formula/setup；SHA-256 `09831d1b802dd8aa83a5559c4f0638a35f36e040f145651380c2b74f2567052c`） |
+| 原始答案键 | `corpus/probes/arrays.results.json`（238/238 成功，0 条录入失败；SHA-256 `5fde606afa4ea9375bc51e83664bb8db4decc38c40d940689c665e5613b6a078`） |
+| 转换器 | `corpus/probes/arrays_to_corpus.py`（只复制 `arrays.results.json` 的答案值，不计算期望值；SHA-256 `5bbc1ecdc55325360062d6924d3f8e4ee531f34b51fb40de62c3d9c7e0afa89b`） |
+| 输出 | `arrays.json` 238 条；SHA-256 `159c17ed50f679a3457fed5bd2d96c88734077731f4bea216c1bd8cecdba6f45` |
+| 生成命令 | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File corpus/probes/run_probes.ps1 -SpecPath <arrays.tsv 的 Windows 路径> -OutPath <arrays.results.json 的 Windows 路径>`；随后 `python3 corpus/probes/arrays_to_corpus.py` |
+| 计算模式 | 每条新建临时工作簿/临时表，写入 setup 网格与公式，`Application.Calculate` 后读取；CSE 用 `Range.FormulaArray` 选中多格；dynamic 用 `Range.Formula2`；normal 用 `Range.Formula`；不启用迭代计算 |
+| 基准结果 | `corpus/cases` 全量 **1,505/1,505**：`match` 1,485 + `clock-tolerance` 3 + `excel-precision` 16 + `surrogate-representation` 1；无失败 |
+
+### 收录与排除
+
+- 238 条从探针结果中收录；覆盖：空/单格/多格交集（`#NULL!`）、并集聚合与并集拒绝、`@` 显式交集、隐式交集（行/列/二维/整列整行）、数组字面量与逐元素广播、数组 `IF`、CSE 选区分发（截断/广播/`#N/A`/标量填充）、动态 spill、spill 阻塞 `#SPILL!`、`INDEX` `area_num`。`#` 运算符与 spill 格引用由 `src/engine/array_test.mbt` 和 `examples/array-demo` 覆盖，不在本批答案键内。
+- 排除 `p014`/`p015`（`=SUM (A1:A2)` / `=SUM  (A1:A2)`）：真实 Excel 返回 `#NAME?`；引擎按用户要求把 `Ident + 空白 + (` 继续识别为函数调用（`SUM (A1)` 合法），属于**有意记录的分歧**，不进入权威分母。见 `docs/semantics.md`「函数调用与空白」。
+- 排除 `p126`（dynamic `=INDEX(A1:C3,0,0)` 写在 C3）：公式覆盖了自身引用区域，Excel 缓存 0 是循环/覆盖瞬态，不是稳定语义；不作为答案键。
+- `SEQUENCE`/`OFFSET`/`INDIRECT` 相关探针不进入本批：这三个函数尚未在引擎注册，属于 `docs/adr/0009` 当前缺口清单，待后续里程碑补齐；不以答案键伪装覆盖。
+- 239 条有效探针回放中引擎 **236/239** 通过；未过的 3 条即 p014、p015（有意分歧）与 p126（不稳定覆盖探针），理由同上。
+
+### 说明
+
+- 本批答案键来自与既有 1,267 条相同的桌面 Excel 版本，但由独立 COM 探针生成器产生；`arrays.json` 的 `array`/`anchor` 字段是 corpus schema 的扩展（见 `corpus/schema.md`），用于表达 CSE 选区、动态 spill 锚点与普通公式宿主格。
+- 本批不包含手写期望值；`arrays_to_corpus.py` 只做结构与类型转换。

@@ -1,13 +1,13 @@
 {
-  "total": 1267,
-  "passed": 1267,
+  "total": 1505,
+  "passed": 1505,
   "rate": 1,
   "tol": 1e-9,
   "clock_tol": 0.000001,
   "by_source": {
     "excel-desktop": {
-      "total": 1267,
-      "passed": 1267,
+      "total": 1505,
+      "passed": 1505,
       "rate": 1
     }
   },
@@ -223,8 +223,8 @@
       "rate": 1
     },
     "probe": {
-      "total": 83,
-      "passed": 83,
+      "total": 321,
+      "passed": 321,
       "rate": 1
     },
     "before-epoch": {
@@ -753,8 +753,8 @@
       "rate": 1
     },
     "aggregate": {
-      "total": 2,
-      "passed": 2,
+      "total": 59,
+      "passed": 59,
       "rate": 1
     },
     "chain": {
@@ -1577,6 +1577,31 @@
       "passed": 1,
       "rate": 1
     },
+    "normal": {
+      "total": 143,
+      "passed": 143,
+      "rate": 1
+    },
+    "intersection": {
+      "total": 33,
+      "passed": 33,
+      "rate": 1
+    },
+    "dynamic": {
+      "total": 55,
+      "passed": 55,
+      "rate": 1
+    },
+    "array": {
+      "total": 160,
+      "passed": 160,
+      "rate": 1
+    },
+    "cse": {
+      "total": 40,
+      "passed": 40,
+      "rate": 1
+    },
     "lookup": {
       "total": 135,
       "passed": 135,
@@ -1934,7 +1959,7 @@
     }
   },
   "buckets": {
-    "match": 1247,
+    "match": 1485,
     "clock-tolerance": 3,
     "excel-precision": 16,
     "surrogate-representation": 1

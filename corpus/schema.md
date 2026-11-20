@@ -1,8 +1,9 @@
 # 答案键语料 Schema（mooncalc-corpus/1，M1 冻结）
 
-`mooncalc-corpus/1` 的 JSON 结构保持不变；多工作表、整列/整行与定义名称是**向后兼容的
-增量扩展**：新增可选的 spec 第 7 列 `names`、新增可选的 record 字段 `names`、grid 键
-允许 `SHEET!A1` 形态。旧 8 个 `corpus/cases/*.json` 仍由同一生成器产出，字节不变。
+`mooncalc-corpus/1` 的 JSON 结构保持不变；多工作表、整列/整行与定义名称、M9 数组/交集批
+都是**向后兼容的增量扩展**：新增可选的 spec 第 7 列 `names`、record 字段 `names`、
+`anchor`、`array`，grid 键允许 `SHEET!A1` 形态，`expected` 允许 `range` 形态。旧 9 个
+`corpus/cases/*.json` 仍由同一生成器产出，字节不变；M9 数组批由 COM 探针生成器单独产出。
 
 ## JSON 文件格式（corpus/cases/*.json，由真实 Excel 生成）
 
@@ -44,6 +45,20 @@
       "tags": ["names", "defined-name"],
       "source": "excel-desktop",
       "notes": ""
+    },
+    {
+      "id": "arrays-intersect-0003",
+      "formula": "=A1:B2 B2:C3",
+      "grid": { "A1": 1, "B2": 5, "C3": 9 },
+      "anchor": "B2",
+      "array": { "kind": "dynamic", "anchor": "B2", "rows": 2, "cols": 1 },
+      "expected": { "type": "range", "rows": 2, "cols": 1, "values": [
+        { "type": "number", "value": 5 },
+        { "type": "number", "value": 8 }
+      ] },
+      "tags": ["probe", "dynamic", "intersection"],
+      "source": "excel-desktop",
+      "notes": ""
     }
   ]
 }
@@ -72,12 +87,28 @@
 | `true` / `false` | 布尔单元格 |
 | `null` | 空白单元格 |
 | `{"formula": "=..."}` | 公式单元格 |
-| `{"error": "#N/A"}` | 错误值单元格（7 种之一） |
+| `{"error": "#N/A"}` | 错误值单元格（8 种之一，含 `#SPILL!`） |
 
 ### expected 编码
 
-`{"type": "number|text|bool|error|blank", "value": ...}`：
+标量：`{"type": "number|text|bool|error|blank", "value": ...}`：
 number→JSON 数字；text→字符串；bool→true/false；error→错误名字符串；blank→null。
+
+数组（M9）：`{"type":"range","rows":R,"cols":C,"values":[...]}`，`values` 为行主序
+标量对象（同上），长度必须等于 `R*C`；嵌套 range 拒绝。数组记录可带顶层 `anchor`
+（普通公式的宿主格）与 `array` 元数据。
+
+### 数组/CSE/动态字段（M9）
+
+| 字段 | 形态 | 含义 |
+| --- | --- | --- |
+| `anchor` | `"B2"` / `"SHEET!B2"` | 普通公式的宿主格；缺省按 `ZZ1`（旧契约） |
+| `array.kind` | `"cse"` / `"dynamic"` | CSE 多格 / 动态数组 |
+| `array.anchor` | 地址 | 数组锚点（CSE 左上角；动态公式格） |
+| `array.rows` / `array.cols` | 正整数 | CSE 选区；动态结果形状 |
+
+普通网格公式仍用 `formula` + `grid`；`array` 记录由 bench 的 `actual_for_array`
+构造 `ArrayLayout` 后调用 `recalc_arrays`，与普通记录走同一套桶规则。
 
 ### 字段说明
 
@@ -138,10 +169,19 @@ id	formula	grid	now	tags	iter	names
 
 新建的临时工作表与定义名称在正常、skip、错误三条路径上都会被删除/还原。
 
-### 书面排除项
+### M9 数组批（独立生成器）
 
-以下写法不进入语料（生成器与 bench 均不承诺语义）：R1C1 引用、数组字面量 `{}`、
-区域交集/并集、3D 引用（`Sheet1:Sheet3!A1`）、外部工作簿链接（`[x.xlsx]`）。
+数组/交集/并集/`@`/CSE/动态 spill 记录由 `corpus/probes/arrays.tsv` 驱动，经
+`corpus/probes/run_probes.ps1` 在真实桌面 Excel 上逐条写入并读取（`Range.Formula` /
+`Formula2` / `FormulaArray`），再由 `corpus/probes/arrays_to_corpus.py` **只读取**
+`arrays.results.json` 转成 `mooncalc-corpus/1`（不计算期望值）。来源、版本、SHA-256
+与排除项见 `corpus/cases/PROVENANCE.md`。
+
+### 当前缺口（不是书面排除）
+
+R1C1 引用、3D 引用（`Sheet1:Sheet3!A1`）、外部工作簿链接（`[x.xlsx]`）、工作表级
+定义名称、函数空实参仍是待补里程碑（ADR 0009），不是“语料不承诺语义”。数组字面量、
+交集/并集、`@`、CSE、动态 spill 已由 M9 批覆盖，不再排除。
 
 ## 比较策略（bench）
 
