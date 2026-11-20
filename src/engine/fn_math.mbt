@@ -116,8 +116,30 @@ fn fn_sum(_ctx : Ctx, args : Array[Thunk]) -> Value {
   }
 }
 
+fn fn_product(_ctx : Ctx, args : Array[Thunk]) -> Value {
+  let vals = eager(args)
+  match collect_numbers(vals, false) {
+    Err(e) => Value::Err(e)
+    Ok(nums) =>
+      if nums.length() == 0 {
+        Value::Num(0.0)
+      } else {
+        let mut p = 1.0
+        for d in nums {
+          p *= d
+        }
+        Value::Num(p)
+      }
+  }
+}
+
 fn fn_sumif(_ctx : Ctx, args : Array[Thunk]) -> Value {
   let vals = eager(args)
+  for v in vals {
+    if reject_union(v) {
+      return Value::Err(XlError::Value)
+    }
+  }
   // Range errors never match; an error criterion matches error cells of the
   // same value, and sum-range errors propagate per matched cell below.
   let range = as_range(vals[0])
@@ -148,7 +170,12 @@ fn fn_sumproduct(_ctx : Ctx, args : Array[Thunk]) -> Value {
   let ranges : Array[RangeValue] = []
   for v in vals {
     match v {
-      Range(r) => ranges.push(r)
+      Range(r) =>
+        if r.is_union() {
+          return Value::Err(XlError::Value)
+        } else {
+          ranges.push(r)
+        }
       _ => return Value::Err(XlError::Value)
     }
   }

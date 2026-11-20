@@ -30,6 +30,11 @@ fn fn_counta(_ctx : Ctx, args : Array[Thunk]) -> Value {
 
 fn fn_countif(_ctx : Ctx, args : Array[Thunk]) -> Value {
   let vals = eager(args)
+  for v in vals {
+    if reject_union(v) {
+      return Value::Err(XlError::Value)
+    }
+  }
   // Range errors never match and do not propagate; an error criterion matches
   // error cells of the same value (see criteria_match).
   let range = as_range(vals[0])

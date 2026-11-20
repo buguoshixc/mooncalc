@@ -59,4 +59,14 @@ pub(all) enum Expr {
   Binary(BinOp, Expr, Expr)
   /// 函数调用（函数名已 ASCII 大写归一化）。
   Call(String, Array[Expr])
+  /// 数组字面量 `{1,2;3,4}`：外层行、内层列。
+  ArrayLit(Array[Array[Expr]])
+  /// 交集运算符（空格）：`A1:A3 B1:B3`。
+  Intersect(Expr, Expr)
+  /// 并集运算符（引用上下文中的逗号）：`(A1,B1)`。
+  Union(Expr, Expr)
+  /// 显式隐式交集 `@expr`。
+  Implicit(Expr)
+  /// 溢出引用后缀 `expr#`。
+  Spill(Expr)
 } derive(Show, Debug, Eq)

@@ -1,7 +1,73 @@
 // IF / IFERROR are lazy; AND / OR are eager (AND(TRUE,1/0) is #DIV/0!).
 
-fn fn_if(_ctx : Ctx, args : Array[Thunk]) -> Value {
-  match to_bool(scalarize(args[0]())) {
+fn if_dims(v : Value) -> (Int, Int) {
+  match v {
+    Range(r) => (r.rows, r.cols)
+    _ => (1, 1)
+  }
+}
+
+fn if_cell(v : Value, row : Int, col : Int) -> Value {
+  match v {
+    Range(r) =>
+      if r.is_union() {
+        Value::Err(XlError::Value)
+      } else if r.rows == 1 && r.cols == 1 {
+        r.cells[0]
+      } else if row < r.rows && col < r.cols {
+        r.cells[row * r.cols + col]
+      } else if r.rows == 1 && col < r.cols {
+        r.cells[col]
+      } else if r.cols == 1 && row < r.rows {
+        r.cells[row]
+      } else {
+        Value::Err(XlError::NA)
+      }
+    _ => v
+  }
+}
+
+fn fn_if_array(cond : Value, thenv : Value, elsev : Value) -> Value {
+  let (cr, cc) = if_dims(cond)
+  let (tr, tc) = if_dims(thenv)
+  let (er, ec) = if_dims(elsev)
+  let rows = if cr > tr { if cr > er { cr } else { er } } else if tr > er { tr } else { er }
+  let cols = if cc > tc { if cc > ec { cc } else { ec } } else if tc > ec { tc } else { ec }
+  let cells : Array[Value] = []
+  for r in 0..<rows {
+    for c in 0..<cols {
+      let cv = if_cell(cond, r, c)
+      let out = match cv {
+        Err(e) => Value::Err(e)
+        _ =>
+          match to_bool(cv) {
+            Err(e) => Value::Err(e)
+            Ok(b) =>
+              if b {
+                if_cell(thenv, r, c)
+              } else {
+                if_cell(elsev, r, c)
+              }
+          }
+      }
+      cells.push(out)
+    }
+  }
+  Value::Range(RangeValue::array(rows, cols, cells))
+}
+
+fn fn_if(ctx : Ctx, args : Array[Thunk]) -> Value {
+  let cond = args[0]()
+  let cond_is_array = match cond {
+    Range(r) => r.rows > 1 || r.cols > 1
+    _ => false
+  }
+  if cond_is_array {
+    let thenv = args[1]()
+    let elsev = if args.length() == 3 { args[2]() } else { Value::Bool(false) }
+    return fn_if_array(cond, thenv, elsev)
+  }
+  match to_bool(scalarize(cond)) {
     Err(e) => Value::Err(e)
     Ok(b) =>
       if b {
@@ -13,7 +79,6 @@ fn fn_if(_ctx : Ctx, args : Array[Thunk]) -> Value {
       }
   }
 }
-
 // AND/OR argument channels, matching Excel:
 // * references: numbers and booleans are used (numbers as <>0), text and
 //   blanks are ignored, errors propagate;

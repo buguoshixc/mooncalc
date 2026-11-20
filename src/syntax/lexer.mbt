@@ -26,6 +26,18 @@ pub enum Token {
   Bang
   /// 单引号工作表名（`''` 转义已解出）：`'My Sheet'!A1`。
   SheetName(String)
+  /// `{`（数组字面量开始）
+  LBrace
+  /// `}`（数组字面量结束）
+  RBrace
+  /// `;`（数组字面量行分隔）
+  Semicolon
+  /// `@`（显式隐式交集前缀）
+  At
+  /// `#`（溢出引用后缀，如 `D4#`）
+  Hash
+  /// 空白交集运算符（由词法上下文插入）
+  Intersect
 } derive(Show, Debug, Eq)
 
 fn is_ident_start(c : Char) -> Bool {
@@ -38,6 +50,43 @@ fn is_ident_char(c : Char) -> Bool {
 
 fn is_space(c : Char) -> Bool {
   c == ' ' || c == '\t' || c == '\n' || c == '\r'
+}
+
+fn is_operand_end_token(t : Token) -> Bool {
+  match t {
+    Number(_) | Str(_) | BoolLit(_) | ErrLit(_) | Ident(_) | RParen | Percent | RBrace | Hash => true
+    _ => false
+  }
+}
+
+fn is_operand_start_char(c : Char) -> Bool {
+  @value.is_ascii_letter(c) || @value.is_ascii_digit(c) || c == '$' || c == '_' ||
+    c == '(' || c == '{' || c == '"' || c == '\'' || c == '.'
+}
+
+/// 空白是否构成交集运算符。函数名与 `(` 之间不插交集：`SUM (A1)` 仍是调用；
+/// 但 `A1 (B1)` 的 `A1` 是单元格地址，插交集。其它空白仅在操作数结尾与
+/// 操作数开头之间才插（运算符两侧的空白不插）。
+fn should_insert_intersect(toks : Array[Token], next : Char) -> Bool {
+  if toks.length() == 0 {
+    return false
+  }
+  let prev = toks[toks.length() - 1]
+  if !is_operand_end_token(prev) || !is_operand_start_char(next) {
+    return false
+  }
+  match prev {
+    Ident(name) =>
+      if next == '(' {
+        match @value.parse_addr(name) {
+          Some(_) => true
+          None => false
+        }
+      } else {
+        true
+      }
+    _ => true
+  }
 }
 
 /// 把公式源码切成记号序列（前导 `=` 会被跳过）；词法错误（如未闭合字符串）抛 ParseError。
@@ -55,7 +104,14 @@ pub fn lex(input : String) -> Array[Token] raise ParseError {
   while i < n {
     let c = chars[i]
     if is_space(c) {
-      i += 1
+      let mut j = i
+      while j < n && is_space(chars[j]) {
+        j += 1
+      }
+      if j < n && should_insert_intersect(toks, chars[j]) {
+        toks.push(Intersect)
+      }
+      i = j
       continue
     }
     if @value.is_ascii_digit(c) ||
@@ -143,6 +199,13 @@ pub fn lex(input : String) -> Array[Token] raise ParseError {
       continue
     }
     if c == '#' {
+      // `D4#` 的 `#` 是溢出后缀；`#N/A` 等错误字面量只在操作数位置起头。
+      if toks.length() > 0 && is_operand_end_token(toks[toks.length() - 1]) &&
+        !(i + 1 < n && @value.is_ascii_letter(chars[i + 1])) {
+        toks.push(Hash)
+        i += 1
+        continue
+      }
       let start = i
       i += 1
       while i < n &&
@@ -213,6 +276,10 @@ pub fn lex(input : String) -> Array[Token] raise ParseError {
       ':' => toks.push(Colon)
       '%' => toks.push(Percent)
       '!' => toks.push(Bang)
+      '{' => toks.push(LBrace)
+      '}' => toks.push(RBrace)
+      ';' => toks.push(Semicolon)
+      '@' => toks.push(At)
       _ => raise ParseError("unexpected character: " + c.to_string())
     }
     i += 1

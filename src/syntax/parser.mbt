@@ -15,6 +15,8 @@ struct Parser {
   tokens : Array[Token]
   mut pos : Int
   mut depth : Int
+  /// 是否允许把逗号解析为引用并集。顶层与括号内为 true，函数实参为 false。
+  mut allow_union : Bool
 }
 
 fn enter_nested(p : Parser) -> Unit raise ParseError {
@@ -50,6 +52,15 @@ fn bin_op(s : String) -> BinOp {
     ">" => Gt
     ">=" => Ge
     _ => Add
+  }
+}
+
+/// 交集运算符两侧必须是引用类表达式（Excel 拒绝 `=1 2`、`={1,2} {3,4}`）。
+fn is_ref_expr(e : Expr) -> Bool {
+  match e {
+    Ref(_) | Range(_, _) | Sheet(_, _) | WholeCols(_, _) | WholeRows(_, _) | Name(_) |
+    Call(_, _) | Intersect(_, _) | Union(_, _) => true
+    _ => false
   }
 }
 
@@ -264,10 +275,60 @@ fn parse_prefix(p : Parser) -> Expr raise ParseError {
     ErrLit(e) => Lit(@value.Err(e))
     LParen => {
       enter_nested(p)
+      let saved_union = p.allow_union
+      p.allow_union = true
       let e = parse_expr(p, 0)
+      p.allow_union = saved_union
       expect(p, RParen, "')'")
       p.depth -= 1
       e
+    }
+    LBrace => {
+      enter_nested(p)
+      let saved_union = p.allow_union
+      p.allow_union = false
+      let rows : Array[Array[Expr]] = []
+      let mut row : Array[Expr] = []
+      if peek(p) == Some(RBrace) {
+        raise ParseError("empty array literal")
+      }
+      while true {
+        row.push(parse_expr(p, 0))
+        match peek(p) {
+          Some(Comma) => {
+            p.pos += 1
+          }
+          Some(Semicolon) => {
+            p.pos += 1
+            rows.push(row)
+            row = []
+          }
+          Some(RBrace) => {
+            p.pos += 1
+            rows.push(row)
+            break
+          }
+          _ => raise ParseError("expected ',' ';' or '}' in array literal")
+        }
+      }
+      p.allow_union = saved_union
+      p.depth -= 1
+      let width = rows[0].length()
+      if width == 0 {
+        raise ParseError("empty array literal row")
+      }
+      for r in rows {
+        if r.length() != width {
+          raise ParseError("array literal rows must have equal length")
+        }
+      }
+      ArrayLit(rows)
+    }
+    At => {
+      enter_nested(p)
+      let e = parse_expr(p, 79)
+      p.depth -= 1
+      Implicit(e)
     }
     Op("-") => {
       enter_nested(p)
@@ -289,6 +350,8 @@ fn parse_prefix(p : Parser) -> Expr raise ParseError {
       } else if peek(p) == Some(LParen) {
         p.pos += 1
         enter_nested(p)
+        let saved_union = p.allow_union
+        p.allow_union = false
         let args : Array[Expr] = []
         if peek(p) != Some(RParen) {
           while true {
@@ -300,6 +363,7 @@ fn parse_prefix(p : Parser) -> Expr raise ParseError {
             }
           }
         }
+        p.allow_union = saved_union
         expect(p, RParen, "')'")
         p.depth -= 1
         Call(@value.ascii_upper(name), args)
@@ -346,8 +410,37 @@ fn parse_expr(p : Parser, min_bp : Int) -> Expr raise ParseError {
           break
         }
         p.pos += 1
-        let rhs = parse_prefix(p)
+        let rhs = parse_expr(p, 81)
         lhs = combine_range(lhs, rhs)
+      }
+      Intersect => {
+        if 78 < min_bp {
+          break
+        }
+        p.pos += 1
+        let rhs = parse_expr(p, 79)
+        if !is_ref_expr(lhs) || !is_ref_expr(rhs) {
+          raise ParseError("unexpected trailing tokens in formula")
+        }
+        lhs = Intersect(lhs, rhs)
+      }
+      Comma => {
+        if !p.allow_union || 76 < min_bp {
+          break
+        }
+        p.pos += 1
+        let rhs = parse_expr(p, 77)
+        if !is_ref_expr(lhs) || !is_ref_expr(rhs) {
+          raise ParseError("unexpected trailing tokens in formula")
+        }
+        lhs = Union(lhs, rhs)
+      }
+      Hash => {
+        if 85 < min_bp {
+          break
+        }
+        p.pos += 1
+        lhs = Spill(lhs)
       }
       Op(s) => {
         let lbp = match s {
@@ -381,7 +474,7 @@ pub fn parse(input : String) -> Expr raise ParseError {
   if toks.length() == 0 {
     raise ParseError("empty formula")
   }
-  let p : Parser = { tokens: toks, pos: 0, depth: 0 }
+  let p : Parser = { tokens: toks, pos: 0, depth: 0, allow_union: true }
   let e = parse_expr(p, 0)
   if p.pos != toks.length() {
     raise ParseError("unexpected trailing tokens in formula")

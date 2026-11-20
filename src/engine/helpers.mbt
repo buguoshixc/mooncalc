@@ -6,6 +6,14 @@ fn eager(thunks : Array[Thunk]) -> Array[Value] {
   vals
 }
 
+/// 聚合/条件函数不接受并集引用（Excel 对这些函数返回 #VALUE!）。
+fn reject_union(v : Value) -> Bool {
+  match v {
+    Range(r) => r.is_union()
+    _ => false
+  }
+}
+
 fn first_error(vals : Array[Value]) -> XlError? {
   for v in vals {
     match scalarize(v) {
@@ -55,7 +63,7 @@ fn arg_number(vals : Array[Value], i : Int) -> Result[Double, XlError] {
 fn as_range(v : Value) -> RangeValue {
   match v {
     Range(r) => r
-    _ => { rows: 1, cols: 1, cells: [v] }
+    _ => RangeValue::array(1, 1, [v])
   }
 }
 

@@ -6,4 +6,6 @@ type CellAddr = @value.CellAddr
 
 type RangeValue = @value.RangeValue
 
+type RangeArea = @value.RangeArea
+
 type Thunk = () -> Value

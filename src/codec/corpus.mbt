@@ -1,5 +1,13 @@
 // Corpus record decoding (mooncalc-corpus/1).
 
+/// 数组公式用例元数据：`kind` = `cse` / `dynamic`，`anchor` 为左上角。
+pub(all) struct CaseArray {
+  kind : String
+  anchor : String
+  rows : Int
+  cols : Int
+} derive(Show, Debug)
+
 /// 语料用例（mooncalc-corpus/1 schema，见 corpus/schema.md）。
 pub(all) struct CaseRecord {
   /// 用例唯一标识（如 `math-round-0001`）。
@@ -22,6 +30,10 @@ pub(all) struct CaseRecord {
   iter : @facade.IterOptions?
   /// 工作簿级定义名称（spec 可选第 7 列 `names`；已并入 `grid.names` 供求值使用）。
   names : Map[String, String]
+  /// 数组公式元数据（可选；普通标量用例为 `None`）。
+  array : CaseArray?
+  /// 宿主格（可选；缺省 `ZZ1`，隐式交集/@ 依赖它）。
+  anchor : String?
 } derive(Show, Debug)
 
 fn decode_record(j : Json) -> CaseRecord raise CodecError {
@@ -74,7 +86,27 @@ fn decode_record(j : Json) -> CaseRecord raise CodecError {
     }
     None => None
   }
-  { id, formula, grid, now, expected, tags, source, notes, iter, names }
+  let array = match j.value("array") {
+    Some(aj) => {
+      let kind = jstr(jfield(aj, "kind"))
+      if kind != "cse" && kind != "dynamic" {
+        raise CodecError("array.kind must be cse or dynamic")
+      }
+      let anchor = jstr(jfield(aj, "anchor"))
+      let rows = jnum(jfield(aj, "rows")).to_int()
+      let cols = jnum(jfield(aj, "cols")).to_int()
+      if rows <= 0 || cols <= 0 {
+        raise CodecError("array.rows/cols must be positive")
+      }
+      Some({ kind, anchor, rows, cols })
+    }
+    None => None
+  }
+  let anchor = match j.value("anchor") {
+    Some(aj) => Some(jstr(aj))
+    None => None
+  }
+  { id, formula, grid, now, expected, tags, source, notes, iter, names, array, anchor }
 }
 
 /// JSON → 单条语料用例；字段缺失/类型不符返回 `Err(消息)`。

@@ -34,9 +34,39 @@ pub type EvalOutput = @engine.EvalOutput
 /// 全网格重算结果：`cells` 只含公式格的结果，`parse_errors` 记录解析失败的格与原因。
 pub type RecalcOutput = @engine.RecalcOutput
 
+/// CSE 数组公式：公式与选中区域尺寸。
+pub type CseSpec = @engine.CseSpec
+
+/// 数组公式布局（网格契约的可选扩展）：CSE 锚点与动态数组锚点。
+pub type ArrayLayout = @engine.ArrayLayout
+
+/// 带数组布局的重算结果：公式格结果、锚点/溢出格的值、溢出区域尺寸。
+pub type ArrayRecalcOutput = @engine.ArrayRecalcOutput
+
 /// 创建一个空的单元格网格。
 pub fn new_grid() -> Grid {
   @engine.new_grid()
+}
+
+/// 创建一个空的数组公式布局。
+pub fn new_array_layout() -> ArrayLayout {
+  @engine.new_array_layout()
+}
+
+/// 登记 CSE 数组公式（锚点为选中区域左上角）。
+pub fn set_cse(
+  layout : ArrayLayout,
+  key : String,
+  formula : String,
+  rows : Int,
+  cols : Int
+) -> Unit {
+  layout.set_cse(key, formula, rows, cols)
+}
+
+/// 登记动态数组公式。
+pub fn set_dynamic(layout : ArrayLayout, key : String, formula : String) -> Unit {
+  layout.set_dynamic(key, formula)
 }
 
 /// 解析 `A1` 形式的单元格地址（支持 `$` 绝对标记）；非法地址返回 `None`。
@@ -87,6 +117,15 @@ pub fn parse_qualified_addr(key : String) -> (String, CellAddr)? {
 ///
 /// 解析失败返回 `Err(ParseError)`；求值阶段的错误值（如 `#DIV/0!`）作为 `Ok` 中的 `Value::Err` 返回。
 /// 顶层结果按标量上下文归一化：`Blank`→0，多格区域按值模型规则处理。
+pub fn eval_formula_at(
+  formula : String,
+  host_key : String,
+  grid : Grid,
+  options : EvalOptions
+) -> Result[EvalOutput, ParseError] {
+  @engine.eval_formula_at(formula, host_key, grid, options)
+}
+
 pub fn eval_formula(
   formula : String,
   grid : Grid,
@@ -118,6 +157,15 @@ pub fn eval_at_key(
 /// 循环引用复刻 Excel 默认（迭代计算关闭）：环上单元格结果为 0，元数据 `circular: true`。
 pub fn recalc(grid : Grid, options : EvalOptions) -> RecalcOutput {
   @engine.recalc(grid, options)
+}
+
+/// 带 CSE/动态数组布局的全网格重算。
+pub fn recalc_arrays(
+  grid : Grid,
+  layout : ArrayLayout,
+  options : EvalOptions
+) -> ArrayRecalcOutput {
+  @engine.recalc_arrays(grid, layout, options)
 }
 
 /// 调用方持有的公式 AST 缓存：按公式全文缓存解析结果（含解析失败消息）。

@@ -54,11 +54,31 @@ pub fn CellAddr::key(Self) -> String
 pub fn CellAddr::to_string(Self) -> String
 
 #derive(Eq, Show, @debug.Debug)
-pub(all) struct RangeValue {
+pub(all) struct RangeArea {
+  sheet : String
+  row : Int32
+  col : Int32
   rows : Int32
   cols : Int32
   cells : Array[Value]
 }
+
+#derive(Eq, Show, @debug.Debug)
+pub(all) struct RangeValue {
+  rows : Int32
+  cols : Int32
+  cells : Array[Value]
+  is_ref : Bool
+  sheet : String
+  origin_row : Int32
+  origin_col : Int32
+  areas : Array[RangeArea]
+}
+pub fn RangeValue::array(Int32, Int32, Array[Value]) -> Self
+pub fn RangeValue::as_single_area(Self) -> RangeArea?
+pub fn RangeValue::is_union(Self) -> Bool
+pub fn RangeValue::reference(String, Int32, Int32, Int32, Int32, Array[Value]) -> Self
+pub fn RangeValue::union(Array[RangeArea]) -> Self
 
 #derive(Eq, Show, @debug.Debug)
 pub(all) enum Value {
@@ -81,6 +101,7 @@ pub(all) enum XlError {
   Ref
   Value
   Calc
+  Spill
 }
 pub fn XlError::parse(String) -> Self?
 pub fn XlError::to_string(Self) -> String

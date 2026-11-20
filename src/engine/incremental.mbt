@@ -348,6 +348,25 @@ fn expr_refs_at(
       }
       true
     }
+    ArrayLit(rows) => {
+      for row in rows {
+        for item in row {
+          if !expr_refs_at(grid, host_sheet, item, out, cap, names_on_path, name_depth) {
+            return false
+          }
+        }
+      }
+      true
+    }
+    Intersect(l, r) =>
+      expr_refs_at(grid, host_sheet, l, out, cap, names_on_path, name_depth) &&
+      expr_refs_at(grid, host_sheet, r, out, cap, names_on_path, name_depth)
+    Union(l, r) =>
+      expr_refs_at(grid, host_sheet, l, out, cap, names_on_path, name_depth) &&
+      expr_refs_at(grid, host_sheet, r, out, cap, names_on_path, name_depth)
+    Implicit(sub) => expr_refs_at(grid, host_sheet, sub, out, cap, names_on_path, name_depth)
+    // 溢出引用的范围在求值期才知道，保守地迫使全量重算。
+    Spill(_) => false
   }
 }
 

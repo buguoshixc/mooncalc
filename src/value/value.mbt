@@ -17,6 +17,9 @@ pub(all) enum XlError {
   /// `#CALC!`：Excel 365 动态数组计算错误（如 TEXTJOIN 结果超过 32767 字符）。
   /// 由真实 Excel 语料裁定（text-textjoin-0021）。
   Calc
+  /// `#SPILL!`：动态数组结果被占用单元格阻挡（Excel 365 动态数组）。
+  /// 由 corpus/probes 真实 Excel 探针裁定（16.0.20527，错误码 -2146826243）。
+  Spill
 } derive(Show, Debug, Eq)
 
 /// 错误值的 Excel 文本表示，如 `Div0` → `"#DIV/0!"`。
@@ -30,6 +33,7 @@ pub fn XlError::to_string(self : XlError) -> String {
     Ref => "#REF!"
     Value => "#VALUE!"
     Calc => "#CALC!"
+    Spill => "#SPILL!"
   }
 }
 
@@ -44,11 +48,33 @@ pub fn XlError::parse(s : String) -> XlError? {
     "#REF!" => Some(Ref)
     "#VALUE!" => Some(Value)
     "#CALC!" => Some(Calc)
+    "#SPILL!" => Some(Spill)
     _ => None
   }
 }
 
+/// 一个引用区域（并集的分量）。`row`/`col` 是 1 基左上角。
+pub(all) struct RangeArea {
+  /// 工作表名；空串表示当前表（仅内部构造时短暂出现）。
+  sheet : String
+  /// 左上角行号（1 基）。
+  row : Int
+  /// 左上角列号（1 基）。
+  col : Int
+  /// 行数（≥1）。
+  rows : Int
+  /// 列数（≥1）。
+  cols : Int
+  /// 行主序单元格值（长度 = rows × cols）。
+  cells : Array[Value]
+} derive(Show, Debug, Eq)
+
 /// 行主序的区域值：`rows` × `cols`，`cells` 按行优先展开（长度 = rows × cols）。
+///
+/// `is_ref` 区分两种语义：`true` 是单元格引用（普通公式中参与隐式交集），
+/// `false` 是数组值（数组字面量/逐元素运算结果，标量上下文取左上角）。
+/// 并集用 `areas` 表示多个矩形；此时 `rows=1`、`cols` 为各区域格数之和，
+/// `cells` 按区域顺序展平（重复格保留，供 SUM/COUNT 等聚合重复计数）。
 pub(all) struct RangeValue {
   /// 行数（≥1）。
   rows : Int
@@ -56,7 +82,79 @@ pub(all) struct RangeValue {
   cols : Int
   /// 行主序的单元格值。
   cells : Array[Value]
+  /// 引用（true）或数组值（false）。
+  is_ref : Bool
+  /// 引用所属工作表；数组值为空串。
+  sheet : String
+  /// 引用左上角行号（1 基）；数组值为 0。
+  origin_row : Int
+  /// 引用左上角列号（1 基）；数组值为 0。
+  origin_col : Int
+  /// 并集分量；普通引用/数组为空数组。
+  areas : Array[RangeArea]
 } derive(Show, Debug, Eq)
+
+/// 构造数组值（`is_ref=false`，无位置）。
+pub fn RangeValue::array(rows : Int, cols : Int, cells : Array[Value]) -> RangeValue {
+  { rows, cols, cells, is_ref: false, sheet: "", origin_row: 0, origin_col: 0, areas: [] }
+}
+
+/// 构造普通引用（`is_ref=true`，带工作表与左上角位置）。
+pub fn RangeValue::reference(
+  sheet : String,
+  row : Int,
+  col : Int,
+  rows : Int,
+  cols : Int,
+  cells : Array[Value],
+) -> RangeValue {
+  { rows, cols, cells, is_ref: true, sheet, origin_row: row, origin_col: col, areas: [] }
+}
+
+/// 构造并集引用：各区域格数按顺序展平，重复格保留。
+pub fn RangeValue::union(areas : Array[RangeArea]) -> RangeValue {
+  let cells : Array[Value] = []
+  let mut total = 0
+  for a in areas {
+    total = total + a.cells.length()
+    for c in a.cells {
+      cells.push(c)
+    }
+  }
+  {
+    rows: 1,
+    cols: if total == 0 { 1 } else { total },
+    cells: if total == 0 { [Value::Blank] } else { cells },
+    is_ref: true,
+    sheet: "",
+    origin_row: 0,
+    origin_col: 0,
+    areas,
+  }
+}
+
+/// 是否为多区域并集。
+pub fn RangeValue::is_union(self : RangeValue) -> Bool {
+  self.areas.length() > 0
+}
+
+/// 把普通引用转成单个区域；数组/并集返回 `None`。
+pub fn RangeValue::as_single_area(self : RangeValue) -> RangeArea? {
+  if self.is_union() {
+    None
+  } else if self.is_ref {
+    Some({
+      sheet: self.sheet,
+      row: self.origin_row,
+      col: self.origin_col,
+      rows: self.rows,
+      cols: self.cols,
+      cells: self.cells,
+    })
+  } else {
+    None
+  }
+}
 
 /// 单元格的值。公式结果不会是真空白：输出边界把 `Blank` 归一为 `Num(0)`；
 /// `Blank` 只作为网格输入状态存在。

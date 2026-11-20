@@ -90,6 +90,29 @@ pub fn value_to_json(v : Value) -> Json {
 
 fn decode_value(j : Json) -> Value raise CodecError {
   let t = jstr(jfield(j, "type"))
+  if t == "range" {
+    let rows = jnum(jfield(j, "rows")).to_int()
+    let cols = jnum(jfield(j, "cols")).to_int()
+    if rows <= 0 || cols <= 0 {
+      raise CodecError("range rows/cols must be positive")
+    }
+    let arr = match jfield(j, "values").as_array() {
+      Some(a) => a
+      None => raise CodecError("range.values must be an array")
+    }
+    if arr.length() != rows * cols {
+      raise CodecError("range.values length does not match rows*cols")
+    }
+    let cells : Array[Value] = []
+    for item in arr {
+      let v = decode_value(item)
+      match v {
+        Range(_) => raise CodecError("nested ranges are not supported")
+        _ => cells.push(v)
+      }
+    }
+    return Value::Range(@value.RangeValue::array(rows, cols, cells))
+  }
   let v = jfield(j, "value")
   match t {
     "number" => Value::Num(jnum(v))
@@ -108,7 +131,6 @@ fn decode_value(j : Json) -> Value raise CodecError {
     _ => raise CodecError("unknown value type: " + t)
   }
 }
-
 /// JSON → 值（`value_to_json` 的逆操作）；不支持区域编码（语料期望值均为标量）。
 pub fn value_from_json(j : Json) -> Result[Value, String] {
   try Ok(decode_value(j)) catch {

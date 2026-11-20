@@ -114,7 +114,24 @@ fn fn_index(_ctx : Ctx, args : Array[Thunk]) -> Value {
   if first_error(vals) is Some(e) {
     return Value::Err(e)
   }
-  let range = as_range(vals[0])
+  let mut range = as_range(vals[0])
+  if range.is_union() {
+    let area_no = if vals.length() == 4 {
+      match arg_number(vals, 3) {
+        Ok(d) => d.trunc().to_int()
+        Err(e) => return Value::Err(e)
+      }
+    } else {
+      1
+    }
+    if area_no < 1 || area_no > range.areas.length() {
+      return Value::Err(XlError::Ref)
+    }
+    let a = range.areas[area_no - 1]
+    range = RangeValue::reference(a.sheet, a.row, a.col, a.rows, a.cols, a.cells)
+  } else if vals.length() == 4 {
+    return Value::Err(XlError::Value)
+  }
   let rn = match arg_number(vals, 1) {
     Ok(d) => d.trunc().to_int()
     Err(e) => return Value::Err(e)
@@ -145,14 +162,28 @@ fn fn_index(_ctx : Ctx, args : Array[Thunk]) -> Value {
     for r in 0..<range.rows {
       cells.push(range.cells[r * range.cols + (cn - 1)])
     }
-    return Value::Range({ rows: range.rows, cols: 1, cells })
+    return Value::Range(RangeValue::reference(
+      range.sheet,
+      range.origin_row,
+      range.origin_col + (cn - 1),
+      range.rows,
+      1,
+      cells,
+    ))
   }
   if cn == 0 {
     let cells : Array[Value] = []
     for c in 0..<range.cols {
       cells.push(range.cells[(rn - 1) * range.cols + c])
     }
-    return Value::Range({ rows: 1, cols: range.cols, cells })
+    return Value::Range(RangeValue::reference(
+      range.sheet,
+      range.origin_row + (rn - 1),
+      range.origin_col,
+      1,
+      range.cols,
+      cells,
+    ))
   }
   range.cells[(rn - 1) * range.cols + (cn - 1)]
 }

@@ -49,6 +49,14 @@ pub(all) struct BenchReport {
 }
 
 #derive(Show, @debug.Debug)
+pub(all) struct CaseArray {
+  kind : String
+  anchor : String
+  rows : Int32
+  cols : Int32
+}
+
+#derive(Show, @debug.Debug)
 pub(all) struct CaseRecord {
   id : String
   formula : String
@@ -60,6 +68,8 @@ pub(all) struct CaseRecord {
   notes : String
   iter : @engine.IterOptions?
   names : Map[String, String]
+  array : CaseArray?
+  anchor : String?
 }
 
 #derive(Show, @debug.Debug)

@@ -81,7 +81,25 @@ fn compare_case(rec : CaseRecord, tol : Double, clock_tol : Double) -> CaseResul
   let evaluated = match rec.iter {
     Some(it) =>
       @facade.eval_formula_iterative(rec.formula, rec.grid, { now: rec.now }, it)
-    None => @facade.eval_formula(rec.formula, rec.grid, { now: rec.now })
+    None =>
+      match rec.anchor {
+        Some(a) => {
+          // 复刻 Excel 探针：公式写在宿主格（可能因此与引用区域成环）。
+          let _ = try @syntax.parse(rec.formula) catch {
+            @syntax.ParseError(msg) =>
+              return {
+                ..base,
+                passed: false,
+                bucket: "parse-error",
+                actual: Json::null(),
+                detail: msg,
+              }
+          }
+          rec.grid.cells[a] = @facade.Cell::Formula(rec.formula)
+          Ok(@facade.eval_at_key(a, rec.grid, { now: rec.now }))
+        }
+        None => @facade.eval_formula(rec.formula, rec.grid, { now: rec.now })
+      }
   }
   let out = match evaluated {
     Ok(o) => o
@@ -94,12 +112,34 @@ fn compare_case(rec : CaseRecord, tol : Double, clock_tol : Double) -> CaseResul
         detail: msg,
       }
   }
+  if rec.array is Some(spec) {
+    let actual = try actual_for_array(rec, spec) catch {
+      CodecError(msg) =>
+        return {
+          ..base,
+          passed: false,
+          bucket: "parse-error",
+          actual: Json::null(),
+          detail: msg,
+        }
+    }
+    return compare_actual(rec, actual, tol, clock_tol, is_clock, base)
+  }
   let actual = match out.value {
     Range(r) => if r.cells.length() == 1 { r.cells[0] } else { out.value }
     v => v
   }
-  let actual_json = value_to_json(actual)
-  let (passed, bucket, detail) = match (rec.expected, actual) {
+  compare_actual(rec, actual, tol, clock_tol, is_clock, base)
+}
+
+fn compare_scalar(
+  expected : Value,
+  actual : Value,
+  tol : Double,
+  clock_tol : Double,
+  is_clock : Bool
+) -> (Bool, String, String) {
+  match (expected, actual) {
     (Num(a), Num(b)) =>
       if a == b {
         (true, "match", "")
@@ -137,10 +177,95 @@ fn compare_case(rec : CaseRecord, tol : Double, clock_tol : Double) -> CaseResul
       (
         false,
         "type-mismatch",
-        "expected " + rec.expected.type_name() + ", got " + actual.type_name(),
+        "expected " + expected.type_name() + ", got " + actual.type_name(),
       )
   }
-  { ..base, passed, bucket, actual: actual_json, detail }
+}
+
+fn compare_actual(
+  rec : CaseRecord,
+  actual : Value,
+  tol : Double,
+  clock_tol : Double,
+  is_clock : Bool,
+  base : CaseResult
+) -> CaseResult {
+  let (passed, bucket, detail) = match (rec.expected, actual) {
+    (Range(e), Range(a)) => {
+      if e.rows != a.rows || e.cols != a.cols {
+        (
+          false,
+          "value-mismatch",
+          "range shape expected " + e.rows.to_string() + "x" +
+          e.cols.to_string() + ", got " + a.rows.to_string() + "x" +
+          a.cols.to_string(),
+        )
+      } else {
+        let mut ok = true
+        let mut why = ""
+        let mut first_bucket = "match"
+        for i in 0..<e.cells.length() {
+          let (p, b, d) = compare_scalar(e.cells[i], a.cells[i], tol, clock_tol, is_clock)
+          if !p {
+            ok = false
+            why = "cell " + (i / e.cols).to_string() + "," + (i % e.cols).to_string() +
+              ": " + d
+            first_bucket = b
+            break
+          } else if b != "match" && first_bucket == "match" {
+            first_bucket = b
+          }
+        }
+        (ok, first_bucket, why)
+      }
+    }
+    _ => compare_scalar(rec.expected, actual, tol, clock_tol, is_clock)
+  }
+  { ..base, passed, bucket, actual: value_to_json(actual), detail }
+}
+
+fn actual_for_array(rec : CaseRecord, spec : CaseArray) -> Value raise CodecError {
+  let layout = @facade.new_array_layout()
+  if spec.kind == "cse" {
+    layout.set_cse(spec.anchor, rec.formula, spec.rows, spec.cols)
+  } else {
+    layout.set_dynamic(spec.anchor, rec.formula)
+  }
+  let out = @facade.recalc_arrays(rec.grid, layout, { now: rec.now })
+  if out.parse_errors.length() > 0 {
+    raise CodecError(out.parse_errors[0].1)
+  }
+  match rec.expected {
+    Range(_) => {
+      let (sheet, text) = @value.split_key(spec.anchor)
+      let host = match @value.parse_addr(text) {
+        Some(a) => a
+        None => raise CodecError("invalid array anchor: " + spec.anchor)
+      }
+      let cells : Array[Value] = []
+      for dr in 0..<spec.rows {
+        for dc in 0..<spec.cols {
+          let a : @value.CellAddr = {
+            row: host.row + dr,
+            col: host.col + dc,
+            abs_row: false,
+            abs_col: false,
+          }
+          let key = @value.sheet_key(sheet, a)
+          cells.push(match out.values.get(key) {
+            Some(v) => v
+            None => Value::Blank
+          })
+        }
+      }
+      Value::Range(@value.RangeValue::array(spec.rows, spec.cols, cells))
+    }
+    _ =>
+      match out.cells.get(spec.anchor) {
+        Some(o) => o.value
+        None => Value::Blank
+      }
+  }
 }
 
 /// 跑语料对照：逐条求值并按比较策略归因（见 docs/semantics.md「数值对照策略」）。

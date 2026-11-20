@@ -49,6 +49,11 @@ pub(all) enum Expr {
   Unary(UnOp, Expr)
   Binary(BinOp, Expr, Expr)
   Call(String, Array[Expr])
+  ArrayLit(Array[Array[Expr]])
+  Intersect(Expr, Expr)
+  Union(Expr, Expr)
+  Implicit(Expr)
+  Spill(Expr)
 }
 
 type Parser
@@ -70,6 +75,12 @@ pub enum Token {
   Percent
   Bang
   SheetName(String)
+  LBrace
+  RBrace
+  Semicolon
+  At
+  Hash
+  Intersect
 }
 
 #derive(Eq, Show, @debug.Debug)

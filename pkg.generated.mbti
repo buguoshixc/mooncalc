@@ -18,11 +18,15 @@ pub fn eval_at_key(String, @engine.Grid, @engine.EvalOptions) -> @engine.EvalOut
 
 pub fn eval_formula(String, @engine.Grid, @engine.EvalOptions) -> Result[@engine.EvalOutput, @syntax.ParseError]
 
+pub fn eval_formula_at(String, String, @engine.Grid, @engine.EvalOptions) -> Result[@engine.EvalOutput, @syntax.ParseError]
+
 pub fn eval_formula_iterative(String, @engine.Grid, @engine.EvalOptions, @engine.IterOptions) -> Result[@engine.EvalOutput, @syntax.ParseError]
 
 pub fn explain(@value.CellAddr, @engine.Grid, @engine.EvalOptions) -> @engine.ExplainOutput
 
 pub fn explain_at_key(String, @engine.Grid, @engine.EvalOptions) -> @engine.ExplainOutput
+
+pub fn new_array_layout() -> @engine.ArrayLayout
 
 pub fn new_grid() -> @engine.Grid
 
@@ -40,6 +44,8 @@ pub fn parse_row(String) -> Int32?
 
 pub fn recalc(@engine.Grid, @engine.EvalOptions) -> @engine.RecalcOutput
 
+pub fn recalc_arrays(@engine.Grid, @engine.ArrayLayout, @engine.EvalOptions) -> @engine.ArrayRecalcOutput
+
 pub fn recalc_cached(@engine.Grid, @engine.EvalOptions, @engine.ParseCache) -> @engine.RecalcOutput
 
 pub fn recalc_init(@engine.Grid, @engine.EvalOptions) -> (@engine.RecalcState, @engine.RecalcOutput)
@@ -49,6 +55,10 @@ pub fn recalc_iterative(@engine.Grid, @engine.EvalOptions, @engine.IterOptions) 
 pub fn recalc_update(@engine.RecalcState, @engine.Grid, Array[String], @engine.EvalOptions) -> @engine.RecalcOutput
 
 pub fn recalc_update_report(@engine.RecalcState, @engine.Grid, Array[String], @engine.EvalOptions) -> (@engine.RecalcOutput, @engine.RecalcReport)
+
+pub fn set_cse(@engine.ArrayLayout, String, String, Int32, Int32) -> Unit
+
+pub fn set_dynamic(@engine.ArrayLayout, String, String) -> Unit
 
 pub fn sheet_key(String, @value.CellAddr) -> String
 
@@ -63,9 +73,15 @@ pub fn valid_sheet_name(String) -> Bool
 // Types and methods
 
 // Type aliases
+pub using @engine {type ArrayLayout}
+
+pub using @engine {type ArrayRecalcOutput}
+
 pub using @engine {type Cell}
 
 pub using @value {type CellAddr}
+
+pub using @engine {type CseSpec}
 
 pub using @engine {type DepGraph}
 

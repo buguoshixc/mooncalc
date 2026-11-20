@@ -22,11 +22,15 @@ pub fn eval_at_key(String, Grid, EvalOptions) -> EvalOutput
 
 pub fn eval_formula(String, Grid, EvalOptions) -> Result[EvalOutput, @syntax.ParseError]
 
+pub fn eval_formula_at(String, String, Grid, EvalOptions) -> Result[EvalOutput, @syntax.ParseError]
+
 pub fn eval_formula_iterative(String, Grid, EvalOptions, IterOptions) -> Result[EvalOutput, @syntax.ParseError]
 
 pub fn explain(@value.CellAddr, Grid, EvalOptions) -> ExplainOutput
 
 pub fn explain_at_key(String, Grid, EvalOptions) -> ExplainOutput
+
+pub fn new_array_layout() -> ArrayLayout
 
 pub fn new_grid() -> Grid
 
@@ -37,6 +41,8 @@ pub fn new_parse_cache() -> ParseCache
 pub fn number_to_text(Double) -> String
 
 pub fn recalc(Grid, EvalOptions) -> RecalcOutput
+
+pub fn recalc_arrays(Grid, ArrayLayout, EvalOptions) -> ArrayRecalcOutput
 
 pub fn recalc_cached(Grid, EvalOptions, ParseCache) -> RecalcOutput
 
@@ -65,6 +71,22 @@ pub fn to_text(@value.Value) -> Result[String, @value.XlError]
 // Errors
 
 // Types and methods
+#derive(Show, @debug.Debug)
+pub(all) struct ArrayLayout {
+  cse : Map[String, CseSpec]
+  dynamic : Map[String, String]
+}
+pub fn ArrayLayout::set_cse(Self, String, String, Int32, Int32) -> Unit
+pub fn ArrayLayout::set_dynamic(Self, String, String) -> Unit
+
+#derive(Show, @debug.Debug)
+pub(all) struct ArrayRecalcOutput {
+  cells : Map[String, EvalOutput]
+  values : Map[String, @value.Value]
+  ranges : Map[String, (Int32, Int32)]
+  parse_errors : Array[(String, String)]
+}
+
 type CachedAst
 
 #derive(Eq, Show, @debug.Debug)
@@ -77,6 +99,13 @@ type CritToken
 
 type Criteria
 
+#derive(Eq, Show, @debug.Debug)
+pub(all) struct CseSpec {
+  formula : String
+  rows : Int32
+  cols : Int32
+}
+
 type Ctx
 
 type Dec
@@ -85,6 +114,12 @@ type Dec
 pub(all) struct DepGraph {
   precedents : Map[String, Array[String]]
   dependents : Map[String, Array[String]]
+}
+
+#derive(Eq, Show, @debug.Debug)
+pub(all) enum EvalMode {
+  Normal
+  Array
 }
 
 #derive(Show, @debug.Debug)
