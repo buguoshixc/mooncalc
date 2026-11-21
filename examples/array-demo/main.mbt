@@ -18,6 +18,10 @@ const DYN_KEY : String = "REPORT!G4"
 const DYN_FORMULA : String = "Data!A1:B2+10"
 const SUM_SPILL_ADDR : String = "E1"
 const SUM_SPILL_FORMULA : String = "SUM(G4#)"
+const SEQ_KEY : String = "REPORT!J4"
+const SEQ_FORMULA : String = "SEQUENCE(3)"
+const SUM_SEQ_ADDR : String = "E2"
+const SUM_SEQ_FORMULA : String = "SUM(J4#)"
 
 fn[T] die(msg : String) -> T {
   println(msg)
@@ -140,6 +144,9 @@ fn gen_fixture() -> Unit raise @xlsx.XlsxError {
   report.set_cell_formula("G4", DYN_FORMULA)
   // 普通公式聚合 spill 区域：SUM(G4:H5) = 52（宿主 E1 在区域外，`#` 是引用通道）。
   report.set_cell_formula(SUM_SPILL_ADDR, SUM_SPILL_FORMULA)
+  // 第二个动态锚点：SEQUENCE(3) 溢出 J4:J6；E2 用 spill 引用聚合 = 6。
+  report.set_cell_formula("J4", SEQ_FORMULA)
+  report.set_cell_formula(SUM_SEQ_ADDR, SUM_SEQ_FORMULA)
   let bytes = try @mbtexcel.write(wb) catch { _ => die("mbtexcel write failed") }
   write_file(INPUT_PATH, bytes)
   println("generated fixture: " + INPUT_PATH + " (" + bytes.length().to_string() + " bytes)")
@@ -200,7 +207,7 @@ fn writeback(
   formulas : Array[ReadFormula],
 ) -> Unit raise @xlsx.XlsxError {
   for item in formulas {
-    if item.key == CSE_KEY || item.key == DYN_KEY {
+    if item.key == CSE_KEY || item.key == DYN_KEY || item.key == SEQ_KEY {
       continue
     }
     let sheet = match wb.sheet(item.sheet) {
@@ -243,6 +250,13 @@ fn writeback(
     let key = "REPORT!" + addr
     dyn_sheet.set_cell_value(addr, literal_of(out.values[key]))
   }
+  // SEQUENCE 动态锚点：普通公式 + 锚点缓存；J5:J6 按字面值写。
+  dyn_sheet.set_cell_formula("J4", SEQ_FORMULA, value=value_text(out.values[SEQ_KEY]))
+  for dr in 1..<3 {
+    let addr = @mbtexcel.coordinates_to_cell_name(10, 4 + dr)
+    let key = "REPORT!" + addr
+    dyn_sheet.set_cell_value(addr, literal_of(out.values[key]))
+  }
 }
 
 fn run_demo() -> Unit raise @xlsx.XlsxError {
@@ -254,6 +268,7 @@ fn run_demo() -> Unit raise @xlsx.XlsxError {
   let layout = @engine.new_array_layout()
   layout.set_cse(CSE_KEY, CSE_FORMULA, 2, 2)
   layout.set_dynamic(DYN_KEY, DYN_FORMULA)
+  layout.set_dynamic(SEQ_KEY, SEQ_FORMULA)
   let out = @engine.recalc_arrays(grid, layout, { now: None })
   writeback(wb, out, formulas)
   let out_bytes = try @mbtexcel.write(wb) catch { _ => die("mbtexcel write failed") }
@@ -310,6 +325,7 @@ fn run_demo() -> Unit raise @xlsx.XlsxError {
     ("C3", "Data!A1:C1", "3"),
     ("A7", "Data!A1:C3", "#VALUE!"),
     ("E1", "SUM(G4#)", "52"),
+    ("E2", "SUM(J4#)", "6"),
   ]
   for (addr, formula, want) in expected_scalar {
     let got_formula = match report.get_cell_formula(addr) {
@@ -372,6 +388,20 @@ fn run_demo() -> Unit raise @xlsx.XlsxError {
   ]
   for (addr, want) in dyn_expected {
     check_value("dyn " + addr, want, report, addr)
+  }
+  // 第二个动态锚点 SEQUENCE(3)：J4:J6 = [1;2;3]。
+  let seq_formula_got = match report.get_cell_formula("J4") {
+    Some(f) => f
+    None => "<missing>"
+  }
+  check_text("sequence anchor formula", SEQ_FORMULA, seq_formula_got)
+  check_cached("sequence anchor cached", "1", report, "J4")
+  let seq_expected : Array[(String, @value.Value)] = [
+    ("J5", @value.Value::Num(2.0)),
+    ("J6", @value.Value::Num(3.0)),
+  ]
+  for (addr, want) in seq_expected {
+    check_value("sequence " + addr, want, report, addr)
   }
   // 输入表字面量未被改动（抽查 9 格）。
   for r in 1..=3 {
