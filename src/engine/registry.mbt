@@ -62,6 +62,7 @@ fn lookup_fn(name : String) -> FnSpec? {
     "PERCENTILE" => Some({ min: 2, max: 2, call: fn_percentile })
     "REPLACE" => Some({ min: 4, max: 4, call: fn_replace })
     "SEARCH" => Some({ min: 2, max: 3, call: fn_search })
+    "SEQUENCE" => Some({ min: 1, max: 4, call: fn_sequence })
     "PROPER" => Some({ min: 1, max: 1, call: fn_proper })
     "CEILING" => Some({ min: 2, max: 2, call: fn_ceiling })
     "FLOOR" => Some({ min: 2, max: 2, call: fn_floor })

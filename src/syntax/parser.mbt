@@ -355,7 +355,14 @@ fn parse_prefix(p : Parser) -> Expr raise ParseError {
         let args : Array[Expr] = []
         if peek(p) != Some(RParen) {
           while true {
-            args.push(parse_expr(p, 0))
+            // 省略实参（含中置/尾随空位）以 Lit(Blank) 表示：Excel 的
+            // =SEQUENCE(3,,5) 与 =SEQUENCE(,2) 均为合法写法。空白单元格
+            // 引用仍生成 Range(Blank)，两者在函数层可区分。
+            if peek(p) == Some(Comma) || peek(p) == Some(RParen) {
+              args.push(Lit(@value.Value::Blank))
+            } else {
+              args.push(parse_expr(p, 0))
+            }
             if peek(p) == Some(Comma) {
               p.pos += 1
             } else {
