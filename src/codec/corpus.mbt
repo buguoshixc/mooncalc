@@ -8,6 +8,18 @@ pub(all) struct CaseArray {
   cols : Int
 } derive(Show, Debug)
 
+/// 主公式之外的布局预置锚点（`#` 观测用例：被引用 spill 锚点的公式/尺寸）。
+///
+/// 只有 `kind=cse` 使用 `rows`/`cols`；`dynamic` 由引擎求值得到尺寸，
+/// 这里写 0/0 表示未指定。
+pub(all) struct CaseSetupArray {
+  kind : String
+  anchor : String
+  formula : String
+  rows : Int
+  cols : Int
+} derive(Show, Debug)
+
 /// 语料用例（mooncalc-corpus/1 schema，见 corpus/schema.md）。
 pub(all) struct CaseRecord {
   /// 用例唯一标识（如 `math-round-0001`）。
@@ -32,9 +44,37 @@ pub(all) struct CaseRecord {
   names : Map[String, String]
   /// 数组公式元数据（可选；普通标量用例为 `None`）。
   array : CaseArray?
+  /// 布局预置锚点（可选；观测 `#` 时用，主公式写在 `anchor` 格）。
+  setup_arrays : Array[CaseSetupArray]
   /// 宿主格（可选；缺省 `ZZ1`，隐式交集/@ 依赖它）。
   anchor : String?
 } derive(Show, Debug)
+
+fn decode_setup_arrays(j : Json) -> Array[CaseSetupArray] raise CodecError {
+  let arr = match j.as_array() {
+    Some(a) => a
+    None => raise CodecError("setupArrays must be an array")
+  }
+  let out : Array[CaseSetupArray] = []
+  for item in arr {
+    let kind = jstr(jfield(item, "kind"))
+    if kind != "cse" && kind != "dynamic" {
+      raise CodecError("setupArrays.kind must be cse or dynamic")
+    }
+    let anchor = jstr(jfield(item, "anchor"))
+    let formula = jstr(jfield(item, "formula"))
+    let rows = jnum(jfield(item, "rows")).to_int()
+    let cols = jnum(jfield(item, "cols")).to_int()
+    if rows < 0 || cols < 0 {
+      raise CodecError("setupArrays.rows/cols must be non-negative")
+    }
+    if kind == "cse" && (rows <= 0 || cols <= 0) {
+      raise CodecError("setupArrays cse rows/cols must be positive")
+    }
+    out.push({ kind, anchor, formula, rows, cols })
+  }
+  out
+}
 
 fn decode_record(j : Json) -> CaseRecord raise CodecError {
   let id = jstr(jfield(j, "id"))
@@ -106,7 +146,25 @@ fn decode_record(j : Json) -> CaseRecord raise CodecError {
     Some(aj) => Some(jstr(aj))
     None => None
   }
-  { id, formula, grid, now, expected, tags, source, notes, iter, names, array, anchor }
+  let setup_arrays = match j.value("setupArrays") {
+    Some(sj) => decode_setup_arrays(sj)
+    None => []
+  }
+  {
+    id,
+    formula,
+    grid,
+    now,
+    expected,
+    tags,
+    source,
+    notes,
+    iter,
+    names,
+    array,
+    setup_arrays,
+    anchor,
+  }
 }
 
 /// JSON → 单条语料用例；字段缺失/类型不符返回 `Err(消息)`。

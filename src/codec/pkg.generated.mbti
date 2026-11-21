@@ -69,6 +69,7 @@ pub(all) struct CaseRecord {
   iter : @engine.IterOptions?
   names : Map[String, String]
   array : CaseArray?
+  setup_arrays : Array[CaseSetupArray]
   anchor : String?
 }
 
@@ -83,6 +84,15 @@ pub(all) struct CaseResult {
   expected : @json.Json
   actual : @json.Json
   detail : String
+}
+
+#derive(Show, @debug.Debug)
+pub(all) struct CaseSetupArray {
+  kind : String
+  anchor : String
+  formula : String
+  rows : Int32
+  cols : Int32
 }
 
 // Type aliases

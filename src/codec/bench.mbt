@@ -78,6 +78,19 @@ fn compare_case(rec : CaseRecord, tol : Double, clock_tol : Double) -> CaseResul
     actual: Json::null(),
     detail: "",
   }
+  if rec.setup_arrays.length() > 0 {
+    let actual = try actual_with_setup_arrays(rec) catch {
+      CodecError(msg) =>
+        return {
+          ..base,
+          passed: false,
+          bucket: "parse-error",
+          actual: Json::null(),
+          detail: msg,
+        }
+    }
+    return compare_actual(rec, actual, tol, clock_tol, is_clock, base)
+  }
   let evaluated = match rec.iter {
     Some(it) =>
       @facade.eval_formula_iterative(rec.formula, rec.grid, { now: rec.now }, it)
@@ -264,6 +277,69 @@ fn actual_for_array(rec : CaseRecord, spec : CaseArray) -> Value raise CodecErro
       match out.cells.get(spec.anchor) {
         Some(o) => o.value
         None => Value::Blank
+      }
+  }
+}
+
+fn actual_with_setup_arrays(rec : CaseRecord) -> Value raise CodecError {
+  let layout = @facade.new_array_layout()
+  for spec in rec.setup_arrays {
+    if spec.kind == "cse" {
+      layout.set_cse(spec.anchor, spec.formula, spec.rows, spec.cols)
+    } else {
+      layout.set_dynamic(spec.anchor, spec.formula)
+    }
+  }
+  match rec.array {
+    Some(main) =>
+      if main.kind == "cse" {
+        layout.set_cse(main.anchor, rec.formula, main.rows, main.cols)
+      } else {
+        layout.set_dynamic(main.anchor, rec.formula)
+      }
+    None =>
+      match rec.anchor {
+        Some(a) => rec.grid.cells[a] = @facade.Cell::Formula(rec.formula)
+        None => raise CodecError("setupArrays requires anchor")
+      }
+  }
+  let out = @facade.recalc_arrays(rec.grid, layout, { now: rec.now })
+  if out.parse_errors.length() > 0 {
+    raise CodecError(out.parse_errors[0].1)
+  }
+  match rec.array {
+    Some(spec) => {
+      let (sheet, text) = @value.split_key(spec.anchor)
+      let host = match @value.parse_addr(text) {
+        Some(a) => a
+        None => raise CodecError("invalid array anchor: " + spec.anchor)
+      }
+      let cells : Array[Value] = []
+      for dr in 0..<spec.rows {
+        for dc in 0..<spec.cols {
+          let a : @value.CellAddr = {
+            row: host.row + dr,
+            col: host.col + dc,
+            abs_row: false,
+            abs_col: false,
+          }
+          let key = @value.sheet_key(sheet, a)
+          cells.push(match out.values.get(key) {
+            Some(v) => v
+            None => Value::Blank
+          })
+        }
+      }
+      Value::Range(@value.RangeValue::array(spec.rows, spec.cols, cells))
+    }
+    None =>
+      match rec.anchor {
+        Some(a) =>
+          match out.cells.get(a) {
+            Some(o) => o.value
+            None => Value::Blank
+          }
+        None => raise CodecError("setupArrays requires anchor")
       }
   }
 }
