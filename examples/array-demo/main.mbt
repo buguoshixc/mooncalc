@@ -3,7 +3,9 @@
 //
 // 说明（诚实披露）：mbtexcel 0.3.2 能写 OOXML `t="array"`（CSE 锚点的 ref），
 // 但没有动态数组 spill 元数据写入 API；因此动态数组的非锚点缓存值按普通字面值回写，
-// 读回断言的是“缓存值 + 锚点公式”，不是 Excel 运行时的 spill 元数据。
+// 读回断言的是“缓存值 + 锚点公式 + CSE 元数据”，不是 Excel 运行时的 spill 元数据。
+// 字面值按引擎结果类型回写（数字仍是数字、布尔仍是布尔），不再统一写成文本；
+// 公式格的缓存值受 mbtexcel API 限制仍写为字符串，Excel 打开后会重算。
 
 const WORK_DIR : String = "_build/array-demo"
 const INPUT_PATH : String = WORK_DIR + "/input.xlsx"
@@ -14,6 +16,8 @@ const CSE_RANGE : String = "D4:E5"
 const CSE_FORMULA : String = "Data!A1:B2*2"
 const DYN_KEY : String = "REPORT!G4"
 const DYN_FORMULA : String = "Data!A1:B2+10"
+const SUM_SPILL_ADDR : String = "E1"
+const SUM_SPILL_FORMULA : String = "SUM(G4#)"
 
 fn[T] die(msg : String) -> T {
   println(msg)
@@ -64,6 +68,22 @@ fn value_text(v : @value.Value) -> String {
     @value.Value::Err(e) => e.to_string()
     @value.Value::Blank => ""
     @value.Value::Range(r) => if r.rows * r.cols > 0 { value_text(r.cells[0]) } else { "" }
+  }
+}
+
+/// 引擎值 -> 写回用的带类型字面值（数字/布尔不再退化成文本）。
+fn literal_of(v : @value.Value) -> @xlsx.CellValue {
+  match v {
+    @value.Value::Num(d) => @xlsx.CellValue::Numeric(d)
+    @value.Value::Bool(b) => @xlsx.CellValue::Bool(b)
+    @value.Value::Text(s) => @xlsx.CellValue::String(s)
+    @value.Value::Err(e) => @xlsx.CellValue::Error(e.to_string())
+    @value.Value::Blank => @xlsx.CellValue::String("")
+    @value.Value::Range(r) => if r.rows * r.cols > 0 {
+      literal_of(r.cells[0])
+    } else {
+      @xlsx.CellValue::String("")
+    }
   }
 }
 
@@ -118,6 +138,8 @@ fn gen_fixture() -> Unit raise @xlsx.XlsxError {
   )
   // 动态数组：Data!A1:B2 + 10 = [[11,12],[14,15]]，溢出到 G4:H5。
   report.set_cell_formula("G4", DYN_FORMULA)
+  // 普通公式聚合 spill 区域：SUM(G4:H5) = 52（宿主 E1 在区域外，`#` 是引用通道）。
+  report.set_cell_formula(SUM_SPILL_ADDR, SUM_SPILL_FORMULA)
   let bytes = try @mbtexcel.write(wb) catch { _ => die("mbtexcel write failed") }
   write_file(INPUT_PATH, bytes)
   println("generated fixture: " + INPUT_PATH + " (" + bytes.length().to_string() + " bytes)")
@@ -206,7 +228,7 @@ fn writeback(
       }
       let addr = @mbtexcel.coordinates_to_cell_name(4 + dc, 4 + dr)
       let key = "REPORT!" + addr
-      cse_sheet.set_cell_value(addr, @xlsx.CellValue::String(value_text(out.values[key])))
+      cse_sheet.set_cell_value(addr, literal_of(out.values[key]))
     }
   }
   // 动态数组锚点：普通公式 + 锚点缓存；followers 没有 spill 元数据，按字面值写。
@@ -219,7 +241,7 @@ fn writeback(
   for (dr, dc) in dyn_cells {
     let addr = @mbtexcel.coordinates_to_cell_name(7 + dc, 4 + dr)
     let key = "REPORT!" + addr
-    dyn_sheet.set_cell_value(addr, @xlsx.CellValue::String(value_text(out.values[key])))
+    dyn_sheet.set_cell_value(addr, literal_of(out.values[key]))
   }
 }
 
@@ -257,6 +279,19 @@ fn run_demo() -> Unit raise @xlsx.XlsxError {
       println("FAIL " + label + ": want `" + want + "`, got `" + got + "`")
     }
   }
+  // 按引擎值类型比对读回结果（数字格必须是 Numeric，不能是文本型数字）。
+  fn check_value(label : String, want : @value.Value, sheet : @xlsx.Worksheet, addr : String) -> Unit raise @xlsx.XlsxError {
+    let got = match sheet.get_cell_value_raw(addr) {
+      Some(v) => cell_value_to_engine(v)
+      None => @value.Value::Blank
+    }
+    if want == got {
+      checks += 1
+    } else {
+      failures += 1
+      println("FAIL " + label + ": want `" + value_text(want) + "`, got `" + value_text(got) + "`")
+    }
+  }
   fn check_cached(label : String, want : String, sheet : @xlsx.Worksheet, addr : String) -> Unit raise @xlsx.XlsxError {
     match sheet.get_cell_value_raw(addr) {
       Some(@xlsx.CellValue::String(s)) => check_text(label, want, s)
@@ -274,6 +309,7 @@ fn run_demo() -> Unit raise @xlsx.XlsxError {
     ("B1", "SUM({1,2}+{10;20})", "66"),
     ("C3", "Data!A1:C1", "3"),
     ("A7", "Data!A1:C3", "#VALUE!"),
+    ("E1", "SUM(G4#)", "52"),
   ]
   for (addr, formula, want) in expected_scalar {
     let got_formula = match report.get_cell_formula(addr) {
@@ -289,10 +325,38 @@ fn run_demo() -> Unit raise @xlsx.XlsxError {
     None => "<missing>"
   }
   check_text("cse anchor formula", CSE_FORMULA, cse_formula_got)
+  match report.get_cell_formula_info_rc(4, 4) {
+    Some(info) => {
+      check_text(
+        "cse formula_type",
+        "Array",
+        match info.formula_type {
+          Some(@xlsx.FormulaType::Array) => "Array"
+          _ => "other"
+        },
+      )
+      check_text(
+        "cse range_ref",
+        CSE_RANGE,
+        match info.range_ref {
+          Some(s) => s
+          None => "<none>"
+        },
+      )
+    }
+    None => {
+      failures += 2
+      println("FAIL cse metadata: D4 has no formula info")
+    }
+  }
   check_cached("cse anchor cached", "2", report, "D4")
-  let cse_expected : Array[(String, String)] = [("E4", "4"), ("D5", "8"), ("E5", "10")]
+  let cse_expected : Array[(String, @value.Value)] = [
+    ("E4", @value.Value::Num(4.0)),
+    ("D5", @value.Value::Num(8.0)),
+    ("E5", @value.Value::Num(10.0)),
+  ]
   for (addr, want) in cse_expected {
-    check_cached("cse " + addr, want, report, addr)
+    check_value("cse " + addr, want, report, addr)
   }
   // 动态数组锚点与三个 spill 格。
   let dyn_formula_got = match report.get_cell_formula("G4") {
@@ -301,9 +365,13 @@ fn run_demo() -> Unit raise @xlsx.XlsxError {
   }
   check_text("dyn anchor formula", DYN_FORMULA, dyn_formula_got)
   check_cached("dyn anchor cached", "11", report, "G4")
-  let dyn_expected : Array[(String, String)] = [("H4", "12"), ("G5", "14"), ("H5", "15")]
+  let dyn_expected : Array[(String, @value.Value)] = [
+    ("H4", @value.Value::Num(12.0)),
+    ("G5", @value.Value::Num(14.0)),
+    ("H5", @value.Value::Num(15.0)),
+  ]
   for (addr, want) in dyn_expected {
-    check_cached("dyn " + addr, want, report, addr)
+    check_value("dyn " + addr, want, report, addr)
   }
   // 输入表字面量未被改动（抽查 9 格）。
   for r in 1..=3 {
