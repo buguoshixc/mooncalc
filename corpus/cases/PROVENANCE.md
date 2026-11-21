@@ -103,7 +103,7 @@ Excel 无法为「奇数参数 IFS」产生任何答案值，因此该行为不�
 - 最终：**1,169/1,169（100%）**，1,149 match + 3 clock-tolerance + 16 excel-precision
   + 1 surrogate-representation，无未归因失败。
 
-> 以下是 M8 时点的历史记录；其中“声明子集”“移出验收分母”是当时口径，已被 ADR 0009 的完整符合性终点取代。当前分母与 1,505/1,505 结果见文末 M9 节。
+> 以下是 M8 时点的历史记录；其中“声明子集”“移出验收分母”是当时口径，已被 ADR 0009 的完整符合性终点取代。当前分母与 1,528/1,528 结果见文末 M9/M9.1 节。
 
 ## M8 refs 批（2026-11-17）
 
@@ -180,30 +180,42 @@ generator 已按上表产出 103 条；随后按“声明子集语义”裁定�
 - `refs-probe-008`（200 格跨表链，答案 `=H5` → 200）通过，验证裸引用绑定主表。
 - 全语料（1,169 + 98 = **1,267 条**）MoonCalc 重跑：**1,267/1,267**（`match` 1,247 + `clock-tolerance` 3 + `excel-precision` 16 + `surrogate-representation` 1），无失败。
 
-## 数组 / 交集 / 并集 / 隐式交集批（`arrays.json`，2026-11-21）
+## 数组 / 交集 / 并集 / 隐式交集 / spill 引用批（`arrays.json`，2026-11-21）
 
 | 项 | 值 |
 | --- | --- |
-| 生成日期 | 2026-11-21 01:17 (Asia/Shanghai) |
+| 生成日期 | M9 批 2026-11-21 01:17；spill 引用批 2026-11-21（同日，见 M9.1） |
 | Excel 版本 | 版本 2610；Build 16.0.20527.20196（64 位；Home2024Retail；zh-CN）；`Application.Version` 16.0 / `Build` 20527 |
-| 生成器 | `corpus/probes/run_probes.ps1`（PowerShell COM；数据驱动；按 `mode` 用 `Range.Formula`（normal）/ `Range.Formula2`（dynamic）/ `Range.FormulaArray`（CSE）写入并重算；读取标量或选区二维值；SHA-256 `1bb754fa8f31cc814f9e4f1e68caf16bdc64420a2eb8e69d32c043be6fc3b8fe`） |
-| 规格输入 | `corpus/probes/arrays.tsv`（238 条，7 列：id/anchor/mode/rows/cols/formula/setup；SHA-256 `09831d1b802dd8aa83a5559c4f0638a35f36e040f145651380c2b74f2567052c`） |
-| 原始答案键 | `corpus/probes/arrays.results.json`（238/238 成功，0 条录入失败；SHA-256 `5fde606afa4ea9375bc51e83664bb8db4decc38c40d940689c665e5613b6a078`） |
-| 转换器 | `corpus/probes/arrays_to_corpus.py`（只复制 `arrays.results.json` 的答案值，不计算期望值；SHA-256 `5bbc1ecdc55325360062d6924d3f8e4ee531f34b51fb40de62c3d9c7e0afa89b`） |
-| 输出 | `arrays.json` 238 条；SHA-256 `159c17ed50f679a3457fed5bd2d96c88734077731f4bea216c1bd8cecdba6f45` |
-| 生成命令 | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File corpus/probes/run_probes.ps1 -SpecPath <arrays.tsv 的 Windows 路径> -OutPath <arrays.results.json 的 Windows 路径>`；随后 `python3 corpus/probes/arrays_to_corpus.py` |
+| 生成器 | `corpus/probes/run_probes.ps1`（PowerShell COM；数据驱动；按 `mode` 用 `Range.Formula`（normal）/ `Range.Formula2`（dynamic）/ `Range.FormulaArray`（CSE）写入并重算；读取标量或选区二维值）。M9 批由 v1 生成（SHA-256 `1bb754fa8f31cc814f9e4f1e68caf16bdc64420a2eb8e69d32c043be6fc3b8fe`）；M9.1 批由 v2 生成，新增 `cse:` setup 分支（SHA-256 `c63feac0a6bd4c239627a6aaa5631725f7ea2c6ccf303d6e2612540b97c96bc6`） |
+| 规格输入 | M9：`corpus/probes/arrays.tsv`（238 条，7 列；SHA-256 `09831d1b802dd8aa83a5559c4f0638a35f36e040f145651380c2b74f2567052c`）；M9.1：`corpus/probes/spill_ref.tsv`（25 条；SHA-256 `7aa2e6c7ebd1337e68f708fd5a925ee0ec07d29dfd7bbdf382729bc1587be69c`） |
+| 原始答案键 | M9：`arrays.results.json`（238/238 成功，0 条录入失败；SHA-256 `5fde606afa4ea9375bc51e83664bb8db4decc38c40d940689c665e5613b6a078`）；M9.1：`spill_ref.results.json`（25/25 成功，0 条录入失败；SHA-256 `f1a64bf01a27a6299f314ebf5bfd87828926e96f28d2946d722104efc445ca6d`） |
+| 转换器 | `corpus/probes/arrays_to_corpus.py`（只复制结果 JSON 的答案值，不计算期望值；双来源、支持 `setupArrays`；SHA-256 `f2d1623d4b3e90704b5c9450f208ad4aeafca4c040228dc2f0f11e3f3716c1dc`） |
+| 输出 | `arrays.json` **261 条**（M9 238 + M9.1 23）；SHA-256 `6119c6fca8c17b7693c6d54580b07e8d120e39c1c5c673e024714f3553fb9471` |
+| 生成命令 | `powershell.exe -NoProfile -ExecutionPolicy Bypass -File corpus/probes/run_probes.ps1 -SpecPath <TSV 的 Windows 路径> -OutPath <results JSON 的 Windows 路径>`；随后 `python3 corpus/probes/arrays_to_corpus.py` |
 | 计算模式 | 每条新建临时工作簿/临时表，写入 setup 网格与公式，`Application.Calculate` 后读取；CSE 用 `Range.FormulaArray` 选中多格；dynamic 用 `Range.Formula2`；normal 用 `Range.Formula`；不启用迭代计算 |
-| 基准结果 | `corpus/cases` 全量 **1,505/1,505**：`match` 1,485 + `clock-tolerance` 3 + `excel-precision` 16 + `surrogate-representation` 1；无失败 |
+| 基准结果 | `corpus/cases` 全量 **1,528/1,528**：`match` 1,508 + `clock-tolerance` 3 + `excel-precision` 16 + `surrogate-representation` 1；无失败 |
 
 ### 收录与排除
 
-- 238 条从探针结果中收录；覆盖：空/单格/多格交集（`#NULL!`）、并集聚合与并集拒绝、`@` 显式交集、隐式交集（行/列/二维/整列整行）、数组字面量与逐元素广播、数组 `IF`、CSE 选区分发（截断/广播/`#N/A`/标量填充）、动态 spill、spill 阻塞 `#SPILL!`、`INDEX` `area_num`。`#` 运算符与 spill 格引用由 `src/engine/array_test.mbt` 和 `examples/array-demo` 覆盖，不在本批答案键内。
-- 排除 `p014`/`p015`（`=SUM (A1:A2)` / `=SUM  (A1:A2)`）：真实 Excel 返回 `#NAME?`；引擎按用户要求把 `Ident + 空白 + (` 继续识别为函数调用（`SUM (A1)` 合法），属于**有意记录的分歧**，不进入权威分母。见 `docs/semantics.md`「函数调用与空白」。
+- M9 批 238 条从探针结果中收录；覆盖：空/单格/多格交集（`#NULL!`）、并集聚合与并集拒绝、`@` 显式交集、隐式交集（行/列/二维/整列整行）、数组字面量与逐元素广播、数组 `IF`、CSE 选区分发（截断/广播/`#N/A`/标量填充）、动态 spill、spill 阻塞 `#SPILL!`、`INDEX` `area_num`。
+- 排除 `p014`/`p015`（`=SUM (A1:A2)` / `=SUM  (A1:A2)`）：真实 Excel 返回 `#NAME?`；引擎按用户要求把 `Ident + 空白 + (` 继续识别为函数调用（`SUM (A1)` 合法），属于**有意记录的分歧**，不进入权威分母。见 `docs/semantics.md` 的「有意分歧」节（本节曾误写成「函数调用与空白」，2026-11-21 修正悬空引用）。
 - 排除 `p126`（dynamic `=INDEX(A1:C3,0,0)` 写在 C3）：公式覆盖了自身引用区域，Excel 缓存 0 是循环/覆盖瞬态，不是稳定语义；不作为答案键。
+- `p074`（`=D4#` 写在 F1，D4=`SEQUENCE(3)`）因 `SEQUENCE` 未在引擎注册，不进入本批；其 `#` 语义由 M9.1 的字面量版 `s01`（`D4=f2:={1;2;3}` → `#VALUE!`）替代覆盖。原探针记录保留在 `probes.results.json`，不手改历史结果。
 - `SEQUENCE`/`OFFSET`/`INDIRECT` 相关探针不进入本批：这三个函数尚未在引擎注册，属于 `docs/adr/0009` 当前缺口清单，待后续里程碑补齐；不以答案键伪装覆盖。
-- 239 条有效探针回放中引擎 **236/239** 通过；未过的 3 条即 p014、p015（有意分歧）与 p126（不稳定覆盖探针），理由同上。
+- M9 时点回放记录：239 条有效探针中引擎 **236/239** 通过；未过的 3 条即 p014、p015（有意分歧）与 p126（不稳定覆盖探针），理由同上。该回放是上一轮历史数字，不随 M9.1 改变。
 
 ### 说明
 
-- 本批答案键来自与既有 1,267 条相同的桌面 Excel 版本，但由独立 COM 探针生成器产生；`arrays.json` 的 `array`/`anchor` 字段是 corpus schema 的扩展（见 `corpus/schema.md`），用于表达 CSE 选区、动态 spill 锚点与普通公式宿主格。
+- 本批答案键来自与既有 1,267 条相同的桌面 Excel 版本，但由独立 COM 探针生成器产生；`arrays.json` 的 `array`/`anchor`/`setupArrays` 字段是 corpus schema 的扩展（见 `corpus/schema.md`），用于表达 CSE 选区、动态 spill 锚点、多数组 setup 与普通公式宿主格。
 - 本批不包含手写期望值；`arrays_to_corpus.py` 只做结构与类型转换。
+- 历史探针文件 `probes.results.json`（p072）与 `probes2.results.json`（q022/q023）中的 `#ERRCODE-2146826243!` 是**错误名映射修复前**的旧脚本产物（非当前引擎行为），按冻结口径不手改结果值；权威数组批 `arrays.results.json`/`spill_ref.results.json` 不含该值。
+
+### M9.1 spill 引用批（`D4#`，2026-11-21）
+
+| 项 | 值 |
+| --- | --- |
+| 探针 | `corpus/probes/spill_ref.tsv` 25 条（s01–s25），真实 Excel 2610 逐条生成，`spill_ref.results.json` 25/25、0 录入错误 |
+| 入库 | 23 条（`s01`–`s11`、`s13`–`s20`、`s22`–`s25`）；`s12`/`s21` 使用未注册的 `ROWS`，**不收录**，属公开函数缺口；几何覆盖由 `s23`/`s24` 的 `COUNT(D4#)` 与 `s02`/`s20` 承担 |
+| 裁定摘要 | `D4#` 是**引用通道**：普通公式按宿主格隐式交集（`s02` 行内=2、`s03` 列对齐但行外 `#VALUE!`、`s17` 单行按列）；聚合展开（`SUM(D4#)`=6/52、`COUNT`=3）；`@D4#` 仍显式交集（`s06`）；CSE/动态模式保留区域（`s07`/`s18`）；锚点无 spill 时传播锚点错误（`s09` `#SPILL!`、`s13` `#DIV/0!`）否则 `#REF!`（`s08`）；CSE 锚点（`s10`/`s20`/`s22`）与 1×1 动态锚点（`s11`）都构成可引用区域 |
+| 引擎配套 | `eval_spill` 返回 `RangeValue::reference`；动态 1×1 锚点登记 `spill_ranges`；CSE 公式直接引用的动态锚点在 CSE 阶段前预求值（`recalc_arrays` 步骤 0）；动态锚点之间仍按键顺序、不做拓扑排序（公开限制） |
+| 验证 | `moon test` 171/171（native + wasm-gc）；`examples/array-demo` 39/39；全量 1,528/1,528 |

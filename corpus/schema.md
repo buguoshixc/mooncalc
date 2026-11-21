@@ -106,9 +106,12 @@ number→JSON 数字；text→字符串；bool→true/false；error→错误名�
 | `array.kind` | `"cse"` / `"dynamic"` | CSE 多格 / 动态数组 |
 | `array.anchor` | 地址 | 数组锚点（CSE 左上角；动态公式格） |
 | `array.rows` / `array.cols` | 正整数 | CSE 选区；动态结果形状 |
+| `setupArrays` | 对象数组（M9.1） | 在求主公式前构造多个数组锚点；每项 `{kind, anchor, formula, rows, cols}`，`kind` 为 `"cse"`（`rows`×`cols` 选区，必须 >0）或 `"dynamic"`（`rows`/`cols` 为 0，形状由求值决定） |
 
 普通网格公式仍用 `formula` + `grid`；`array` 记录由 bench 的 `actual_for_array`
-构造 `ArrayLayout` 后调用 `recalc_arrays`，与普通记录走同一套桶规则。
+构造 `ArrayLayout` 后调用 `recalc_arrays`，与普通记录走同一套桶规则；带
+`setupArrays` 的记录由 `actual_with_setup_arrays` 先构造多锚点布局（setup 写数组
+锚点，主公式按 `array` 元数据或普通网格公式插入），再调用 `recalc_arrays`。
 
 ### 字段说明
 
@@ -171,7 +174,8 @@ id	formula	grid	now	tags	iter	names
 
 ### M9 数组批（独立生成器）
 
-数组/交集/并集/`@`/CSE/动态 spill 记录由 `corpus/probes/arrays.tsv` 驱动，经
+数组/交集/并集/`@`/CSE/动态 spill/spill 引用记录由 `corpus/probes/arrays.tsv` 与
+`corpus/probes/spill_ref.tsv` 驱动，经
 `corpus/probes/run_probes.ps1` 在真实桌面 Excel 上逐条写入并读取（`Range.Formula` /
 `Formula2` / `FormulaArray`），再由 `corpus/probes/arrays_to_corpus.py` **只读取**
 `arrays.results.json` 转成 `mooncalc-corpus/1`（不计算期望值）。来源、版本、SHA-256

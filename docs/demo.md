@@ -10,7 +10,7 @@ bash scripts/run-bench.sh    # 权威语料跑分（默认 corpus/cases）
 node scripts/smoke.mjs       # headless Chromium 冒烟（39 断言）
 ```
 
-预期：`ALL CHECKS PASS`（166 项单测，native + wasm-gc）；`1505/1505 passed (100%)`（真实 Excel 语料：旧批 1,267 + M9 数组批 238）；`SMOKE PASS`。
+预期：`ALL CHECKS PASS`（171 项单测，native + wasm-gc）；`1528/1528 passed (100%)`（真实 Excel 语料：旧批 1,267 + M9 数组批 238 + spill 引用批 23）；`SMOKE PASS`。
 
 ## 1. CLI：互引 + 错误 + 循环的网格
 
@@ -37,12 +37,12 @@ fixture 看点（对应输出）：
 ## 2. bench：N/X% 与逐条归因
 
 ```bash
-... bench --corpus corpus/cases --report corpus/reports/real.json          # 1505/1505（100%）
+... bench --corpus corpus/cases --report corpus/reports/real.json          # 1528/1528（100%）
 ... bench --corpus corpus/provisional                                    # 过渡语料，34/34
 ... bench --corpus tests/fixtures/badcorpus --fail-under 0.95; echo "exit=$?"   # 1（有差异）
 ```
 
-看点：按 source 分栏、buckets（match / excel-precision / clock-tolerance / numeric-tolerance / value-mismatch / …）、逐条 FAIL 的 expected/actual。权威语料为桌面 Excel 2024/2610 导出的 **1,505 条**（旧 1,267：1,169 旧语料 + 98 条 M8 refs 批；M9 数组批 238 条），当前 100% 通过（1,485 match + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，后三个桶为可披露的表征/时钟容差；2 条奇数参数 IFS 与 3 条非法/重复定义名称被 Excel 拒绝录入，按非法输入处理；5 条非稳态旧探针另存 `corpus/excluded/`，不计入分母；数组批 p014/p015/p126 排除理由见 PROVENANCE）。
+看点：按 source 分栏、buckets（match / excel-precision / clock-tolerance / numeric-tolerance / value-mismatch / …）、逐条 FAIL 的 expected/actual。权威语料为桌面 Excel 2024/2610 导出的 **1,528 条**（旧 1,267：1,169 旧语料 + 98 条 M8 refs 批；M9 数组批 238 条 + spill 引用批 23 条），当前 100% 通过（1,508 match + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，后三个桶为可披露的表征/时钟容差；2 条奇数参数 IFS 与 3 条非法/重复定义名称被 Excel 拒绝录入，按非法输入处理；5 条非稳态旧探针另存 `corpus/excluded/`，不计入分母；数组批 p014/p015/p126 排除理由见 PROVENANCE）。
 
 M8 引用语义的差分探针（12 条，含定义名称、跨表环、200 格链）：
 
@@ -95,20 +95,21 @@ moon run examples/array-demo --target native -- gen
 moon run examples/array-demo --target native -- run
 ```
 
-看点（35 项逐格断言）：
+看点（39 项逐格断言）：
 
-- `Data` 表 A1:C3 = 1..9；`Report` 表 10 个公式：
+- `Data` 表 A1:C3 = 1..9；`Report` 表 11 个公式：
   - `A1 =SUM(Data!A1:B2 Data!B2:C3)` → 5（交集 B2）；
   - `A2 =Data!A1:A3` → 4、`C3 =Data!A1:C1` → 3（普通公式的隐式交集，宿主行/列）；
   - `A3 =@Data!A1:C1` → 1（显式 `@`）；
   - `A4 =SUM((Data!A1:A2,Data!B1:B2))` → 12（并集聚合）；
   - `A5 ={1,2;3,4}` → 1，`B1 =SUM({1,2}+{10;20})` → 66（数组字面量/广播）；
   - `A7 =Data!A1:C3` → `#VALUE!`（2D 宿主不在区域内）；
-  - CSE `D4:E5 =Data!A1:B2*2` → `[[2,4],[8,10]]`，回写 `t="array" ref="D4:E5"`，followers 写缓存值；
-  - 动态 `G4 =Data!A1:B2+10` → spill `G4:H5 = [[11,12],[14,15]]`，followers 按字面值回写。
-- 读回断言：公式、缓存值、followers、CSE `formula_type=Array`/`range_ref`、Data 字面量未改动；共 35 项。
-- **诚实限制**：mbtexcel 0.3.2 可写 CSE 的 `t="array"`/`ref`，但没有动态 spill 元数据；动态数组的 follower 缓存值以字面值写入，读回断言逐格校验，不能声称写了 Excel 的动态数组元数据。
-- 预期输出：`array-demo: formulas=10 checks=35 failures=0`。
+  - CSE `D4:E5 =Data!A1:B2*2` → `[[2,4],[8,10]]`，回写 `t="array" ref="D4:E5"`，followers 按数值/布尔/文本类型回写（数值格不再写成共享字符串）；
+  - 动态 `G4 =Data!A1:B2+10` → spill `G4:H5 = [[11,12],[14,15]]`，followers 同样按值类型回写；
+  - 普通公式 `E1 =SUM(G4#)` → 52，把 spill 引用通道纳入读→算→写链路。
+- 读回断言：公式、缓存值、followers、CSE `formula_type=Array`/`range_ref`、Data 字面量未改动；followers 与 `E1` 按 `Value`相等性比对（数值即数值）；共 39 项。
+- **诚实限制**：mbtexcel 0.3.2 可写 CSE 的 `t="array"`/`ref`，但没有动态 spill 元数据；动态数组只写单元格值，不能声称写了 Excel 的动态数组元数据。mbtexcel 对公式格仍只支持文本缓存值（本题 `D4`/`G4`/`E1` 读回是共享字符串），followers 已是真正的数值/布尔/文本格。
+- 预期输出：`array-demo: formulas=11 checks=39 failures=0`。
 
 ## 5. 矩阵与署名偏差
 

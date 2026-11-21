@@ -6,7 +6,7 @@ pub(all) enum XlError {
   NA
   /// `#NAME?`：未知函数名或无法识别的文本。
   Name
-  /// `#NULL!`：空交集（本子集不产生，保留以完整覆盖错误字面量）。
+  /// `#NULL!`：空交集（M9 起由交集探针真实产生，见 `docs/semantics.md`）。
   Null
   /// `#NUM!`：数值越界/非法（如负数开方、日期超界、未注入时钟的 TODAY/NOW）。
   Num

@@ -36,15 +36,15 @@ MoonCalc 的最终验收终点是：**对上述目标标准中的公式语言与
 
 | 项 | 当前状态 | 证据 |
 | --- | --- | --- |
-| 真实 Excel 答案键 | **1,505/1,505（100%）**：旧 1,267 条 + M9 数组/交集批 238 条 | `corpus/cases/`、`corpus/reports/real.json` |
-| 交集/并集/`@`/隐式交集 | 已实现；空交集 `#NULL!`、单格/多格交集、并集聚合、`@`、行/列/二维隐式交集均有答案键 | `corpus/cases/arrays.json`（238 条）、`docs/semantics.md` M9 节 |
+| 真实 Excel 答案键 | **1,528/1,528（100%）**：旧 1,267 条 + M9 数组/交集批 238 条 + spill 引用批 23 条 | `corpus/cases/`、`corpus/reports/real.json` |
+| 交集/并集/`@`/隐式交集 | 已实现；空交集 `#NULL!`、单格/多格交集、并集聚合、`@`、行/列/二维隐式交集均有答案键；`D4#` 为引用通道 | `corpus/cases/arrays.json`（261 条）、`docs/semantics.md` M9/M9.1 节 |
 | 数组字面量/逐元素运算/广播 | 已实现；`{1,2;3,4}`、标量/单行/单列广播、越界 `#N/A` 有答案键 | 同上 |
 | CSE 多格公式 | 已实现：选区填充/截断/广播/`#N/A`/标量填充；`ArrayLayout` 侧契约 | `examples/array-demo`、`src/engine/array_test.mbt` |
 | 动态数组/spill | 已实现：`#SPILL!` 阻塞、spill 格可引用、`#` 运算符；函数面尚未补齐 FILTER/SORT/SEQUENCE 等 | `docs/semantics.md` M9 节、`examples/array-demo` |
 | 内置函数 | **61 个**（六族 + PRODUCT）；距“全部内置函数”仍有大缺口 | `docs/support-matrix.md` |
 | 引用语义 | 跨表/工作簿级名称/整列整行已实现；3D、外部链接、工作表级名称、空实参仍是缺口 | `docs/semantics.md`「当前缺口」 |
-| 读→算→写 | 普通多表工作簿 65/65；数组工作簿 35/35（CSE 写 `t="array"`；动态 spill 无写入元数据，缓存值按字面值回写并披露） | `examples/xlsx-demo`、`examples/array-demo`、`docs/demo.md` |
-| 语义探针 | 239 条有效探针中 236 条通过；2 条有意分歧（`SUM (` 函数调用空白）、1 条不稳定覆盖探针 | `corpus/probes/`、`corpus/cases/PROVENANCE.md` |
+| 读→算→写 | 普通多表工作簿 65/65；数组工作簿 39/39（CSE 写 `t="array"` 且读回校验 `formula_type`/`range_ref`；动态 spill 无写入元数据，只写单元格值并披露） | `examples/xlsx-demo`、`examples/array-demo`、`docs/demo.md` |
+| 语义探针 | M9 时点 239 条有效探针中 236 条通过（2 条有意分歧 `SUM (`、1 条不稳定覆盖探针）；M9.1 新增 25 条 spill 引用探针，23 条转答案键并全过（2 条 `ROWS` 未注册） | `corpus/probes/`、`corpus/cases/PROVENANCE.md` |
 
 **有意分歧**：真实 Excel 把 `=SUM (A1:A2)` 判为 `#NAME?`；本引擎按用户明确要求把 `Ident + 空白 + (` 继续识别为函数调用（`SUM (A1)` 合法）。该分歧在 `docs/semantics.md` 与语料 PROVENANCE 中书面记录，不进入权威答案键分母。
 
@@ -52,7 +52,8 @@ MoonCalc 的最终验收终点是：**对上述目标标准中的公式语言与
 
 | 里程碑 | 范围 | 完成判据 |
 | --- | --- | --- |
-| M9（已完成，2026-11-21） | 数组字面量、交集/并集/`@`、隐式交集、CSE、动态 spill、`#SPILL!`、`#NULL!`、`PRODUCT` | 238 条新答案键全过；全量 1,505/1,505；数组 demo 35/35 |
+| M9（已完成，2026-11-21 时点） | 数组字面量、交集/并集/`@`、隐式交集、CSE、动态 spill、`#SPILL!`、`#NULL!`、`PRODUCT` | 238 条新答案键全过；时点全量 1,505/1,505；数组 demo 35/35 |
+| M9.1（已完成，2026-11-21） | `D4#` 引用通道与隐式交集、spill 锚点错误传播、CSE→动态依赖预求值 | 23 条新答案键全过；全量 1,528/1,528；数组 demo 39/39 |
 | M10 | 函数广度：按目标版本函数目录逐族补齐全部内置函数 | 每个函数 ≥15 条真实 Excel 答案键；函数级矩阵无“未实现” |
 | M11 | 引用完整性：3D 引用、外部工作簿链接、工作表级名称、空实参、R1C1（若目标版本公式语言要求） | 每项有答案键；解析/求值/增量/explain 同步 |
 | M12 | 动态数组函数族：FILTER/SORT/SORTBY/UNIQUE/SEQUENCE/RANDARRAY 等，及其与 CSE/`#`/spill 的交互 | 函数级答案键 + spill 阻塞/引用案例 |

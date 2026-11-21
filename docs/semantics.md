@@ -200,7 +200,7 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 
 ## 数组与交集/并集语义（M9，2026-11-21）
 
-本节契约由真实 Excel 2610 的 239 条探针与 238 条答案键裁定；语料编号见 `corpus/cases/arrays.json`，来源指纹见 `corpus/cases/PROVENANCE.md`。
+本节契约由真实 Excel 2610 的 263 条探针（M9 数组批 238 + spill 引用批 25）与 261 条答案键裁定；语料编号见 `corpus/cases/arrays.json`，来源指纹见 `corpus/cases/PROVENANCE.md`。
 
 ### 引用通道与数组通道
 
@@ -252,9 +252,20 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
   - 结果大于选区 → 截断；
   - 选区多出的列 → `#N/A`（数组/引用结果一致；引用结果按广播规则处理）；
   - 阻塞（选区非锚点格已有网格值/公式）→ 锚点 `#SPILL!`。
-- **动态数组（`ArrayLayout.dynamic`）**：锚点普通公式在数组模式求值，结果 >1 格时向右下 spill；任一目标格已占用（网格、之前的 spill、缓存、另一个数组锚点）→ 锚点 `#SPILL!`；spill 格可被后续公式引用（`=D5`、`SUM(D4:D6)`），`D4#` 引用整个 spill 区域；`#` 在普通公式中按宿主格隐式交集，宿主不在 spill 区域 → `#VALUE!`。
+- **动态数组（`ArrayLayout.dynamic`）**：锚点普通公式在数组模式求值，结果 >1 格时向右下 spill；任一目标格已占用（网格、之前的 spill、缓存、另一个数组锚点）→ 锚点 `#SPILL!`；spill 格可被后续公式引用（`=D5`、`SUM(D4:D6)`），`D4#` 引用整个 spill 区域（语义见下节「spill 引用」）。
 - CSE/动态入口是**侧契约** `ArrayLayout` + `recalc_arrays`，不改变旧 `recalc`/`RecalcOutput` 的标量契约；`ArrayRecalcOutput` 暴露 `values`（锚点与 spill 格）与 `ranges`（锚点→rows,cols）。
-- 已知写入限制：mbtexcel 0.3.2 可写 `t="array"`/`ref`（CSE），没有动态 spill 元数据；数组 demo 将 spill 缓存值写为字面值，读回断言逐格校验并在 `docs/demo.md` 披露。
+- 已知写入限制：mbtexcel 0.3.2 可写 `t="array"`/`ref`（CSE）并读回校验 `formula_type`/`range_ref`，但没有动态 spill 元数据；公式格的缓存值仍只能写文本（`t="str"`），而数组 demo 的 CSE/spill follower 按值类型写真正的数值/布尔/文本，读回按 `Value` 相等性比对并在 `docs/demo.md` 披露。
+
+### spill 引用（`#` 运算符，M9.1，2026-11-21）
+
+`D4#` 引用锚点 `D4` 的 spill 区域，结果是**引用通道**（保留表名、左上角与行列数），因此参与隐式交集与区域展开：
+
+- 普通（非 CSE、非动态）公式按宿主格做隐式交集：N×1 看宿主行、1×N 看宿主列、2D 需行列都落在矩形内，否则 `#VALUE!`（探针 s01/s02/s03/s15/s16/s17/s20）。
+- 聚合函数展开整个区域：`SUM(D4#)`（s04/s14/s25 与 s19 的 `SUM(D4#,1)`）、`COUNT(D4#)`（s23/s24）；`@D4#` 仍按显式交集（s06）。
+- CSE/动态模式下保留区域并按数组逐元素计算（s07/s18）。
+- 锚点没有 spill 区域时：锚点值为错误则传播该错误（`#SPILL!` s09、`#DIV/0!` s13），否则 `#REF!`（s08）。
+- CSE 锚点的选区、1×1 动态锚点的单格 spill 都构成可被 `#` 引用的区域（s10/s11/s20/s21/s22）。
+- CSE 公式引用动态 spill 时，引擎在 CSE 阶段前按键顺序**预求值**被直接引用的动态锚点（s07）；动态锚点之间的依赖仍按键顺序、不做拓扑排序（未探针覆盖，公开限制）；动态公式引用 CSE 选区按 CSE→动态阶段顺序工作。
 
 ### 有意分歧
 
@@ -265,7 +276,7 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 ## 数值对照策略（bench）
 
 - **match**：数值精确相等（Double 位相等），文本/布尔/错误按值相等。
-- **excel-precision**（通过，单列披露）：数值相对差 ≤ 1e-14。来源是 Excel/VBA 只能以 **15 位有效数字**序列化答案（`CStr`），因此 15 位表征差不算行为差异（当前 1,505 条中 16 条，历史 M5 首条为 `SQRT`）。
+- **excel-precision**（通过，单列披露）：数值相对差 ≤ 1e-14。来源是 Excel/VBA 只能以 **15 位有效数字**序列化答案（`CStr`），因此 15 位表征差不算行为差异（当前 1,528 条中 16 条，历史 M5 首条为 `SQRT`）。
 - **clock-tolerance**（通过，单列披露）：用例带 `clock` 标签且数值**绝对差 ≤ `--clock-tol`（默认 1e-6 天 ≈0.086 s）**。`now` 由生成器在同一重算中经 `=NOW()` 辅助格捕获（见 `corpus/cases/PROVENANCE.md`），派生运算的尾差在此容差内（当前 3 条）。
 - **numeric-tolerance**（失败）：相对差介于 1e-14 与 `--tol`（默认 1e-9）之间，单独归因。
 - **value-mismatch / type-mismatch / parse-error**：失败并逐条列出 expected/actual。

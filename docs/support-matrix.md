@@ -2,11 +2,11 @@
 
 状态截至 2026-11-21（M9 完成）。**目标标准**：桌面 Excel 2024 / 2610（16.0.20527.20196，zh-CN）公式语言与计算语义，承诺完整符合性（[ADR 0009](adr/0009-full-conformance-endpoint.md)）；本矩阵是当前覆盖快照，不是终点。
 
-**权威语料（真实 Excel 导出）**：`corpus/cases/` **1,505 条**——旧 8 文件 1,169 条 + M8 refs 98 条 + M9 数组/交集批 238 条。旧批由 Excel 2024/2610 生成；M9 数组批 238 条全部由桌面 Excel 2610 单批生成（`corpus/probes/arrays.tsv` + `arrays.results.json`，SHA-256 见 `corpus/cases/PROVENANCE.md`）。2 条奇数参数 IFS 与 3 条非法/重复定义名称被 Excel 拒绝录入（`logic.skipped.txt`、`refs.skipped.txt`，不进入分母）；5 条非稳态旧探针另存 `corpus/excluded/`，不计分；数组批 exclusions p014/p015/p126 见 PROVENANCE。权威跑分 **1,505/1,505（100%）**（报告 `corpus/reports/real.json`）：1,485 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，无未归因失败。
+**权威语料（真实 Excel 导出）**：`corpus/cases/` **1,528 条**——旧 8 文件 1,169 条 + M8 refs 98 条 + M9 数组/交集批 238 条 + spill 引用批 23 条。旧批由 Excel 2024/2610 生成；M9 数组批 238 条与 spill 引用批 23 条全部由桌面 Excel 2610 单批生成（`corpus/probes/arrays.tsv`/`arrays.results.json`、`spill_ref.tsv`/`spill_ref.results.json`，SHA-256 见 `corpus/cases/PROVENANCE.md`）。2 条奇数参数 IFS 与 3 条非法/重复定义名称被 Excel 拒绝录入（`logic.skipped.txt`、`refs.skipped.txt`，不进入分母）；5 条非稳态旧探针另存 `corpus/excluded/`，不计分；数组批 exclusions p014/p015/p126 见 PROVENANCE。权威跑分 **1,528/1,528（100%）**（报告 `corpus/reports/real.json`）：1,508 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation，无未归因失败。
 
 - 规格用例：`corpus/spec/*.tsv` 共 **1,171 条**（另 8 行表头）；逐函数计数按「公式中出现该函数调用」统计（含嵌套，一条用例可计入多个函数）。M8 另新增 `corpus/spec/refs.tsv` **106 条**（跨表 / 定义名称 / 整列整行 / mbtexcel 偏差探针），答案键由桌面 Excel 单批生成后并入分母；回收前标 provisional，不伪造。
-- 下表「权威语料」列是**旧 1,169 条已生成语料**中的函数通过数，用于逐函数历史覆盖；M9 新增 238 条数组/交集批不按函数计数，统一计入全量 1,505。
-- 跑分口径：精确相等为主；15 位有效数字表征差（相对差 ≤1e-14）单列 `excel-precision` 桶并通过，`clock` 用例用绝对天数容差单列 `clock-tolerance` 桶并通过，孤代理对表征差单列 `surrogate-representation` 桶并通过——三桶都在报告中披露（旧 1,169 批：match 1,149 + clock-tolerance 3 + excel-precision 16 + surrogate-representation 1；本版全量 1,505 批：match 1,485 + 同三桶）。
+- 下表「权威语料」列是**旧 1,169 条已生成语料**中的函数通过数，用于逐函数历史覆盖；M9 新增 238 条数组/交集批与 spill 引用批不按函数计数，统一计入全量 1,528。
+- 跑分口径：精确相等为主；15 位有效数字表征差（相对差 ≤1e-14）单列 `excel-precision` 桶并通过，`clock` 用例用绝对天数容差单列 `clock-tolerance` 桶并通过，孤代理对表征差单列 `surrogate-representation` 桶并通过——三桶都在报告中披露（旧 1,169 批：match 1,149 + clock-tolerance 3 + excel-precision 16 + surrogate-representation 1；本版全量 1,528 批：match 1,508 + 同三桶）。
 - 过渡跑分（source: manual）：`corpus/provisional/` 34/34；语义细节见 [semantics.md](semantics.md)。
 
 ## 逻辑（8）
@@ -132,10 +132,11 @@ M9 新增标准数组语义。逐项契约、探针与答案键见 [semantics.md
 
 ## 汇总
 
-- **61/61 已注册**；`moon test` **166 项**全绿（native + wasm-gc；引擎语义回归 + codec + 语法 + bench 桶 + 限制边界 + 确定性 fuzz + 增量等价 + 迭代 + explain + batch4 + M8 引用语义 + M9 数组/CSE/spill）。
+- **61/61 已注册**；`moon test` **171 项**全绿（native + wasm-gc；引擎语义回归 + codec + 语法 + bench 桶 + 限制边界 + 确定性 fuzz + 增量等价 + 迭代 + explain + batch4 + M8 引用语义 + M9 数组/CSE/spill + M9.1 spill 引用/预求值）。
 - 运算符/语法另有 28 条规格用例（优先级、`-2^2`、`2^3^2`、`%`、`&`、一元 `+`、比较排序、错误字面量、空白引用），不调用任何函数。
-- 权威语料 **1,505/1,505（100%）**：旧 1,267（1,247 精确命中；3 clock-tolerance；16 excel-precision；1 surrogate-representation）+ M9 数组批 238（全 match）。无未归因失败。M8 refs 批 98/98（跨表互引/区域、引号表名、名称链、整列整行、缺表 `#REF!`、名称环 `#NAME?`）。
+- 权威语料 **1,528/1,528（100%）**：旧 1,267（1,247 精确命中；3 clock-tolerance；16 excel-precision；1 surrogate-representation）+ M9 数组批 261（238 条交集/数组 + 23 条 spill 引用，全 match）。无未归因失败。M8 refs 批 98/98（跨表互引/区域、引号表名、名称链、整列整行、缺表 `#REF!`、名称环 `#NAME?`）。
 - M6 规格用例新增 251 条（总 1,003）：5 个新函数 112 条、criteria 边界 53 条、MATCH 边界 12 条、TEXT 新格式 61 条、XLOOKUP 二分/空查找 13 条；除 2 条 Excel 拒绝录入的 IFS 奇数参数外全部生成答案键并通过。
 - M7（ADR 0007）新增 10 函数 150 条 + 迭代 18 条（总 1,171 规格 / 1,169 生成）：全部裁定通过（10 函数各 15/15，FLOOR 含嵌套 17/17）；迭代语义裁定为「初始 1 轮 + 至多 N 轮、每轮后查收敛、非数值变化不阻止收敛」。
 - M8（ADR 0008）新增核心引用语义（跨表 / 工作簿级名称 / 整列整行）+ `corpus/spec/refs.tsv` 106 条规格；答案键已由桌面 Excel 回收（106 行导出 103 条，3 条非法/重复名称被 Excel 拒录；5 条非稳态旧探针另存 `corpus/excluded/`），98 条计入分母并全部通过；旧 1,169 条在 M8 后分桶不变。
-- M9（ADR 0009）新增数组语义 + `corpus/probes/arrays.tsv` 238 条真实 Excel 探针答案键；函数新增 PRODUCT（61）；`corpus/cases/arrays.json` 238/238 通过；全量 1,505/1,505；数组 demo 35/35；探针 239 条中 236 通过（2 条 `SUM (` 有意分歧 + 1 条不稳定覆盖探针，书面记录）。
+- M9（ADR 0009）新增数组语义 + `corpus/probes/arrays.tsv` 238 条真实 Excel 探针答案键；函数新增 PRODUCT（61）；`corpus/cases/arrays.json` 238/238 通过（M9 时点）；时点全量 1,505/1,505；数组 demo 35/35；探针 239 条中 236 通过（2 条 `SUM (` 有意分歧 + 1 条不稳定覆盖探针，书面记录）。
+- M9.1（2026-11-21）把 `D4#` 修为引用通道并补依赖预求值：spill 引用 25 条探针、23 条进答案键且全过（s12/s21 依赖未注册 `ROWS`，公开函数缺口）；`corpus/cases/arrays.json` 261/261；全量 1,528/1,528；数组 demo 39/39。
