@@ -2,7 +2,7 @@
 
 **Excel 兼容的电子表格公式引擎，用 MoonBit 编写。**
 
-> 状态（2026-11-21，M12.1 SEQUENCE 完成）：**目标标准＝桌面 Excel 2024 / 2610（Build 16.0.20527.20196，zh-CN）的公式语言与计算语义，承诺完整符合性**（[ADR 0009](docs/adr/0009-full-conformance-endpoint.md)）；当前已实现 62 函数、交集/并集/`@`、隐式交集、数组字面量、CSE 与动态 spill（含 `SEQUENCE`），native CLI、wasm-gc playground、mbtexcel 读→算→写示例（多表版 + 数组版）；AST 缓存、增量重算、可选迭代计算、错误解释 API。**真实 Excel 答案键语料 1,603/1,603（100%）**（旧 1,267 条 + M9 数组批 238 条 + spill 引用批 23 条 + SEQUENCE 批 75 条；桌面 Excel 2024 · 2610 · zh-CN 生成），无未归因失败：1,583 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation。另有 239 条 M9 语义探针（M9 时点 236 通过，2 条有意分歧 + 1 条不稳定覆盖探针）、25 条 spill 引用探针（23 条转答案键并全过；s12/s21 依赖未注册的 `ROWS`，公开函数缺口）与 75 条 SEQUENCE 探针（全部转答案键），见 `corpus/cases/PROVENANCE.md`与 mbtexcel 0.3.2 的差分对照（旧 1,267 条，[docs/comparison-mbtexcel.md](docs/comparison-mbtexcel.md)）。2026 MoonBit 年度黑客松 11 月赛参赛项目。
+> 状态（2026-11-21，M12.1 SEQUENCE 完成）：**目标标准＝桌面 Excel 2024 / 2610（Build 16.0.20527.20196，zh-CN）的公式语言与计算语义，承诺完整符合性**（[ADR 0009](docs/adr/0009-full-conformance-endpoint.md)）；当前已实现 62 函数、交集/并集/`@`、隐式交集、数组字面量、CSE 与动态 spill（含 `SEQUENCE`），native CLI、wasm-gc playground、mbtexcel 读→算→写示例（多表版 + 数组版）；AST 缓存、增量重算、可选迭代计算、错误解释 API。**真实 Excel 答案键语料 1,603/1,603（100%）**（旧 1,267 条 + M9 数组批 238 条 + spill 引用批 23 条 + SEQUENCE 批 75 条；桌面 Excel 2024 · 2610 · zh-CN 生成），无未归因失败：1,583 精确命中 + 3 clock-tolerance + 16 excel-precision + 1 surrogate-representation。另有 239 条 M9 语义探针（M9 时点 236 通过，2 条有意分歧 + 1 条不稳定覆盖探针）、25 条 spill 引用探针（23 条转答案键并全过；s12/s21 依赖未注册的 `ROWS`，公开函数缺口）与 75 条 SEQUENCE 探针（全部转答案键），见 `corpus/cases/PROVENANCE.md`，与 mbtexcel 0.3.2 的差分对照（旧 1,267 条，[docs/comparison-mbtexcel.md](docs/comparison-mbtexcel.md)）。2026 MoonBit 年度黑客松 11 月赛参赛项目。
 
 ## 这是什么
 
@@ -62,12 +62,12 @@ moon run examples/xlsx-demo --target native -- run   # 3 表读→算→写 outp
 # xlsx-demo verification PASS: 65/65 (formula + cached value + literal + expected-result checks)
 ```
 
-M9 数组版（交集、隐式交集、CSE 2×2、动态 spill 2×2；CSE 回写 `t="array"`，动态 spill 缓存值按字面值回写并披露）：
+M9 + M12.1 数组版（交集、隐式交集、CSE 2×2 回写 `t="array"`/`ref` 并读回校验 `formula_type`/`range_ref`；两个动态 spill 锚点 `G4=Data!A1:B2+10`（2×2）与 `J4=SEQUENCE(3)`，spill 引用聚合 `E1=SUM(G4#)`、`E2=SUM(J4#)`；followers 按数值/布尔/文本类型回写。诚实限制：mbtexcel 0.3.2 无动态 spill 元数据，只能写单元格值，不声称写入 Excel 动态数组元数据）：
 
 ```bash
 moon run examples/array-demo --target native -- gen
 moon run examples/array-demo --target native -- run
-# array-demo: formulas=10 checks=35 failures=0
+# array-demo: formulas=13 checks=45 failures=0
 ```
 
 完整演示脚本见 [docs/demo.md](docs/demo.md)。
