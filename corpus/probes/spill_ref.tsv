@@ -1,0 +1,29 @@
+# Spill-reference (`#`) semantic probes against desktop Excel.
+# Columns: id<TAB>anchor<TAB>mode<TAB>rows<TAB>cols<TAB>formula<TAB>setup
+# setup supports n:/t:/b:/e:/f:/f2:/cse:/blank; f2: writes Range.Formula2,
+# cse: writes Range.FormulaArray over the item's multi-cell address.
+s01	F1	normal	1	1	=D4#	D4=f2:={1;2;3}
+s02	E5	normal	1	1	=D4#	D4=f2:={1;2;3}
+s03	D3	normal	1	1	=D4#	D4=f2:={1;2;3}
+s04	F1	normal	1	1	=SUM(D4#)	D4=f2:={1;2;3}
+s05	F1	normal	1	1	=D4#+0	D4=f2:={1;2;3}
+s06	F1	normal	1	1	=@D4#	D4=f2:={1;2;3}
+s07	F1	cse	3	1	=D4#*1	D4=f2:={1;2;3}
+s08	F1	normal	1	1	=D4#	D4=n:5
+s09	F1	normal	1	1	=D4#	D5=n:99;D4=f2:={1;2;3}
+s10	F1	normal	1	1	=D4#	A1=n:1;A2=n:2;A3=n:3;D4:D6=cse:=A1:A3*1
+s11	F1	normal	1	1	=D4#	D4=f2:=1
+s12	F1	normal	1	1	=ROWS(D4#)	D4=f2:={1;2;3}
+s13	F1	normal	1	1	=D4#	D4=f:=1/0
+s14	G1	normal	1	1	=SUM(D4#)	D4=f2:={1,2;3,4}
+s15	D6	normal	1	1	=D4#	D4=f2:={1,2;3,4}
+s16	H2	normal	1	1	=D4#	D4=f2:={1,2,3}
+s17	D5	normal	1	1	=D4#	D4=f2:={1,2,3}
+s18	F1	dynamic	1	1	=D4#	D4=f2:={1;2;3}
+s19	F1	normal	1	1	=SUM(D4#,1)	D4=f2:={1;2;3}
+s20	E5	normal	1	1	=D4#	A1=n:1;A2=n:2;A3=n:3;D4:D6=cse:=A1:A3*1
+s21	F1	normal	1	1	=ROWS(D4#)	A1=n:1;A2=n:2;A3=n:3;D4:D6=cse:=A1:A3*1
+s22	F1	normal	1	1	=D4#	D4:D6=cse:=2
+s23	F1	normal	1	1	=COUNT(D4#)	D4=f2:={1;2;3}
+s24	F1	normal	1	1	=COUNT(D4#)	A1=n:1;A2=n:2;A3=n:3;D4:D6=cse:=A1:A3*1
+s25	E1	normal	1	1	=SUM(G4#)	G4=f2:={11,12;14,15}

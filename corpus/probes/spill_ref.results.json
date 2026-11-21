@@ -1,0 +1,395 @@
+[
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s01",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1;2;3}",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "F1",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s02",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1;2;3}",
+        "value":  {
+                      "v":  2,
+                      "t":  "number"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "E5",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s03",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1;2;3}",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "D3",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s04",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1;2;3}",
+        "value":  {
+                      "v":  6,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(D4#)",
+        "anchor":  "F1",
+        "entered":  "=SUM(D4#)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s05",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1;2;3}",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=D4#+0",
+        "anchor":  "F1",
+        "entered":  "=D4#+0"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s06",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1;2;3}",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=@D4#",
+        "anchor":  "F1",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "s07",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1;2;3}",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=D4#*1",
+        "anchor":  "F1",
+        "entered":  "=D4#*1"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s08",
+        "hasSpill":  false,
+        "setup":  "D4=n:5",
+        "value":  {
+                      "v":  "#REF!",
+                      "t":  "error"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "F1",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s09",
+        "hasSpill":  false,
+        "setup":  "D5=n:99;D4=f2:={1;2;3}",
+        "value":  {
+                      "v":  "#SPILL!",
+                      "t":  "error"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "F1",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s10",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3;D4:D6=cse:=A1:A3*1",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "F1",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s11",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=1",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "F1",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s12",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1;2;3}",
+        "value":  {
+                      "v":  3,
+                      "t":  "number"
+                  },
+        "formula":  "=ROWS(D4#)",
+        "anchor":  "F1",
+        "entered":  "=ROWS(D4#)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s13",
+        "hasSpill":  false,
+        "setup":  "D4=f:=1/0",
+        "value":  {
+                      "v":  "#DIV/0!",
+                      "t":  "error"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "F1",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s14",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1,2;3,4}",
+        "value":  {
+                      "v":  10,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(D4#)",
+        "anchor":  "G1",
+        "entered":  "=SUM(D4#)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s15",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1,2;3,4}",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "D6",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s16",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1,2,3}",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "H2",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s17",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1,2,3}",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "D5",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "s18",
+        "hasSpill":  true,
+        "setup":  "D4=f2:={1;2;3}",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=D4#",
+        "anchor":  "F1",
+        "spillRange":  "F1:F3",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s19",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1;2;3}",
+        "value":  {
+                      "v":  7,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(D4#,1)",
+        "anchor":  "F1",
+        "entered":  "=SUM(D4#,1)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s20",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3;D4:D6=cse:=A1:A3*1",
+        "value":  {
+                      "v":  2,
+                      "t":  "number"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "E5",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s21",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3;D4:D6=cse:=A1:A3*1",
+        "value":  {
+                      "v":  3,
+                      "t":  "number"
+                  },
+        "formula":  "=ROWS(D4#)",
+        "anchor":  "F1",
+        "entered":  "=ROWS(D4#)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s22",
+        "hasSpill":  false,
+        "setup":  "D4:D6=cse:=2",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "F1",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s23",
+        "hasSpill":  false,
+        "setup":  "D4=f2:={1;2;3}",
+        "value":  {
+                      "v":  3,
+                      "t":  "number"
+                  },
+        "formula":  "=COUNT(D4#)",
+        "anchor":  "F1",
+        "entered":  "=COUNT(D4#)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s24",
+        "hasSpill":  false,
+        "setup":  "A1=n:1;A2=n:2;A3=n:3;D4:D6=cse:=A1:A3*1",
+        "value":  {
+                      "v":  3,
+                      "t":  "number"
+                  },
+        "formula":  "=COUNT(D4#)",
+        "anchor":  "F1",
+        "entered":  "=COUNT(D4#)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "s25",
+        "hasSpill":  false,
+        "setup":  "G4=f2:={11,12;14,15}",
+        "value":  {
+                      "v":  52,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(G4#)",
+        "anchor":  "E1",
+        "entered":  "=SUM(G4#)"
+    }
+]

@@ -78,6 +78,7 @@ function Parse-Spec([string]$s) {
   if ($s.Length -ge 2 -and $s.Substring(0,2) -eq "b:") { return @{ kind="bool"; v=($s.Substring(2) -eq "1") } }
   if ($s.Length -ge 2 -and $s.Substring(0,2) -eq "e:") { return @{ kind="err"; v=$s.Substring(2) } }
   if ($s.Length -ge 3 -and $s.Substring(0,3) -eq "f2:") { return @{ kind="formula2"; v=$s.Substring(3) } }
+  if ($s.Length -ge 4 -and $s.Substring(0,4) -eq "cse:") { return @{ kind="formulaarray"; v=$s.Substring(4) } }
   if ($s.Length -ge 2 -and $s.Substring(0,2) -eq "f:") { return @{ kind="formula"; v=$s.Substring(2) } }
   if ($s -eq "blank") { return @{ kind="blank" } }
   throw ("bad setup spec: " + $s)
@@ -118,6 +119,7 @@ function Apply-Setup($ws, [string]$setup) {
       "err"     { $rng.Formula = "=" + $spec.v }
       "formula" { $rng.Formula = $spec.v }
       "formula2" { $rng.Formula2 = $spec.v }
+      "formulaarray" { $rng.FormulaArray = $spec.v }
     }
   }
 }
