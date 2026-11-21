@@ -239,7 +239,7 @@ generator 已按上表产出 103 条；随后按“声明子集语义”裁定�
 ### 语义裁定（全部来自真实 Excel 2610）
 
 - **形状与行主序**：`SEQUENCE(rows,[columns],[start],[step])` 生成 rows×columns，格值 `start+(r*columns+c)*step`（sq003/sq012/sq014 验证 2×3、2×2、3×2 的行主序）。
-- **默认与省略**：`columns=1`、`start=1`、`step=1`；Excel 接受省略实参与尾随逗号（sq030–sq033/sq056），因此解析器新增最小空实参支持：省略以 `Lit(Blank)` 表示，与空白单元格引用（`Range(Blank)`→`to_number` 0）区分。
+- **默认与省略**：`columns=1`、`start=1`、`step=1`；Excel 接受省略实参与尾随逗号（sq030–sq033/sq056），因此解析器为 `SEQUENCE` 新增最小空实参支持：省略以 `Lit(Blank)` 表示，与空白单元格引用（`Range(Blank)`→`to_number` 0）区分。
 - **强制转换**：文本型数字 `"3"`→3（sq009）、`TRUE`→1（sq010/sq064）、`"10"`/`"2"` 作 start/step（sq063）；非数字文本→`#VALUE!`（sq022）；错误值传播（sq023 `#DIV/0!`）。
 - **维度与错误**：非负参数先截断（2.9→2，sq008）；截断后为 0→`#CALC!`（sq024/sq026/sq059/sq062）；原始负值→`#VALUE!`（sq025/sq027/sq060/sq061，含 -0.5/-1.9）；rows>1,048,576→`#VALUE!`（sq028/sq055）；cols 不预先按 16,384 拒绝：`SUM(SEQUENCE(1,16385))`=134242305（sq057/sq058）可生成，dynamic 锚点因越界得 `#SPILL!`（sq054）。`SEQUENCE(TRUE)` 为 1×1，不产生 spill（sq010）。
 - **普通公式标量化**：`Range.Formula` 录入的普通公式取数组左上角（sq015–sq018/sq021），`SUM(SEQUENCE(3))`=6、`SUM(SEQUENCE(2,3))`=21（sq019/sq020）；与 q003/q004 一致，不因新函数而改变普通公式契约。

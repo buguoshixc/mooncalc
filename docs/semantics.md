@@ -37,7 +37,7 @@ Excel 优先级（高→低）：
 - 前导 `=` 可有可无。
 - **M8 起支持**：跨表引用 `Sheet1!A1`、带引号表名 `'My Sheet'!A1`（`''` 转义单引号）、工作簿级定义名称（`=Rate*2`）、整列/整行 `A:A`、`2:2` 及其组合 `Sheet1!A:B`。
 - **M9 起支持**：数组字面量 `{1,2;3,4}`、空格交集、括号内逗号并集、`@` 显式交集、`#` 溢出运算符。
-- **当前缺口（解析错误/未实现，里程碑 M10–M13）**：3D 引用 `Sheet1:Sheet3!A1`、外部工作簿链接 `[Book.xlsx]Sheet!A1`、R1C1、工作表级名称、未加引号的数字开头表名（如 `2024Data!A1` 必须写 `'2024Data'!A1`）。这些是待补里程碑，不是“验收范围外”。
+- **当前缺口（解析错误/未实现，里程碑 M10–M13）**：3D 引用 `Sheet1:Sheet3!A1`、外部工作簿链接 `[Book.xlsx]Sheet!A1`、R1C1、工作表级名称、其他函数调用空实参（`SEQUENCE` 除外）、未加引号的数字开头表名（如 `2024Data!A1` 必须写 `'2024Data'!A1`）。这些是待补里程碑，不是“验收范围外”。
 
 ### 公式限制（复刻 Excel，超限返回 ParseError）
 
@@ -168,7 +168,7 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 - TEXT 见专节。
 
 ### 查找（5）
-- **XLOOKUP**：`XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found], [match_mode], [search_mode])`。lookup_array/return_array 必须是**行向量或列向量**且长度相同（否则 `#VALUE!`）；match_mode：0 精确（默认）、-1 精确或次小、1 精确或次大、2 通配符（仅文本，大小写不敏感，`* ? ~`）；search_mode：1 从前往后（默认）、-1 从后往前、2 升序二分、-2 降序二分。命中返回对应 return 格，空白结果归一为 0；未命中时才求值 `if_not_found`，缺省 → `#N/A`。**二分模式按标准 lower_bound 实现**（排序假设；无序输入可能落到未命中，语料 `lookup-xlookup-0027`–`0048`；降序重复键取降序小端最近的一次，符合 2024 实测）；**二分 + 通配符不组合（`#VALUE!`）**；match_mode/search_mode 必须为整数，小数 → `#VALUE!`（语料 `lookup-xlookup-0036`）。函数实参省略已随 M12.1 支持语法；XLOOKUP 对省略的 `if_not_found` 尚未逐项验证，需要 search_mode 时建议显式给出占位值。
+- **XLOOKUP**：`XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found], [match_mode], [search_mode])`。lookup_array/return_array 必须是**行向量或列向量**且长度相同（否则 `#VALUE!`）；match_mode：0 精确（默认）、-1 精确或次小、1 精确或次大、2 通配符（仅文本，大小写不敏感，`* ? ~`）；search_mode：1 从前往后（默认）、-1 从后往前、2 升序二分、-2 降序二分。命中返回对应 return 格，空白结果归一为 0；未命中时才求值 `if_not_found`，缺省 → `#N/A`。**二分模式按标准 lower_bound 实现**（排序假设；无序输入可能落到未命中，语料 `lookup-xlookup-0027`–`0048`；降序重复键取降序小端最近的一次，符合 2024 实测）；**二分 + 通配符不组合（`#VALUE!`）**；match_mode/search_mode 必须为整数，小数 → `#VALUE!`（语料 `lookup-xlookup-0036`）。可选参数中间不能省略（空实参是其他函数的 M11 缺口；`SEQUENCE` 除外），需要 search_mode 时须显式给出 if_not_found 占位值。
 - VLOOKUP/HLOOKUP：第 4 参 FALSE/0 精确（找不到 `#N/A`）；TRUE/省略近似（首列/行升序假设，取 ≤lookup 的最后一项，小于最小值 → `#N/A`）。col/row_index <1 → `#VALUE!`，超出表宽 → `#REF!`。
 - MATCH：0 精确（支持通配符）、1 升序近似、-1 降序近似；找不到 `#N/A`。精确匹配空文本时空白格不算命中（`MATCH("",{"abc",blank,""},0)=3`，语料 `lookup-match-0107/0111/0112`）；XLOOKUP 空查找同规则。
 - INDEX：row/col = 0 返回整列/整行（Range 值）；顶层标量上下文下**单列结果取第 1 行**（`=INDEX(A1:C3,0,1)` → 1）、行/二维结果 → `#VALUE!`（见值模型）；越界 → `#REF!`。**M8 披露**：base 为整列（`A:A` 按 used-range 展开）时，索引到 used-range 之外返回 `#REF!`（Excel 对空白格返回 0），属“不静默截断”的取舍，见 ADR 0008。
@@ -262,7 +262,7 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 `SEQUENCE` 是动态数组函数族中第一个注册的函数（第 62 个函数），其契约由 `sequence.json` 75 条真实 Excel 答案键裁定：
 
 - 形状：`SEQUENCE(rows,[columns],[start],[step])`，rows×columns，行主序 `start+(r*columns+c)*step`；`SEQUENCE(2,3)`=`[[1,2,3],[4,5,6]]`，`SEQUENCE(3,2,1,0.5)`=`[[1,1.5],[2,2.5],[3,3.5]]`。
-- 默认：`columns=1`、`start=1`、`step=1`；空实参 `SEQUENCE(3,,5)`→`[5;6;7]`、`SEQUENCE(,2)`→`[1,2]`、尾随逗号同样按省略处理。解析器用 `Lit(Blank)` 表示省略，与空白单元格引用（`to_number`→0）区分。
+- 默认：`columns=1`、`start=1`、`step=1`；空实参 `SEQUENCE(3,,5)`→`[5;6;7]`、`SEQUENCE(,2)`→`[1,2]`、尾随逗号同样按省略处理。解析器为 `SEQUENCE` 用 `Lit(Blank)` 表示省略，与空白单元格引用（`to_number`→0）区分；其他函数的空实参仍按解析错误处理。
 - 强制与错误：文本型数字 `"3"`→3、`"10"`/`"2"` 可作 start/step，`TRUE`→1；非数字文本→`#VALUE!`，错误值传播；非负参数截断，0→`#CALC!`，原始负值→`#VALUE!`；`rows>1,048,576`→`#VALUE!`；`columns=16,385` 可生成（普通公式仍取左上角），dynamic 锚点越界→`#SPILL!`；`start`/`step` 非有限→`#NUM!`。
 - 模式：普通公式顶层取左上角（不 spill）；dynamic 锚点按 `recalc_arrays` spill，目标格占用/越界→`#SPILL!`；CSE 选区按既有 CSE 填充规则（截断/广播/`#N/A`）。spill 格与 `D4#` 引用走 M9/M9.1 契约。
 - 资源护栏：`sequence_max_cells=16,777,216`，超过时返回 `#VALUE!`；这是引擎为避免失控分配的限制，不是 Excel 行为，已在此披露。

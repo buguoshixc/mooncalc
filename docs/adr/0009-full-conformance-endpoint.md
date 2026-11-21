@@ -42,7 +42,7 @@ MoonCalc 的最终验收终点是：**对上述目标标准中的公式语言与
 | CSE 多格公式 | 已实现：选区填充/截断/广播/`#N/A`/标量填充；`ArrayLayout` 侧契约 | `examples/array-demo`、`src/engine/array_test.mbt` |
 | 动态数组/spill | 已实现：`#SPILL!` 阻塞、spill 格可引用、`#` 运算符；`SEQUENCE` 已注册（M12.1），FILTER/SORT/SORTBY/UNIQUE/RANDARRAY 仍是公开缺口 | `docs/semantics.md` M9/M12.1 节、`examples/array-demo` |
 | 内置函数 | **62 个**（六族 + PRODUCT + SEQUENCE）；距“全部内置函数”仍有大缺口 | `docs/support-matrix.md` |
-| 引用语义 | 跨表/工作簿级名称/整列整行已实现；3D、外部链接、工作表级名称仍是缺口；函数实参省略已随 M12.1 支持 | `docs/semantics.md`「当前缺口」 |
+| 引用语义 | 跨表/工作簿级名称/整列整行已实现；3D、外部链接、工作表级名称仍是缺口；函数实参省略仅 `SEQUENCE` 已支持 | `docs/semantics.md`「当前缺口」 |
 | 读→算→写 | 普通多表工作簿 65/65；数组工作簿 45/45（CSE 写 `t="array"` 且读回校验 `formula_type`/`range_ref`；动态 spill 无写入元数据，只写单元格值并披露） | `examples/xlsx-demo`、`examples/array-demo`、`docs/demo.md` |
 | 语义探针 | M9 时点 239 条有效探针中 236 条通过（2 条有意分歧 `SUM (`、1 条不稳定覆盖探针）；M9.1 新增 25 条 spill 引用探针，23 条转答案键并全过（2 条 `ROWS` 未注册）；M12.1 新增 75 条 SEQUENCE 探针并全部转答案键 | `corpus/probes/`、`corpus/cases/PROVENANCE.md` |
 
@@ -55,9 +55,9 @@ MoonCalc 的最终验收终点是：**对上述目标标准中的公式语言与
 | M9（已完成，2026-11-21 时点） | 数组字面量、交集/并集/`@`、隐式交集、CSE、动态 spill、`#SPILL!`、`#NULL!`、`PRODUCT` | 238 条新答案键全过；时点全量 1,505/1,505；数组 demo 35/35（历史数字） |
 | M9.1（已完成，2026-11-21） | `D4#` 引用通道与隐式交集、spill 锚点错误传播、CSE→动态依赖预求值 | 23 条新答案键全过；全量 1,528/1,528；数组 demo 39/39（历史数字） |
 | M10 | 函数广度：按目标版本函数目录逐族补齐全部内置函数 | 每个函数 ≥15 条真实 Excel 答案键；函数级矩阵无“未实现” |
-| M11 | 引用完整性：3D 引用、外部工作簿链接、工作表级名称、R1C1（若目标版本公式语言要求）；函数实参省略已随 M12.1 支持 | 每项有答案键；解析/求值/增量/explain 同步 |
+| M11 | 引用完整性：3D 引用、外部工作簿链接、工作表级名称、R1C1（若目标版本公式语言要求）；函数实参省略（`SEQUENCE` 除外） | 每项有答案键；解析/求值/增量/explain 同步 |
 | M12 | 动态数组函数族：FILTER/SORT/SORTBY/UNIQUE/RANDARRAY 等，及其与 CSE/`#`/spill 的交互（SEQUENCE 已由 M12.1 完成） | 函数级答案键 + spill 阻塞/引用案例 |
-| M12.1（已完成，2026-11-21） | `SEQUENCE` + 函数实参省略（空实参/尾随逗号） | 75 条新答案键全过；全量 1,603/1,603；`moon test` 182/182；数组 demo 45/45 |
+| M12.1（已完成，2026-11-21） | `SEQUENCE` + 其省略实参（空实参/尾随逗号） | 75 条新答案键全过；全量 1,603/1,603；`moon test` 182/182；数组 demo 45/45 |
 | M13 | 计算模式与边界：1904 日期系统、locale 相关解析/格式、迭代/易失函数的完整交互 | 真实 Excel 答案键；文档披露所有剩余差异 |
 | M14 | 全量复核 | 目标标准公式语言无未实现项；所有缺口关闭或书面降级；语料通过率 100% |
 
