@@ -353,12 +353,15 @@ fn parse_prefix(p : Parser) -> Expr raise ParseError {
         let saved_union = p.allow_union
         p.allow_union = false
         let args : Array[Expr] = []
+        // 目前只为 SEQUENCE 接受省略实参；其他函数的空实参仍是 M11 缺口，
+        // 保持解析错误，避免把未验证的 Blank 默认值扩散到所有函数。
+        let allow_omitted = @value.ascii_upper(name) == "SEQUENCE"
         if peek(p) != Some(RParen) {
           while true {
             // 省略实参（含中置/尾随空位）以 Lit(Blank) 表示：Excel 的
             // =SEQUENCE(3,,5) 与 =SEQUENCE(,2) 均为合法写法。空白单元格
             // 引用仍生成 Range(Blank)，两者在函数层可区分。
-            if peek(p) == Some(Comma) || peek(p) == Some(RParen) {
+            if allow_omitted && (peek(p) == Some(Comma) || peek(p) == Some(RParen)) {
               args.push(Lit(@value.Value::Blank))
             } else {
               args.push(parse_expr(p, 0))
