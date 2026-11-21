@@ -37,7 +37,7 @@ Excel 优先级（高→低）：
 - 前导 `=` 可有可无。
 - **M8 起支持**：跨表引用 `Sheet1!A1`、带引号表名 `'My Sheet'!A1`（`''` 转义单引号）、工作簿级定义名称（`=Rate*2`）、整列/整行 `A:A`、`2:2` 及其组合 `Sheet1!A:B`。
 - **M9 起支持**：数组字面量 `{1,2;3,4}`、空格交集、括号内逗号并集、`@` 显式交集、`#` 溢出运算符。
-- **当前缺口（解析错误/未实现，里程碑 M10–M13）**：3D 引用 `Sheet1:Sheet3!A1`、外部工作簿链接 `[Book.xlsx]Sheet!A1`、R1C1、工作表级名称、函数调用空实参、未加引号的数字开头表名（如 `2024Data!A1` 必须写 `'2024Data'!A1`）。这些是待补里程碑，不是“验收范围外”。
+- **当前缺口（解析错误/未实现，里程碑 M10–M13）**：3D 引用 `Sheet1:Sheet3!A1`、外部工作簿链接 `[Book.xlsx]Sheet!A1`、R1C1、工作表级名称、未加引号的数字开头表名（如 `2024Data!A1` 必须写 `'2024Data'!A1`）。这些是待补里程碑，不是“验收范围外”。
 
 ### 公式限制（复刻 Excel，超限返回 ParseError）
 
@@ -136,7 +136,7 @@ Excel 优先级（高→低）：
 - 只标记 DFS 路径中的**环后缀**：`=D1+1` 自环的 D1 标 circular；依赖环的 `D2==D1+5` 得 5 且 circular=false（与 Excel 一致：依赖格拿到 0 继续算）。
 - 无系统时钟、无随机：同一输入必然同一输出（时钟经注入，见下）。
 
-## 函数边界语义（当前 61 函数）
+## 函数边界语义（当前 62 函数）
 
 ### 逻辑（7）
 IF / IFERROR / IFS / SWITCH 惰性；AND/OR 急切、引用参数见双通道（数字/布尔参与、文本空白忽略，无逻辑值 → `#VALUE!`）；NOT 走 to_bool。
@@ -144,13 +144,14 @@ IF / IFERROR / IFS / SWITCH 惰性；AND/OR 急切、引用参数见双通道（
 - **IFS**：条件/值成对，逐条件 `to_bool`（条件错误传播），首个 TRUE 返回对应值且不继续求值；无匹配 → `#N/A`；奇数参数 → `#VALUE!`。注意：真实 Excel 拒绝录入奇数参数的 IFS（VBA 1004），无法产生答案键；该输入是 Excel 拒绝录入的非法参数，本身没有标准语义；spec 标 `subset-out`，不进入基准分母，但不表示 IFS 标准语义被排除。
 - **SWITCH**：表达式只求值一次；候选值逐个求值并用 `=` 语义比较（`cell_eq`，大小写不敏感、无通配）；**表达式或任一已求值候选为错误值时立即传播该错误**（语料 `logic-switch-0008/0009`），命中后只求值命中结果；末尾落单参数是默认值（未命中才求值）；无匹配且无默认 → `#N/A`。
 
-### 数学（11）
+### 数学（12）
 - **ROUND/ROUNDUP/ROUNDDOWN：half-away-from-zero，十进制字符串修正**——`ROUND(2.675,2) = 2.68`（朴素 double 会得 2.67）；负位数作用于整数位。
 - **MOD 符号随除数**：`MOD(-3,2) = 1`、`MOD(3,-2) = -1`；除数 0 → `#DIV/0!`。
 - **POWER/`^`**：`0^0 = #NUM!`；`0^负数` → `#DIV/0!`；负底数仅接受整数次幂（`(-8)^3 = -512`）或**奇数倒数**次幂（`(-8)^(1/3) = -2`、`(-32)^0.2 = -2`），其余（`(-8)^(2/3)`、`(-4)^0.5`）→ `#NUM!`。
 - INT 向下取整（`INT(-2.5) = -3`）；ABS 平凡。
 - SUM/SUMIF/SUMPRODUCT：SUMIF criteria 支持比较符前缀（`">2"`、`"<>x"`）与通配符 `* ? ~`；空条件 `""`/`"="` 匹配空白格与空文本格，`"<>"` 匹配一切非空白格（含公式产生的空文本，语料 `math-sumif-0116/0117/0118`）；条件为错误值时与同值错误格匹配（无匹配则 0，匹配到和区域中的错误则传播，语料 `math-sumif-0125`–`0128`、`gen-sumif-0002`）；SUMPRODUCT 形状不齐 → `#VALUE!`，区域内非数值按 0。
 - 溢出/非有限结果 → `#NUM!`。
+- **SEQUENCE（M12.1 新增）**：`SEQUENCE(rows,[columns],[start],[step])` 生成 `rows×columns` 数组，行主序 `start+(r*columns+c)*step`；默认 `columns=1`、`start=1`、`step=1`。维度参数先做数值强制（文本型数字/布尔可转，非数字→`#VALUE!`，错误传播），非负值截断（2.9→2），截断后为 0→`#CALC!`，原始负值→`#VALUE!`；`rows>1,048,576`→`#VALUE!`，`columns` 不按 16,384 预拒绝（`SUM(SEQUENCE(1,16385))` 可算，dynamic 越界由 spill 判 `#SPILL!`）。`start`/`step` 非有限→`#NUM!`。省略实参（`,,` 或尾随逗号）表示默认值，与空白单元格引用（→0）区分。普通公式按数组左上角标量化（`SEQUENCE(3)`→1，`SUM(SEQUENCE(3))`→6）；dynamic 锚点按 spill 展开，1×1 结果（如 `SEQUENCE(TRUE)`）不产生 spill。引擎另有 16,777,216 单元资源护栏（超出→`#VALUE!`），属本引擎限制、非 Excel 语义。语料 `sequence.json`（75 条，sq001–sq064 + p071–p079/q003/q004）。
 
 ### 统计（7）
 AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双通道；COUNTIF 同 SUMIF criteria（含空条件/错误条件规则，语料 `stat-countif-0118/0119/0121/0125`）；MEDIAN 偶数个取中点均值。
@@ -167,7 +168,7 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 - TEXT 见专节。
 
 ### 查找（5）
-- **XLOOKUP**：`XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found], [match_mode], [search_mode])`。lookup_array/return_array 必须是**行向量或列向量**且长度相同（否则 `#VALUE!`）；match_mode：0 精确（默认）、-1 精确或次小、1 精确或次大、2 通配符（仅文本，大小写不敏感，`* ? ~`）；search_mode：1 从前往后（默认）、-1 从后往前、2 升序二分、-2 降序二分。命中返回对应 return 格，空白结果归一为 0；未命中时才求值 `if_not_found`，缺省 → `#N/A`。**二分模式按标准 lower_bound 实现**（排序假设；无序输入可能落到未命中，语料 `lookup-xlookup-0027`–`0048`；降序重复键取降序小端最近的一次，符合 2024 实测）；**二分 + 通配符不组合（`#VALUE!`）**；match_mode/search_mode 必须为整数，小数 → `#VALUE!`（语料 `lookup-xlookup-0036`）。可选参数中间不能省略（空实参是当前缺口 M11），需要 search_mode 时须显式给出 if_not_found 占位值。
+- **XLOOKUP**：`XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found], [match_mode], [search_mode])`。lookup_array/return_array 必须是**行向量或列向量**且长度相同（否则 `#VALUE!`）；match_mode：0 精确（默认）、-1 精确或次小、1 精确或次大、2 通配符（仅文本，大小写不敏感，`* ? ~`）；search_mode：1 从前往后（默认）、-1 从后往前、2 升序二分、-2 降序二分。命中返回对应 return 格，空白结果归一为 0；未命中时才求值 `if_not_found`，缺省 → `#N/A`。**二分模式按标准 lower_bound 实现**（排序假设；无序输入可能落到未命中，语料 `lookup-xlookup-0027`–`0048`；降序重复键取降序小端最近的一次，符合 2024 实测）；**二分 + 通配符不组合（`#VALUE!`）**；match_mode/search_mode 必须为整数，小数 → `#VALUE!`（语料 `lookup-xlookup-0036`）。函数实参省略已随 M12.1 支持语法；XLOOKUP 对省略的 `if_not_found` 尚未逐项验证，需要 search_mode 时建议显式给出占位值。
 - VLOOKUP/HLOOKUP：第 4 参 FALSE/0 精确（找不到 `#N/A`）；TRUE/省略近似（首列/行升序假设，取 ≤lookup 的最后一项，小于最小值 → `#N/A`）。col/row_index <1 → `#VALUE!`，超出表宽 → `#REF!`。
 - MATCH：0 精确（支持通配符）、1 升序近似、-1 降序近似；找不到 `#N/A`。精确匹配空文本时空白格不算命中（`MATCH("",{"abc",blank,""},0)=3`，语料 `lookup-match-0107/0111/0112`）；XLOOKUP 空查找同规则。
 - INDEX：row/col = 0 返回整列/整行（Range 值）；顶层标量上下文下**单列结果取第 1 行**（`=INDEX(A1:C3,0,1)` → 1）、行/二维结果 → `#VALUE!`（见值模型）；越界 → `#REF!`。**M8 披露**：base 为整列（`A:A` 按 used-range 展开）时，索引到 used-range 之外返回 `#REF!`（Excel 对空白格返回 0），属“不静默截断”的取舍，见 ADR 0008。
@@ -200,7 +201,7 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 
 ## 数组与交集/并集语义（M9，2026-11-21）
 
-本节契约由真实 Excel 2610 的 263 条探针（M9 数组批 238 + spill 引用批 25）与 261 条答案键裁定；语料编号见 `corpus/cases/arrays.json`，来源指纹见 `corpus/cases/PROVENANCE.md`。
+本节契约由真实 Excel 2610 的 338 条探针（M9 数组批 238 + spill 引用批 25 + SEQUENCE 批 75）与 336 条答案键裁定；语料编号见 `corpus/cases/arrays.json` / `sequence.json`，来源指纹见 `corpus/cases/PROVENANCE.md`。
 
 ### 引用通道与数组通道
 
@@ -256,6 +257,16 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 - CSE/动态入口是**侧契约** `ArrayLayout` + `recalc_arrays`，不改变旧 `recalc`/`RecalcOutput` 的标量契约；`ArrayRecalcOutput` 暴露 `values`（锚点与 spill 格）与 `ranges`（锚点→rows,cols）。
 - 已知写入限制：mbtexcel 0.3.2 可写 `t="array"`/`ref`（CSE）并读回校验 `formula_type`/`range_ref`，但没有动态 spill 元数据；公式格的缓存值仍只能写文本（`t="str"`），而数组 demo 的 CSE/spill follower 按值类型写真正的数值/布尔/文本，读回按 `Value` 相等性比对并在 `docs/demo.md` 披露。
 
+### SEQUENCE（M12.1，2026-11-21）
+
+`SEQUENCE` 是动态数组函数族中第一个注册的函数（第 62 个函数），其契约由 `sequence.json` 75 条真实 Excel 答案键裁定：
+
+- 形状：`SEQUENCE(rows,[columns],[start],[step])`，rows×columns，行主序 `start+(r*columns+c)*step`；`SEQUENCE(2,3)`=`[[1,2,3],[4,5,6]]`，`SEQUENCE(3,2,1,0.5)`=`[[1,1.5],[2,2.5],[3,3.5]]`。
+- 默认：`columns=1`、`start=1`、`step=1`；空实参 `SEQUENCE(3,,5)`→`[5;6;7]`、`SEQUENCE(,2)`→`[1,2]`、尾随逗号同样按省略处理。解析器用 `Lit(Blank)` 表示省略，与空白单元格引用（`to_number`→0）区分。
+- 强制与错误：文本型数字 `"3"`→3、`"10"`/`"2"` 可作 start/step，`TRUE`→1；非数字文本→`#VALUE!`，错误值传播；非负参数截断，0→`#CALC!`，原始负值→`#VALUE!`；`rows>1,048,576`→`#VALUE!`；`columns=16,385` 可生成（普通公式仍取左上角），dynamic 锚点越界→`#SPILL!`；`start`/`step` 非有限→`#NUM!`。
+- 模式：普通公式顶层取左上角（不 spill）；dynamic 锚点按 `recalc_arrays` spill，目标格占用/越界→`#SPILL!`；CSE 选区按既有 CSE 填充规则（截断/广播/`#N/A`）。spill 格与 `D4#` 引用走 M9/M9.1 契约。
+- 资源护栏：`sequence_max_cells=16,777,216`，超过时返回 `#VALUE!`；这是引擎为避免失控分配的限制，不是 Excel 行为，已在此披露。
+
 ### spill 引用（`#` 运算符，M9.1，2026-11-21）
 
 `D4#` 引用锚点 `D4` 的 spill 区域，结果是**引用通道**（保留表名、左上角与行列数），因此参与隐式交集与区域展开：
@@ -276,7 +287,7 @@ AVERAGE 无数值 → `#DIV/0!`；MIN/MAX 无数值 → 0；COUNT/COUNTA 见双�
 ## 数值对照策略（bench）
 
 - **match**：数值精确相等（Double 位相等），文本/布尔/错误按值相等。
-- **excel-precision**（通过，单列披露）：数值相对差 ≤ 1e-14。来源是 Excel/VBA 只能以 **15 位有效数字**序列化答案（`CStr`），因此 15 位表征差不算行为差异（当前 1,528 条中 16 条，历史 M5 首条为 `SQRT`）。
+- **excel-precision**（通过，单列披露）：数值相对差 ≤ 1e-14。来源是 Excel/VBA 只能以 **15 位有效数字**序列化答案（`CStr`），因此 15 位表征差不算行为差异（当前 1,603 条中 16 条，历史 M5 首条为 `SQRT`）。
 - **clock-tolerance**（通过，单列披露）：用例带 `clock` 标签且数值**绝对差 ≤ `--clock-tol`（默认 1e-6 天 ≈0.086 s）**。`now` 由生成器在同一重算中经 `=NOW()` 辅助格捕获（见 `corpus/cases/PROVENANCE.md`），派生运算的尾差在此容差内（当前 3 条）。
 - **numeric-tolerance**（失败）：相对差介于 1e-14 与 `--tol`（默认 1e-9）之间，单独归因。
 - **value-mismatch / type-mismatch / parse-error**：失败并逐条列出 expected/actual。

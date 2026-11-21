@@ -1,6 +1,6 @@
 # 一致性验收套件（Conformance Kit）
 
-> 版本：2026-11-21　语料：`mooncalc-corpus/1`，**1,528 条答案键**（桌面 Excel 生成：旧批 1,267 + M9 数组批 238 + spill 引用批 23）
+> 版本：2026-11-21　语料：`mooncalc-corpus/1`，**1,603 条答案键**（桌面 Excel 生成：旧批 1,267 + M9 数组批 238 + spill 引用批 23 + SEQUENCE 批 75）
 > 角色：把“以真实 Excel 为唯一裁判”的验收方法做成可复用基础设施。MoonCalc 是第一个接入者，不是套件的所有者；任何引擎（包括 `mbtexcel`）都可以接入，且不需要引用 MoonCalc 的代码或数字。
 
 ## 1. 为什么需要一把公开的尺子
@@ -20,12 +20,12 @@ MoonBit 生态里“有没有公式引擎”已经有答案：`moonbitlang/mbtex
 | 部件 | 位置 | 说明 |
 | --- | --- | --- |
 | 语料 schema | [`corpus/schema.md`](../corpus/schema.md) | `mooncalc-corpus/1`；多工作表 / 定义名称 / 整列整行为向后兼容扩展（可选 `names` 字段、`SHEET!A1` 键） |
-| 答案键 | [`corpus/cases/`](../corpus/cases/) | 1,528 条，10 个 JSON 文件；来源、生成器与 SHA-256 见 [PROVENANCE.md](../corpus/cases/PROVENANCE.md) |
+| 答案键 | [`corpus/cases/`](../corpus/cases/) | 1,603 条，11 个 JSON 文件；来源、生成器与 SHA-256 见 [PROVENANCE.md](../corpus/cases/PROVENANCE.md) |
 | 生成器（旧批） | [`corpus/excel/generate_corpus.bas`](../corpus/excel/generate_corpus.bas) | 桌面 Excel VBA：`GenerateCorpus` 全量、`GenerateCorpusOne` 单批；用法见 [corpus/excel/README.md](../corpus/excel/README.md) |
-| 生成器（M9 数组批 + spill 引用批） | [`corpus/probes/run_probes.ps1`](../corpus/probes/run_probes.ps1) + [`arrays_to_corpus.py`](../corpus/probes/arrays_to_corpus.py) | COM 驱动桌面 Excel 的探针 harness；TSV → JSON，只读 Excel 结果，不计算期望值（v2 支持 `cse:` setup） |
+| 生成器（M9 数组批 + spill 引用批 + SEQUENCE 批） | [`corpus/probes/run_probes.ps1`](../corpus/probes/run_probes.ps1) + [`arrays_to_corpus.py`](../corpus/probes/arrays_to_corpus.py) / [`sequence_to_corpus.py`](../corpus/probes/sequence_to_corpus.py) | COM 驱动桌面 Excel 的探针 harness；TSV → JSON，只读 Excel 结果，不计算期望值（v3 写版本指纹 sidecar；`cse:` setup 自 v2） |
 | 桶与归因规则 | [`corpus/schema.md`](../corpus/schema.md) §比较策略 + 本文件 §2.2 | 精确/容差/类型/解析/崩溃/不可比，全部单列 |
 | 参考适配器 | [`examples/compare/`](../examples/compare/) | 独立 MoonBit 模块，**不 import mooncalc**，重写桶规则；已用于 mbtexcel 差分 |
-| 语义探针（单列） | [`corpus/probes/`](../corpus/probes/) | M9 数组批 238 + spill 引用批 25 共 263 条数组相关探针（另有 M9 时点的 239 条回放记录）；数组批转 238 条、spill 批转 23 条答案键；探针本身不重复计入主分母 |
+| 语义探针（单列） | [`corpus/probes/`](../corpus/probes/) | M9 数组批 238 + spill 引用批 25 + SEQUENCE 批 75 共 338 条数组相关探针（另有 M9 时点的 239 条回放记录）；数组批转 238 条、spill 批转 23 条、SEQUENCE 批转 75 条答案键；探针本身不重复计入主分母 |
 
 ### 2.1 答案键与分母
 
@@ -35,7 +35,8 @@ MoonBit 生态里“有没有公式引擎”已经有答案：`moonbitlang/mbtex
   - M8 refs 批 106 条 → 导出 103 条（3 条非法/重复定义名称被 Excel 拒绝录入，见 `corpus/cases/refs.skipped.txt`）→ **裁定后 98 条**（5 条移出：`INDIRECT`/`SUMSQ`/`COUNTBLANK` 超出当时 60 函数覆盖，1 条迭代关闭的环瞬态属非稳态；原答案键保留在 [`corpus/excluded/refs-out-of-subset.json`](../corpus/excluded/refs-out-of-subset.json)，不伪造、不计分）。
   - M9 数组批 238 条（`arrays.tsv`）→ 真实 Excel 导出 238/238（无拒录），全部转为主分母；M9 时点另有 239 条探针回放记录（236 通过：2 条 `SUM (` 有意分歧 + 1 条不稳定覆盖），仅存档，不改变本批 238 条。
   - M9.1 spill 引用批 25 条（`spill_ref.tsv`）→ 真实 Excel 导出 25/25（0 录入错误），其中 23 条转为主分母；`s12`/`s21` 依赖未注册的 `ROWS`，不进入答案键（公开函数缺口）。
-  - 验收分母 = 1,169 + 98 + 238 + 23 = **1,528**。
+  - SEQUENCE 批 75 条（`sequence.tsv`；sq001–sq064 新探针 + 复跑 p071–p079/q003/q004）→ 真实 Excel 导出 75/75（0 录入错误），全部转为主分母；SEQUENCE 已于 2026-11-21 注册。
+  - 验收分母 = 1,169 + 98 + 238 + 23 + 75 = **1,603**。
 - 当前逐文件指纹（2026-11-21 由仓库字节重算；`sha256sum corpus/cases/*.json` 可复核）：
 
 | 文件 | 条数 | SHA-256 |
@@ -48,12 +49,13 @@ MoonBit 生态里“有没有公式引擎”已经有答案：`moonbitlang/mbtex
 | `lookup.json` | 135 | `cc01ec452a429e9b3063a8f2e8b097242e243a64a454f688e3cc47379c14f47b` |
 | `math.json` | 168 | `0418ab5950e31d63f96760c7e0601a7bac0c96768c01de48b947ce1f66813196` |
 | `refs.json` | 98 | `1415b4da47ba0e7f197717f9636b2760ef85b6f92a437f6678e6467d82903eb7` |
+| `sequence.json` | 75 | `e490fe012068be584cab61a57a747c9e4320010369b86cfc12db8bdfe8aa2abf` |
 | `stat.json` | 131 | `33b268f6924a43ffc9de3656c8c2150e57fe1f595b6165a6219363b0e7ad5465` |
 | `text.json` | 266 | `53cb234ed7670ccf57de134517e91cf7e7f6aea6083abc0d04fab1d0797532ce` |
 
-> 探针侧指纹（同一时点重算）：`corpus/probes/spill_ref.tsv` `7aa2e6c7ebd1337e68f708fd5a925ee0ec07d29dfd7bbdf382729bc1587be69c`、`spill_ref.results.json` `f1a64bf01a27a6299f314ebf5bfd87828926e96f28d2946d722104efc445ca6d`、`arrays_to_corpus.py` `f2d1623d4b3e90704b5c9450f208ad4aeafca4c040228dc2f0f11e3f3716c1dc`、`run_probes.ps1` `c63feac0a6bd4c239627a6aaa5631725f7ea2c6ccf303d6e2612540b97c96bc6`；`arrays.tsv`/`arrays.results.json` 仍为 `09831d1b…`/`5fde606a…`。
+> 探针侧指纹（同一时点重算）：`corpus/probes/spill_ref.tsv` `7aa2e6c7ebd1337e68f708fd5a925ee0ec07d29dfd7bbdf382729bc1587be69c`、`spill_ref.results.json` `f1a64bf01a27a6299f314ebf5bfd87828926e96f28d2946d722104efc445ca6d`、`arrays_to_corpus.py` `67f6ebe437a32238324ca2b8c6e31986c7284aa6d166da8fe2f74269011b00ba`、`sequence.tsv` `a17a127634b5ddeba676c435584e9911d1cd8aba8cfde45b20f222a0966ddcd7`、`sequence.results.json` `7bda9408a906616b96e65a837e5ad4e85391ba551c1b2fc1af9a49fdf70b1638`、`sequence.results.json.meta.json` `a306589b6804161cfbe77caac7ea8884e40aed34637efc4235cbacc1ddc81f94`、`sequence_to_corpus.py` `c53d307971c410bf39bce873b3ba54e46479657ef030638788089a14d4442dea`、`run_probes.ps1`（v3）`6c0f849de7f0e8d7925dec5f088b723b3f61977e0601498deb393aac8f09de44`；`arrays.tsv`/`arrays.results.json` 仍为 `09831d1b…`/`5fde606a…`。M9/M9.1 历史批由 v1/v2 生成，v3 的独立指纹见 PROVENANCE。
 
-> 注：[PROVENANCE.md](../corpus/cases/PROVENANCE.md) 的逐文件表记录首次导出批次；其中 `iter.json` 一行写的是 17:09 的旧哈希 `49c146b3…`，该文件在 17:33 因控制组用例重生成（见该文件「M7 裁定记录」），以上表为重算后的仓库字节。其余 8 个 cases 文件与 PROVENANCE 表一致。该旧哈希行属于源文档的已知滞后，本套件不改动已冻结的语料与溯源文件。
+> 注：[PROVENANCE.md](../corpus/cases/PROVENANCE.md) 的逐文件表记录首次导出批次；其中 `iter.json` 一行写的是 17:09 的旧哈希 `49c146b3…`，该文件在 17:33 因控制组用例重生成（见该文件「M7 裁定记录」），以上表为重算后的仓库字节。其余 cases 文件（含 M8/M9/M9.1/SEQUENCE 新增批）与各自 PROVENANCE 节一致。该旧哈希行属于源文档的已知滞后，本套件不改动已冻结的语料与溯源文件。
 
 ### 2.2 桶规则（分类顺序即优先级）
 
@@ -101,7 +103,7 @@ MoonBit 生态里“有没有公式引擎”已经有答案：`moonbitlang/mbtex
 1. 复制 `examples/compare/` 或自写适配器（只需要被测引擎的“建工作簿 + 写格 + 单格求值”三件事）。
 2. 把 `--corpus` 指向本仓库的 `corpus/cases`（只读）。
 3. 输出报告 JSON，字段至少包含：`engine`（名称/版本/工具链）、`total`、`passed`、`failed`、`rate`、`tolerances`、`buckets`、`by_source`、`by_tag`、`failures`、`attribution`、`rerun`（确切命令）。
-4. 用同一桶规则与 [`corpus/reports/real.json`](../corpus/reports/real.json)（MoonCalc 的 1,528/1,528）对照；差异逐条归因。
+4. 用同一桶规则与 [`corpus/reports/real.json`](../corpus/reports/real.json)（MoonCalc 的 1,603/1,603）对照；差异逐条归因。
 5. 报告放在你自己的仓库/发布页即可；套件不要求注册、授权或联系维护者。
 
 ### 3.3 复跑命令（2026-11-18 已实跑验证）
@@ -109,7 +111,7 @@ MoonBit 生态里“有没有公式引擎”已经有答案：`moonbitlang/mbtex
 ```bash
 export PATH="$HOME/.moon/bin:$PATH"
 
-# 1) 被测引擎（示例：MoonCalc 自身，1,528/1,528）
+# 1) 被测引擎（示例：MoonCalc 自身，1,603/1,603）
 bash scripts/run-bench.sh
 
 # 2) 第三方引擎（示例：mbtexcel 0.3.2，独立适配器；写 _build，不覆盖权威报告）
@@ -127,19 +129,19 @@ mkdir -p _build/conformance
 
 | 引擎 | 通过 | 失败 | 通过率 | 覆盖 |
 | --- | --- | --- | --- | --- |
-| 桌面 Excel（判官/答案键生成者） | 1,528 | 0 | 100% | 全部答案键 |
-| MoonCalc（本仓库） | **1,528** | 0 | **100%** | 旧 1,267 + M9 数组 238 + spill 引用 23；桶：1,508 match + 16 excel-precision + 3 clock-tolerance + 1 surrogate |
+| 桌面 Excel（判官/答案键生成者） | 1,603 | 0 | 100% | 全部答案键 |
+| MoonCalc（本仓库） | **1,603** | 0 | **100%** | 旧 1,267 + M9 数组 238 + spill 引用 23 + SEQUENCE 75；桶：1,583 match + 16 excel-precision + 3 clock-tolerance + 1 surrogate |
 | mbtexcel 0.3.2（参考适配器） | 1,023 | 244 | 80.74% | **旧 1,267 条**；桶分解见 §3.3；33 条时钟不可比；数组批未纳入（适配器待扩展） |
 
-语义探针另计：M9 时点 239 条有效探针中 MoonCalc 236 通过（2 条 `SUM (` 有意分歧 + 1 条不稳定覆盖探针，历史记录）；M9.1 的 25 条 spill 引用探针中 23 条与引擎一致并已转为主分母，2 条 `ROWS` 探针因函数未注册不一致（公开缺口）。探针不重复计入主分母：数组批 238 条与 spill 批 23 条答案键都已含在 1,528 中。
+语义探针另计：M9 时点 239 条有效探针中 MoonCalc 236 通过（2 条 `SUM (` 有意分歧 + 1 条不稳定覆盖探针，历史记录）；M9.1 的 25 条 spill 引用探针中 23 条与引擎一致并已转为主分母，2 条 `ROWS` 探针因函数未注册不一致（公开缺口）；SEQUENCE 批 75 条探针全部与引擎一致并已转为主分母。探针不重复计入主分母：数组批 238 条、spill 批 23 条与 SEQUENCE 批 75 条答案键都已含在 1,603 中。
 
 **复跑核验（2026-11-18）**：用上述命令重跑 mbtexcel 适配器，`total`/`passed`/`failed`/`buckets`/`by_source` 与权威报告逐项一致，失败 id 集合与按 id 的桶完全一致；唯一变化是 33 条 `clock` 记录的 `actual` 值（宿主时钟，报告已在 `attribution.clock` 声明）。这条“除时钟外可复现”的性质由适配器自身保证，不是维护者的口头承诺。
 
 ## 4. 边界与诚实声明
 
 - **判官是采样行为，不是规范**：答案键来自桌面 Excel 2024（2610 / 16.0.20527.20196 / zh-CN）的实测行为。套件只声称“与本机 Excel 一致”；不同 Excel 版本/区域设置可能存在差异，欢迎用同一生成器在别的版本上重采。
-- **覆盖是当前里程碑，不是终点**：当前 61 函数 + M8 引用语义 + M9 数组语义 + M9.1 spill 引用语义；未实现函数返回 `#NAME?`、未覆盖语义解析失败，都是公开缺口，不是“与 Excel 相同”，也不是“验收范围外”。完整终点见 [ADR 0009](adr/0009-full-conformance-endpoint.md)。
-- **不可比单列**：33 条时钟记录在无注入引擎上记为 `clock-no-injection`，不计通过；5 条越界/非稳态用例移出分母并保留原答案键；探针不重复计入主分母（数组批 238 条 + spill 批 23 条已转换为主分母）。
+- **覆盖是当前里程碑，不是终点**：当前 62 函数 + M8 引用语义 + M9 数组语义 + M9.1 spill 引用语义 + SEQUENCE；未实现函数返回 `#NAME?`、未覆盖语义解析失败，都是公开缺口，不是“与 Excel 相同”，也不是“验收范围外”。完整终点见 [ADR 0009](adr/0009-full-conformance-endpoint.md)。
+- **不可比单列**：33 条时钟记录在无注入引擎上记为 `clock-no-injection`，不计通过；5 条越界/非稳态用例移出分母并保留原答案键；探针不重复计入主分母（数组批 238 条 + spill 批 23 条 + SEQUENCE 批 75 条已转换为主分母）。
 - **不评性能、文件 IO、格式**：套件只回答“公式结果是否与 Excel 一致”。与 excelize parity 是不同目的，不互斥，也不替代。
 - **“生态首个”的范围**：截至 2026-11-18，在我们可核验的公开 MoonBit 包/仓库范围内，这是首个以真实 Excel 答案键为唯一裁判的公开验收套件。若有更早的公开套件，欢迎指出，我们改口径——这句话本身也应被当作可证伪的声明。
 - **许可**：本仓库 MIT；答案键由 Excel 行为生成，可自由用于验收与回归。
@@ -156,7 +158,7 @@ sha256sum corpus/reports/real.json corpus/reports/mbtexcel.json corpus/reports/m
 # mbtexcel.json          94e46b1a398cfe8a91ab51326db72716bd6bfe29c07fe1fd95d6eac2486a9178
 # mbtexcel-probes.json   c4f73e49ea69e39d743b3ae981ec0a631ab14b0dbe94687a22f5b200a6e5fd90
 
-# 本套件自身的数字：MoonCalc 1,528/1,528；mbtexcel 1,023/1,267（旧批，§3.3 命令）
+# 本套件自身的数字：MoonCalc 1,603/1,603；mbtexcel 1,023/1,267（旧批，§3.3 命令）
 ```
 
 ## 6. 相关文档
