@@ -547,7 +547,13 @@ fn eval_spill(ctx : Ctx, sub : @syntax.Expr) -> Value {
   let key = @value.sheet_key(r.sheet, anchor)
   let (rows, cols) = match ctx.spill_ranges.get(key) {
     Some(x) => x
-    None => return Value::Err(XlError::Ref)
+    None =>
+      // 锚点没有溢出区域时 Excel 仍会先取锚点的值：锚点本身是错误就传播该错误
+      // （探针 s09 #SPILL!、s13 #DIV/0!），否则才是 #REF!（s08 字面量锚点）。
+      match cell_value(ctx, key) {
+        Value::Err(e) => return Value::Err(e)
+        _ => return Value::Err(XlError::Ref)
+      }
   }
   let cells : Array[Value] = []
   for rr in 0..<rows {
@@ -565,7 +571,9 @@ fn eval_spill(ctx : Ctx, sub : @syntax.Expr) -> Value {
       cells.push(cv)
     }
   }
-  Value::Range(RangeValue::array(rows, cols, cells))
+  // `#` 是引用通道（Excel 探针 s01/s02/s03/s17）：标量上下文按宿主格做隐式
+  // 交集，聚合/数组上下文仍展开整个区域。
+  Value::Range(RangeValue::reference(r.sheet, anchor.row, anchor.col, rows, cols, cells))
 }
 
 fn apply_unary_scalar(op : @syntax.UnOp, v : Value) -> Value {
@@ -1290,6 +1298,175 @@ fn in_layout(layout : ArrayLayout, key : String) -> Bool {
   layout.cse.contains(key) || layout.dynamic.contains(key)
 }
 
+/// 判断某格是否落在任一 CSE 选区内（含锚点）。
+fn cse_area_contains(layout : ArrayLayout, key : String) -> Bool {
+  for anchor, spec in layout.cse {
+    let (sheet, host_opt) = sheet_of_key(anchor)
+    match host_opt {
+      Some(host) => {
+        for dr in 0..<spec.rows {
+          for dc in 0..<spec.cols {
+            if offset_key(sheet, host, dr, dc) == key {
+              return true
+            }
+          }
+        }
+      }
+      None => ()
+    }
+  }
+  false
+}
+
+/// 收集表达式可能引用到的单元格键，用于布局求值前做依赖预判。
+/// 整列/整行与定义名称不展开；超大区域只取两个角（布局锚点本身很小）。
+fn collect_formula_refs(
+  host_sheet : String,
+  e : @syntax.Expr,
+  out : Array[String]
+) -> Unit {
+  match e {
+    Lit(_) => ()
+    Ref(addr) => out.push(@value.sheet_key(host_sheet, addr))
+    Range(lo, hi) => {
+      let area = (hi.row - lo.row + 1) * (hi.col - lo.col + 1)
+      if area > 4096 {
+        out.push(@value.sheet_key(host_sheet, { row: lo.row, col: lo.col, abs_row: false, abs_col: false }))
+        out.push(@value.sheet_key(host_sheet, { row: hi.row, col: hi.col, abs_row: false, abs_col: false }))
+      } else {
+        for r in lo.row..=hi.row {
+          for c in lo.col..=hi.col {
+            out.push(@value.sheet_key(host_sheet, { row: r, col: c, abs_row: false, abs_col: false }))
+          }
+        }
+      }
+    }
+    WholeCols(_, _) | WholeRows(_, _) => ()
+    Sheet(sheet, inner) => {
+      let host = if sheet == "" { host_sheet } else { sheet }
+      collect_formula_refs(host, inner, out)
+    }
+    Name(_) => ()
+    Unary(_, sub) => collect_formula_refs(host_sheet, sub, out)
+    Binary(_, l, r) => {
+      collect_formula_refs(host_sheet, l, out)
+      collect_formula_refs(host_sheet, r, out)
+    }
+    Call(_, args) => {
+      for a in args {
+        collect_formula_refs(host_sheet, a, out)
+      }
+    }
+    ArrayLit(rows) => {
+      for row in rows {
+        for a in row {
+          collect_formula_refs(host_sheet, a, out)
+        }
+      }
+    }
+    Intersect(l, r) => {
+      collect_formula_refs(host_sheet, l, out)
+      collect_formula_refs(host_sheet, r, out)
+    }
+    Union(l, r) => {
+      collect_formula_refs(host_sheet, l, out)
+      collect_formula_refs(host_sheet, r, out)
+    }
+    Implicit(sub) => collect_formula_refs(host_sheet, sub, out)
+    Spill(sub) => collect_formula_refs(host_sheet, sub, out)
+  }
+}
+
+/// 求值单个动态数组锚点并登记 spill / values / out。
+/// CSE 公式通过 `#` 或区域引用依赖动态锚点时，需要先触发它（探针 s07）。
+fn eval_dynamic_anchor(
+  ctx : Ctx,
+  grid : Grid,
+  layout : ArrayLayout,
+  key : String,
+  values : Map[String, Value],
+  ranges : Map[String, (Int, Int)],
+  out : Map[String, EvalOutput]
+) -> Unit {
+  let formula = layout.dynamic[key]
+  let raw = eval_layout_formula(ctx, key, formula)
+  let (sheet, host_opt) = sheet_of_key(key)
+  let host = match host_opt {
+    Some(a) => a
+    None => {
+      ctx.cache[key] = Value::Err(XlError::Ref)
+      values[key] = Value::Err(XlError::Ref)
+      out[key] = { value: Value::Err(XlError::Ref), circular: false }
+      return
+    }
+  }
+  match raw {
+    Range(r) =>
+      if r.is_union() {
+        ctx.cache[key] = Value::Err(XlError::Value)
+        values[key] = Value::Err(XlError::Value)
+        out[key] = { value: Value::Err(XlError::Value), circular: false }
+      } else if r.rows * r.cols <= 1 {
+        // 1x1 动态公式仍有 1 格溢出区域（探针 s11：=D4# 返回 1），
+        // 因此登记 spill_ranges，供 `#` 解析引用通道。
+        let v = array_at(r, 0, 0)
+        ctx.cache[key] = v
+        ctx.spill_ranges[key] = (r.rows, r.cols)
+        ranges[key] = (r.rows, r.cols)
+        values[key] = v
+        out[key] = { value: v, circular: ctx.circular.contains(key) }
+      } else {
+        let mut blocked = host.row + r.rows - 1 > @value.max_row ||
+          host.col + r.cols - 1 > @value.max_col
+        if !blocked {
+          for dr in 0..<r.rows {
+            for dc in 0..<r.cols {
+              let k = offset_key(sheet, host, dr, dc)
+              if k != key &&
+                (grid.cells.contains(k) ||
+                  ctx.spill.contains(k) ||
+                  ctx.cache.contains(k) ||
+                  in_layout(layout, k) ||
+                  cse_area_contains(layout, k)) {
+                blocked = true
+              }
+            }
+          }
+        }
+        if blocked {
+          ctx.cache[key] = Value::Err(XlError::Spill)
+          values[key] = Value::Err(XlError::Spill)
+          out[key] = { value: Value::Err(XlError::Spill), circular: false }
+        } else {
+          let anchor_v = r.cells[0]
+          ctx.cache[key] = anchor_v
+          ctx.spill_ranges[key] = (r.rows, r.cols)
+          ranges[key] = (r.rows, r.cols)
+          values[key] = anchor_v
+          for dr in 0..<r.rows {
+            for dc in 0..<r.cols {
+              let v = r.cells[dr * r.cols + dc]
+              let k = offset_key(sheet, host, dr, dc)
+              values[k] = v
+              if dr != 0 || dc != 0 {
+                ctx.spill[k] = v
+              }
+            }
+          }
+          out[key] = { value: anchor_v, circular: ctx.circular.contains(key) }
+        }
+      }
+    v => {
+      // 动态公式返回标量/错误时仍占 1x1 溢出区域（探针 s11）。
+      ctx.cache[key] = v
+      ctx.spill_ranges[key] = (1, 1)
+      ranges[key] = (1, 1)
+      values[key] = v
+      out[key] = { value: v, circular: ctx.circular.contains(key) }
+    }
+  }
+}
+
 /// 带 CSE / 动态数组布局的全网格重算。
 ///
 /// 先求值数组锚点并把溢出/填充值登记到上下文，再按依赖顺序求值普通公式；
@@ -1304,12 +1481,53 @@ pub fn recalc_arrays(
   let values : Map[String, Value] = Map::new()
   let ranges : Map[String, (Int, Int)] = Map::new()
 
-  // 1) CSE：选区是公式自身的领地，先占位。
+  // 动态锚点键先收集：CSE 公式可能通过 `#` 或区域引用依赖它们。
+  let dyn_keys : Array[String] = []
+  for key, _ in layout.dynamic {
+    dyn_keys.push(key)
+  }
+  dyn_keys.sort()
+
   let cse_keys : Array[String] = []
   for key, _ in layout.cse {
     cse_keys.push(key)
   }
   cse_keys.sort()
+
+  // 0) 依赖预求值：CSE 选区先占位，但如果 CSE 公式引用了动态锚点，
+  //    必须先登记对应 spill，否则 `=D4#*1` 会读到空区域（探针 s07）。
+  let needed : Map[String, Bool] = Map::new()
+  for key in cse_keys {
+    let spec = layout.cse[key]
+    let parsed : @syntax.Expr? = try {
+      Some(@syntax.parse(spec.formula))
+    } catch {
+      @syntax.ParseError(_) => None
+    }
+    match parsed {
+      Some(expr) => {
+        let refs : Array[String] = []
+        let (sheet, _) = sheet_of_key(key)
+        collect_formula_refs(sheet, expr, refs)
+        for r in refs {
+          if layout.dynamic.contains(r) {
+            needed[r] = true
+          }
+        }
+      }
+      None => ()
+    }
+  }
+  let needed_keys : Array[String] = []
+  for k, _ in needed {
+    needed_keys.push(k)
+  }
+  needed_keys.sort()
+  for key in needed_keys {
+    eval_dynamic_anchor(ctx, grid, layout, key, values, ranges, out)
+  }
+
+  // 1) CSE：选区是公式自身的领地，先占位（依赖的动态 spill 已在上一步登记）。
   for key in cse_keys {
     let spec = layout.cse[key]
     let raw = eval_layout_formula(ctx, key, spec.formula)
@@ -1404,82 +1622,12 @@ pub fn recalc_arrays(
     }
   }
 
-  // 2) 动态数组：溢出区不得与网格/已有 CSE/其它溢出重叠。
-  let dyn_keys : Array[String] = []
-  for key, _ in layout.dynamic {
-    dyn_keys.push(key)
-  }
-  dyn_keys.sort()
+  // 2) 动态数组：溢出区不得与网格、已占位 CSE 选区或其它溢出重叠。
   for key in dyn_keys {
-    let formula = layout.dynamic[key]
-    let raw = eval_layout_formula(ctx, key, formula)
-    let (sheet, host_opt) = sheet_of_key(key)
-    let host = match host_opt {
-      Some(a) => a
-      None => {
-        ctx.cache[key] = Value::Err(XlError::Ref)
-        values[key] = Value::Err(XlError::Ref)
-        out[key] = { value: Value::Err(XlError::Ref), circular: false }
-        continue
-      }
+    if out.contains(key) {
+      continue
     }
-    match raw {
-      Range(r) =>
-        if r.is_union() {
-          ctx.cache[key] = Value::Err(XlError::Value)
-          values[key] = Value::Err(XlError::Value)
-          out[key] = { value: Value::Err(XlError::Value), circular: false }
-        } else if r.rows * r.cols <= 1 {
-          let v = array_at(r, 0, 0)
-          ctx.cache[key] = v
-          values[key] = v
-          out[key] = { value: v, circular: ctx.circular.contains(key) }
-        } else {
-          let mut blocked = host.row + r.rows - 1 > @value.max_row ||
-            host.col + r.cols - 1 > @value.max_col
-          if !blocked {
-            for dr in 0..<r.rows {
-              for dc in 0..<r.cols {
-                let k = offset_key(sheet, host, dr, dc)
-                if k != key &&
-                  (grid.cells.contains(k) ||
-                    ctx.spill.contains(k) ||
-                    ctx.cache.contains(k) ||
-                    in_layout(layout, k)) {
-                  blocked = true
-                }
-              }
-            }
-          }
-          if blocked {
-            ctx.cache[key] = Value::Err(XlError::Spill)
-            values[key] = Value::Err(XlError::Spill)
-            out[key] = { value: Value::Err(XlError::Spill), circular: false }
-          } else {
-            let anchor_v = r.cells[0]
-            ctx.cache[key] = anchor_v
-            ctx.spill_ranges[key] = (r.rows, r.cols)
-            ranges[key] = (r.rows, r.cols)
-            values[key] = anchor_v
-            for dr in 0..<r.rows {
-              for dc in 0..<r.cols {
-                let v = r.cells[dr * r.cols + dc]
-                let k = offset_key(sheet, host, dr, dc)
-                values[k] = v
-                if dr != 0 || dc != 0 {
-                  ctx.spill[k] = v
-                }
-              }
-            }
-            out[key] = { value: anchor_v, circular: ctx.circular.contains(key) }
-          }
-        }
-      v => {
-        ctx.cache[key] = v
-        values[key] = v
-        out[key] = { value: v, circular: ctx.circular.contains(key) }
-      }
-    }
+    eval_dynamic_anchor(ctx, grid, layout, key, values, ranges, out)
   }
 
   // 3) 普通公式（布局锚点已预求值）。
