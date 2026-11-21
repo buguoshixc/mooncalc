@@ -1,0 +1,1761 @@
+[
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq001",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq002",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  1,
+                      "cols":  3,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(1,3)",
+        "anchor":  "D4",
+        "spillRange":  "D4:F4",
+        "entered":  "=SEQUENCE(1,3)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq003",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  3,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  4,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  5,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  6,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(2,3)",
+        "anchor":  "D4",
+        "spillRange":  "D4:F5",
+        "entered":  "=SEQUENCE(2,3)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq004",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  10,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  12,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  14,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3,1,10,2)",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(3,1,10,2)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq005",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  1.5,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3,1,1,0.5)",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(3,1,1,0.5)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq006",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  10,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  8,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  6,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3,1,10,-2)",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(3,1,10,-2)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq007",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  0,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3,1,0,1)",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(3,1,0,1)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq008",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(2.9)",
+        "anchor":  "D4",
+        "spillRange":  "D4:D5",
+        "entered":  "=SEQUENCE(2.9)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq009",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(\"3\")",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(\"3\")"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq010",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=SEQUENCE(TRUE)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(TRUE)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq011",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3,1,1,0)",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(3,1,1,0)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq012",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  4,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(2,2)",
+        "anchor":  "D4",
+        "spillRange":  "D4:E5",
+        "entered":  "=SEQUENCE(2,2)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq013",
+        "hasSpill":  true,
+        "setup":  "A1=n:3",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(A1)",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(A1)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq014",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  1.5,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2.5,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  3.5,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3,2,1,0.5)",
+        "anchor":  "D4",
+        "spillRange":  "D4:E6",
+        "entered":  "=SEQUENCE(3,2,1,0.5)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq015",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq016",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=SEQUENCE(1,3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(1,3)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq017",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  10,
+                      "t":  "number"
+                  },
+        "formula":  "=SEQUENCE(2,3,10,2)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(2,3,10,2)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq018",
+        "hasSpill":  false,
+        "setup":  "A1=n:3",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=SEQUENCE(A1)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(A1)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq019",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  6,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(SEQUENCE(3))",
+        "anchor":  "D4",
+        "entered":  "=SUM(SEQUENCE(3))"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq020",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  21,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(SEQUENCE(2,3))",
+        "anchor":  "D4",
+        "entered":  "=SUM(SEQUENCE(2,3))"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq021",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  2,
+                      "t":  "number"
+                  },
+        "formula":  "=SEQUENCE(3)+1",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)+1"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq022",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(\"abc\")",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(\"abc\")"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq023",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#DIV/0!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(1/0)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(1/0)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq024",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#CALC!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(0)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(0)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq025",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(-1)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(-1)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq026",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#CALC!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(3,0)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3,0)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq027",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(3,-1)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3,-1)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq028",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(1048577)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(1048577)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq029",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=SEQUENCE(1,16385)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(1,16385)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq030",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  5,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  6,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  7,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3,,5)",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(3,,5)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq031",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  1,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(,2)",
+        "anchor":  "D4",
+        "spillRange":  "D4:E4",
+        "entered":  "=SEQUENCE(,2)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq032",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  11,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  21,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  31,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  41,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  51,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3,2,,10)",
+        "anchor":  "D4",
+        "spillRange":  "D4:E6",
+        "entered":  "=SEQUENCE(3,2,,10)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq033",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3,)",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(3,)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq034",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  4,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3)+1",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(3)+1"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq035",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  10,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  40,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  30,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  80,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(2,2)*{10,20}",
+        "anchor":  "D4",
+        "spillRange":  "D4:E5",
+        "entered":  "=SEQUENCE(2,2)*{10,20}"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq036",
+        "hasSpill":  false,
+        "setup":  "D5=n:99",
+        "value":  {
+                      "v":  "#SPILL!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq037",
+        "hasSpill":  false,
+        "setup":  "E4=n:5",
+        "value":  {
+                      "v":  "#SPILL!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(1,3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(1,3)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq038",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#SPILL!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D1048575",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq039",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#SPILL!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(1,2)",
+        "anchor":  "XFD4",
+        "entered":  "=SEQUENCE(1,2)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq040",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "v":  2,
+                      "t":  "number"
+                  },
+        "formula":  "=D5",
+        "anchor":  "E1",
+        "entered":  "=D5"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq041",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "v":  6,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(D4:D6)",
+        "anchor":  "E1",
+        "entered":  "=SUM(D4:D6)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq042",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "v":  6,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(D4#)",
+        "anchor":  "E1",
+        "entered":  "=SUM(D4#)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq043",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "F1",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq044",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "v":  2,
+                      "t":  "number"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "E5",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq045",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=SEQUENCE(2,3,10,2)",
+        "value":  {
+                      "v":  90,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(D4#)",
+        "anchor":  "F1",
+        "entered":  "=SUM(D4#)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "sq046",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "sq047",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "sq048",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  4,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  "#N/A",
+                                        "t":  "error"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "sq049",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "sq050",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  1,
+                      "cols":  3,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(1,3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(1,3)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "sq051",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  4,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  5,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(2,3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(2,3)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "sq052",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  3,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  4,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  5,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  6,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(2,3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(2,3)"
+    },
+    {
+        "mode":  "cse",
+        "hasArray":  true,
+        "id":  "sq053",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  2,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  4,
+                                        "t":  "number"
+                                    },
+                                    {
+                                        "v":  5,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  "#N/A",
+                                        "t":  "error"
+                                    },
+                                    {
+                                        "v":  "#N/A",
+                                        "t":  "error"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(2,3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(2,3)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq054",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#SPILL!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(1,16385)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(1,16385)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq055",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(1048577)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(1048577)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq056",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  5,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  6,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  7,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3,,5,)",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(3,,5,)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq057",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  134242305,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(SEQUENCE(1,16385))",
+        "anchor":  "D4",
+        "entered":  "=SUM(SEQUENCE(1,16385))"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "sq058",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  134242305,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(SEQUENCE(1,16385))",
+        "anchor":  "D4",
+        "entered":  "=SUM(SEQUENCE(1,16385))"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq059",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#CALC!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(0.9)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(0.9)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq060",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(-0.5)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(-0.5)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq061",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(-1.9)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(-1.9)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq062",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  "#CALC!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(3,0.9)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3,0.9)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq063",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  10,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  12,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  14,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3,1,\"10\",\"2\")",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(3,1,\"10\",\"2\")"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "sq064",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  2,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(2,1,TRUE,TRUE)",
+        "anchor":  "D4",
+        "spillRange":  "D4:D5",
+        "entered":  "=SEQUENCE(2,1,TRUE,TRUE)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "p071",
+        "hasSpill":  true,
+        "setup":  "",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "spillRange":  "D4:D6",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "p072",
+        "hasSpill":  false,
+        "setup":  "D5=n:99",
+        "value":  {
+                      "v":  "#SPILL!",
+                      "t":  "error"
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "p073",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "v":  2,
+                      "t":  "number"
+                  },
+        "formula":  "=D5",
+        "anchor":  "E1",
+        "entered":  "=D5"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "p074",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=D4#",
+        "anchor":  "F1",
+        "entered":  "=D4#"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "p075",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "v":  6,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(D4#)",
+        "anchor":  "F1",
+        "entered":  "=SUM(D4#)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "p076",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "v":  6,
+                      "t":  "number"
+                  },
+        "formula":  "=SUM(D4:D6)",
+        "anchor":  "F1",
+        "entered":  "=SUM(D4:D6)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "p077",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "v":  "#VALUE!",
+                      "t":  "error"
+                  },
+        "formula":  "=D4:D6",
+        "anchor":  "E1",
+        "entered":  "=D4:D6"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "p078",
+        "hasSpill":  false,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "v":  2,
+                      "t":  "number"
+                  },
+        "formula":  "=D4:D6",
+        "anchor":  "E5",
+        "entered":  "=D4:D6"
+    },
+    {
+        "mode":  "dynamic",
+        "hasArray":  false,
+        "id":  "p079",
+        "hasSpill":  true,
+        "setup":  "D4=f2:=SEQUENCE(3)",
+        "value":  {
+                      "t":  "array",
+                      "rows":  3,
+                      "cols":  1,
+                      "v":  [
+                                [
+                                    {
+                                        "v":  1,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  2,
+                                        "t":  "number"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "v":  3,
+                                        "t":  "number"
+                                    }
+                                ]
+                            ]
+                  },
+        "formula":  "=D4:D6",
+        "anchor":  "E1",
+        "spillRange":  "E1:E3",
+        "entered":  "=D4:D6"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q003",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=SEQUENCE(3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(3)"
+    },
+    {
+        "mode":  "normal",
+        "hasArray":  false,
+        "id":  "q004",
+        "hasSpill":  false,
+        "setup":  "",
+        "value":  {
+                      "v":  1,
+                      "t":  "number"
+                  },
+        "formula":  "=SEQUENCE(1,3)",
+        "anchor":  "D4",
+        "entered":  "=SEQUENCE(1,3)"
+    }
+]

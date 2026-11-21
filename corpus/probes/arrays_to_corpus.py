@@ -24,7 +24,8 @@ SKIP = {"p014", "p015", "p126"}
 # s12/s21 use ROWS(), which the engine does not register yet (gap documented);
 # spill geometry is still covered by COUNT() probes s23/s24 and s02/s20.
 SKIP_SPILL = {"s12", "s21"}
-UNSUPPORTED = re.compile(r"\b(SEQUENCE|OFFSET|INDIRECT)\s*\(", re.I)
+# SEQUENCE 已实现，其答案键由 sequence_to_corpus.py 独立生成（arrays.json 冻结）。
+UNSUPPORTED = re.compile(r"\b(OFFSET|INDIRECT)\s*\(", re.I)
 SETUP_SPLIT = re.compile(r";(?=[A-Z]+\d+(?::[A-Z]+\d+)?=)")
 ADDR_RE = re.compile(r"^([A-Z]+)(\d+)(?::([A-Z]+)(\d+))?$")
 

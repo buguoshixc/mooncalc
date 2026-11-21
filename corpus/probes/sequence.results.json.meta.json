@@ -1,0 +1,12 @@
+{
+    "generated_at_utc":  "2026-11-21T03:30:38Z",
+    "excel_version":  "16.0",
+    "excel_build":  "20527",
+    "excel_operating_system":  "Windows (64-bit) NT 10.00",
+    "powershell_version":  "5.1.26100.4768",
+    "spec_file":  "\\\\wsl.localhost\\Ubuntu\\home\\buguoshixc\\mooncalc\\corpus\\probes\\sequence.tsv",
+    "spec_sha256":  "a17a127634b5ddeba676c435584e9911d1cd8aba8cfde45b20f222a0966ddcd7",
+    "results_file":  "\\\\wsl.localhost\\Ubuntu\\home\\buguoshixc\\mooncalc\\corpus\\probes\\sequence.results.json",
+    "results_sha256":  "7bda9408a906616b96e65a837e5ad4e85391ba551c1b2fc1af9a49fdf70b1638",
+    "probes":  75
+}

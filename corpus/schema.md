@@ -172,20 +172,22 @@ id	formula	grid	now	tags	iter	names
 
 新建的临时工作表与定义名称在正常、skip、错误三条路径上都会被删除/还原。
 
-### M9 数组批（独立生成器）
+### 数组 / SEQUENCE 批（独立生成器）
 
 数组/交集/并集/`@`/CSE/动态 spill/spill 引用记录由 `corpus/probes/arrays.tsv` 与
-`corpus/probes/spill_ref.tsv` 驱动，经
+`corpus/probes/spill_ref.tsv` 驱动，SEQUENCE 记录由 `corpus/probes/sequence.tsv` 驱动，经
 `corpus/probes/run_probes.ps1` 在真实桌面 Excel 上逐条写入并读取（`Range.Formula` /
-`Formula2` / `FormulaArray`），再由 `corpus/probes/arrays_to_corpus.py` **只读取**
-`arrays.results.json` 转成 `mooncalc-corpus/1`（不计算期望值）。来源、版本、SHA-256
+`Formula2` / `FormulaArray`），再由 `corpus/probes/arrays_to_corpus.py` /
+`sequence_to_corpus.py` **只读取** `*.results.json` 转成 `mooncalc-corpus/1`（不计算期望值）。
+v3 生成器另写 `<OutPath>.meta.json` 版本指纹。来源、版本、SHA-256
 与排除项见 `corpus/cases/PROVENANCE.md`。
 
 ### 当前缺口（不是书面排除）
 
 R1C1 引用、3D 引用（`Sheet1:Sheet3!A1`）、外部工作簿链接（`[x.xlsx]`）、工作表级
-定义名称、函数空实参仍是待补里程碑（ADR 0009），不是“语料不承诺语义”。数组字面量、
-交集/并集、`@`、CSE、动态 spill 已由 M9 批覆盖，不再排除。
+定义名称仍是待补里程碑（ADR 0009），不是“语料不承诺语义”。数组字面量、
+交集/并集、`@`、CSE、动态 spill、`SEQUENCE` 已由 M9/M12.1 批覆盖，不再排除；
+`FILTER`/`SORT`/`SORTBY`/`UNIQUE`/`RANDARRAY` 仍是公开缺口。
 
 ## 比较策略（bench）
 

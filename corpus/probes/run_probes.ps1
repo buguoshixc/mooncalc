@@ -1,5 +1,6 @@
 # MoonCalc semantic probes against real desktop Excel (COM, headless).
-# Reads a TSV probe table, evaluates each case, writes JSON results.
+# Reads a TSV probe table, evaluates each case, writes JSON results plus a
+# `<OutPath>.meta.json` fingerprint (Excel version/build, input and output SHA-256).
 #
 # TSV columns: id <TAB> anchor <TAB> mode <TAB> rows <TAB> cols <TAB> formula <TAB> setup
 #   mode  : normal | dynamic | cse
@@ -30,7 +31,8 @@ function Err-Name([int]$code) {
     -2146826252 { return "#NUM!" }
     -2146826265 { return "#REF!" }
     -2146826273 { return "#VALUE!" }
-    -2146826182 { return "#CALC!" }
+    -2146826182 { return "#CONNECT!" }
+    -2146826238 { return "#CALC!" }
     -2146826243 { return "#SPILL!" }
     default { return ("#ERRCODE" + $code + "!") }
   }
@@ -183,6 +185,22 @@ foreach ($line in $lines) {
 
 $json = ($results | ConvertTo-Json -Depth 12) -replace "`r`n", "`n"
 [System.IO.File]::WriteAllText($OutPath, $json, (New-Object System.Text.UTF8Encoding($false)))
+# v3: version/input fingerprint sidecar. The results file stays a bare JSON array
+# so existing converters are unchanged; provenance reads this sidecar.
+$meta = [ordered]@{
+  generated_at_utc       = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+  excel_version          = [string]$xl.Version
+  excel_build            = [string]$xl.Build
+  excel_operating_system = [string]$xl.OperatingSystem
+  powershell_version     = $PSVersionTable.PSVersion.ToString()
+  spec_file              = $SpecPath
+  spec_sha256            = (Get-FileHash -Algorithm SHA256 -Path $SpecPath).Hash.ToLower()
+  results_file           = $OutPath
+  results_sha256         = (Get-FileHash -Algorithm SHA256 -Path $OutPath).Hash.ToLower()
+  probes                 = $results.Count
+}
+$metaJson = ($meta | ConvertTo-Json -Depth 4) -replace "`r`n", "`n"
+[System.IO.File]::WriteAllText($OutPath + ".meta.json", $metaJson, (New-Object System.Text.UTF8Encoding($false)))
 $wb.Close($false)
 $xl.Quit()
 [System.Runtime.InteropServices.Marshal]::ReleaseComObject($xl) | Out-Null
